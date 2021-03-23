@@ -689,7 +689,7 @@ VOID DS3_RAW_TO_SPLIT_HID_INPUT_REPORT_01(
 	Output[7] &= ~0xFF; // Clear all 8 bits
 
 
-	if (!MuteDigitalPressureButtons)
+	if (!MuteDigitalPressureButtons && TRUE)
 	{
 		// Translate D-Pad to HAT format
 		switch (Input[2] & ~0xF)
@@ -738,8 +738,11 @@ VOID DS3_RAW_TO_SPLIT_HID_INPUT_REPORT_01(
 	// PS button
 	Output[7] |= Input[4];
 
-	// D-Pad buttons
-	Output[7] |= (Input[2] & ~0xF) >> 3;
+	if (!MuteDigitalPressureButtons && FALSE) // FALSE as placeholder for DHMC option to choose between T-Hat and button D-Pad format
+	{
+		// D-Pad buttons
+		Output[7] |= (Input[2] & ~0xF) >> 3;
+	}
 
 	// Thumb axes
 	Output[1] = Input[6]; // LTX
@@ -799,7 +802,7 @@ VOID DS3_RAW_TO_SINGLE_HID_INPUT_REPORT(
 	// Prepare PS and D-Pad buttons
 	Output[7] &= ~0xFF; // Clear all 8 bits
 
-	if (!MuteDigitalPressureButtons)
+	if (!MuteDigitalPressureButtons && TRUE)
 	{
 		// Translate D-Pad to HAT format
 		switch (Input[2] & ~0xF)
@@ -858,8 +861,11 @@ VOID DS3_RAW_TO_SINGLE_HID_INPUT_REPORT(
 	// PS button
 	Output[7] |= Input[4];
 
-	// D-Pad buttons
-	Output[7] |= (Input[2] & ~0xF) >> 3;
+	if (!MuteDigitalPressureButtons && FALSE ) // FALSE as placeholder for DHMC option to choose between T-Hat and button D-Pad format
+	{
+		// D-Pad buttons
+		Output[7] |= (Input[2] & ~0xF) >> 3;
+	}
 
 	// D-Pad (pressure)
 	Output[10] = Input[14];
