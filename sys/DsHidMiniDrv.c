@@ -961,10 +961,76 @@ DsHidMini_WriteReport(
 		//
 		// External output report overrides internal behaviour, keep note
 		// 
+
+
 		pDevCtx->OutputReport.Mode = Ds3OutputReportModeWriteReportPassThrough;
 
-		DS3_SET_SMALL_RUMBLE_STRENGTH(pDevCtx, Packet->reportBuffer[4]);
-		DS3_SET_LARGE_RUMBLE_STRENGTH(pDevCtx, Packet->reportBuffer[5]);
+		UCHAR SM_RawStr = Packet->reportBuffer[4]; // Keep original values for reference in Raw variables
+		UCHAR BM_RawStr = Packet->reportBuffer[5]; // Keep original values for reference in Raw variables
+
+		DOUBLE SM_Str = SM_RawStr; // Non-Raw For manipulation
+		DOUBLE BM_Str = BM_RawStr; // Non-Raw For manipulation
+
+		BOOLEAN Enable_BM_rescale = TRUE;
+
+		BOOLEAN Enable_SMtoBM_Conversion = TRUE;
+		BOOLEAN Enable_SM_DownscaleConversion = TRUE;
+		BOOLEAN Enable_ForcedSM_BMThreshold = FALSE;
+		BOOLEAN Enable_ForcedSM_SMThreshold = TRUE;
+
+
+
+		DOUBLE Max_StoBConversion = 255;
+		DOUBLE Min_StoBConversion = 0;
+
+		DOUBLE NewMax_SM_ScaleDown = 115;
+		DOUBLE NewMin_SM_ScaleDown = 0;
+
+		UCHAR ForcedSM_BMThreshold = 229;
+		UCHAR ForcedSM_SMThreshold = 242;
+
+		DOUBLE Min_BM = 0;
+		DOUBLE Max_BM = 255;
+		DOUBLE NewMin_BM = 64; // 0x40
+		DOUBLE NewMax_BM = 255;
+
+		// Using the simpler version of the rescale range instructions is not possible if DSHMC allows updating the used values on the fly
+		// Simpler version: calculate constants before hand
+		// newvalue = a * value + b
+		// a = (max'-min') / (max - min)
+		// b = max' - a * max
+
+		if (SM_Str > 0) {
+
+			if (Enable_SMtoBM_Conversion && SM_Str <= 255) {
+
+				if (Enable_SM_DownscaleConversion) {
+					SM_Str = (NewMax_SM_ScaleDown - NewMin_SM_ScaleDown) / (Max_StoBConversion - Min_StoBConversion) * (SM_Str - Max_StoBConversion) + NewMax_SM_ScaleDown;
+				}
+
+				if (SM_Str > BM_Str) {
+					BM_Str = SM_Str;
+					SM_Str = 0;
+				}
+
+			}
+		}
+
+		if (Enable_ForcedSM_BMThreshold && BM_RawStr >= ForcedSM_BMThreshold) {
+			SM_Str = 1;
+		}
+
+		if (Enable_ForcedSM_SMThreshold && SM_RawStr >= ForcedSM_SMThreshold) {
+			SM_Str = 1;
+		}
+
+		if (Enable_BM_rescale && BM_Str > 0) {
+			BM_Str = (NewMax_BM - NewMin_BM) / (Max_BM - Min_BM) * (BM_Str - Max_BM) + NewMax_BM;
+		}
+
+
+		DS3_SET_SMALL_RUMBLE_STRENGTH(pDevCtx, (UCHAR)SM_Str);
+		DS3_SET_LARGE_RUMBLE_STRENGTH(pDevCtx, (UCHAR)BM_Str);
 
 		// Color values (RGB)
 		// 
