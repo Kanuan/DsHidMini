@@ -1002,7 +1002,7 @@ DsHidMini_WriteReport(
 
 		if (SM_Str > 0) {
 
-			if (Enable_SMtoBM_Conversion && SM_Str <= 255) {
+			if (Enable_SMtoBM_Conversion && SM_Str <= Max_StoBConversion) {
 
 				if (Enable_SM_DownscaleConversion) {
 					SM_Str = (NewMax_SM_ScaleDown - NewMin_SM_ScaleDown) / (Max_StoBConversion - Min_StoBConversion) * (SM_Str - Max_StoBConversion) + NewMax_SM_ScaleDown;
@@ -1010,8 +1010,8 @@ DsHidMini_WriteReport(
 
 				if (SM_Str > BM_Str) {
 					BM_Str = SM_Str;
-					SM_Str = 0;
 				}
+				SM_Str = 0;
 
 			}
 		}
