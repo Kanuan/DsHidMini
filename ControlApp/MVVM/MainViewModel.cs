@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using Microsoft.Win32;
@@ -10,11 +11,19 @@ using Nefarius.DsHidMini.Util;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
+
     public class MainViewModel : INotifyPropertyChanged
     {
+
+        public bool TestBool { get; set; } = true;
+
+        public int[] deleteLater = new int[] { 1, 2, 3 };
         public MainViewModel()
         {
-            Devices = new ObservableCollection<DeviceViewModel>();
+
+
+                    
+        Devices = new ObservableCollection<DeviceViewModel>();
 
             Devices.CollectionChanged += (sender, args) =>
             {
@@ -31,6 +40,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                     };
             };
         }
+
+
 
         public ApplicationConfiguration AppConfig => ApplicationConfiguration.Instance;
 
@@ -139,5 +150,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AreBthPS3SettingsIncorrect"));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AreBthPS3SettingsCorrect"));
         }
+
+
     }
+
 }

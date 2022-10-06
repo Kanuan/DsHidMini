@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -21,6 +22,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             _batteryQuery = new Timer(UpdateBatteryStatus, null, 10000, 10000);
         }
+
+
 
         /*
         public bool MuteDigitalPressureButtons
@@ -240,5 +243,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             _device.Restart();
         }
+
+
     }
 }

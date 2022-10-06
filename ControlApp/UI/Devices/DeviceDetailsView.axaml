@@ -2,7 +2,285 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ControlApp.UI.Devices.DeviceDetailsView">
-  Welcome to Avalonia!
+			 xmlns:local="using:ControlApp.UI.Devices"
+			 xmlns:super="using:Nefarius.DsHidMini.ControlApp.Util.WPF"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+			 x:Class="ControlApp.UI.Devices.DeviceDetailsView">
+	<UserControl.Resources>
+		<super:BooleanToReverseConverter x:Key="BooleanToReverseConverterKey"/>
+		<DataTemplate x:Key="ctrlBtns">
+			<Viewbox>
+				<TextBlock Margin="5,10,5,10"
+                    DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                    Text="{Binding Path=Content}" TextAlignment="Center"/>
+			</Viewbox>
+		</DataTemplate>
+		
+		<!-- Settings groups templates -->
+		<DataTemplate x:Key="ModeSetting">
+			<Border Background="White" Margin="0,0,0,0">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="30"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+						<RowDefinition MinHeight="50"/>
+					</Grid.RowDefinitions>
+					<Border Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
+					<Label Content="{Binding Path=IPropertyGroupName}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
+					<CheckBox x:Name="CheckBox_Override" IsVisible="{Binding OverrideCheckboxVisibility}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center" DataContext="{Binding $parent[UserControl].DataContext}" />
+					<ContentControl HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}"  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding Path=SettingsMGroup}">
+						<ContentControl.ContentTemplate>
+							<local:TemplateSelector/>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+					<Border Background="Gray" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+						<TextBlock  Text="Using general settings (override disabled)" FontSize="10" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+					</Border>
+				</Grid>
+			</Border>
+		</DataTemplate>
+		
+	</UserControl.Resources>
+
+	<!-- View area -->
+
+	<DockPanel LastChildFill="False">
+
+
+
+		<!-- Lef side -->
+
+		<!--
+		<Slider DockPanel.Dock="Left" x:Name="test" IsSnapToTickEnabled="True" TickFrequency="1" ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}" ToolTip.Placement="Top" Minimum="1" Maximum="255" Width="300"/>
+		-->
+
+		
+	<ContentControl MaxWidth="400" MaxHeight="600" VerticalContentAlignment="Top">
+		<!-- LED Group Settings  -->
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<!-- Idle disconnect -->
+			<Label
+				Content="Mode:"
+				Grid.Row="0"
+				VerticalAlignment="Center"
+				/>
+			<ComboBox
+				x:Name="LEDModeComboBox"
+				VerticalAlignment="Center"
+				Grid.Row="0" Grid.Column="1"
+				SelectedIndex="{Binding LEDsMode}"
+				 
+					>
+				<ComboBoxItem Content="Battery level"/>
+				<ComboBoxItem Content="Custom (simple)"/>
+				<ComboBoxItem Content="Custom (advanced)"/>
+			</ComboBox>
+			
+			<TabControl Grid.Row="1" Grid.ColumnSpan="2" Width="300" SelectedIndex="{Binding SelectedIndex, ElementName=LEDModeComboBox}">
+				<!-- Index 0: LEDs as battery -->
+				<TabItem IsVisible="False" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<Label
+						Content="Representation type:"
+						Grid.Row="0"
+						VerticalAlignment="Center"
+						/>
+						<!-- Change ComboBox later so it's binding to a enum -->
+						<ComboBox
+							Grid.Row="1" Grid.Column="1"
+						>
+							<ComboBoxItem Content="Single LED"/>
+							<ComboBoxItem Content="Filling bar"/>
+						</ComboBox>
+					</Grid>
+				</TabItem >
+					<!-- Index 1: LEDs custom simple -->
+				<TabItem IsVisible="False">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<Label Content="1" Grid.Column="0"/>
+						<Label Content="2" Grid.Column="1"/>
+						<Label Content="3" Grid.Column="2"/>
+						<Label Content="4" Grid.Column="3"/>
+						<CheckBox Grid.Row="1" Grid.Column="0"/>
+						<CheckBox Grid.Row="1" Grid.Column="1"/>
+						<CheckBox Grid.Row="1" Grid.Column="2"/>
+						<CheckBox Grid.Row="1" Grid.Column="3"/>
+					</Grid>
+					<!-- Index 2: LEDs custom advanced -->
+				</TabItem>
+				<TabItem IsVisible="False">
+					<StackPanel>
+						<!-- Select LED to customize -->
+						<TabStrip>
+							<TabItem Header="1"/>
+							<TabItem Header="2"/>
+							<TabItem Header="3"/>
+							<TabItem Header="4"/>
+						</TabStrip>
+						<!-- LED fine tuning -->
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<CheckBox Grid.Row="0" Grid.ColumnSpan="2" Content="Enable LED" />
+							<TextBlock
+								Grid.Row="1" Grid.Column="0"
+								Text="Duration:"
+								TextWrapping="Wrap"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"/>
+							<NumericUpDown
+								Grid.Row="1" Grid.Column="1"
+								Minimum="0"
+								Maximum="255"
+								VerticalAlignment="Center"
+								/>
+							<TextBlock
+								Grid.Row="2" Grid.Column="0"
+								Text="Interval duration:"
+								TextWrapping="Wrap"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"/>
+							<NumericUpDown
+								Grid.Row="2" Grid.Column="1"
+								Minimum="0"
+								Maximum="255"
+								VerticalAlignment="Center"
+								/>
+							<TextBlock
+								Grid.Row="3" Grid.Column="0"
+								Text="Interval OFF portion:"
+								TextWrapping="Wrap"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"/>
+							<NumericUpDown
+								Grid.Row="3" Grid.Column="1"
+								Minimum="0"
+								Maximum="255"
+								VerticalAlignment="Center"
+								/>
+							<TextBlock
+								Grid.Row="4" Grid.Column="0"
+								Text="Interval ON portion:"
+								TextWrapping="Wrap"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"/>
+							<NumericUpDown
+								Grid.Row="4" Grid.Column="1"
+								Minimum="0"
+								Maximum="255"
+								VerticalAlignment="Center"
+								/>
+						</Grid>					
+					</StackPanel>
+				</TabItem>
+			</TabControl>
+
+			<ComboBox
+					x:Name="LEDModeComboBox2"
+					VerticalAlignment="Center"
+					Grid.Row="2" Grid.Column="1"
+					SelectedIndex="{Binding TestDeleteLater}"
+					>
+				<ComboBoxItem Content="Battery level"/>
+				<ComboBoxItem Content="Custom pattern"/>
+			</ComboBox>
+
+		</Grid>
+	</ContentControl>
+		
+				<!-- Right side -->
+
+		<DockPanel DockPanel.Dock="Right" Margin="10" Width="420" >
+
+				<!-- Upper tab control -->
+
+				<TabControl IsVisible="True" SelectedIndex="{Binding CurrentContext}" DockPanel.Dock="Top">
+					<TabItem Header="Gen" VerticalContentAlignment="Center"/>
+					<TabItem Header="SDF" VerticalContentAlignment="Center"/>
+					<TabItem Header="GPJ" VerticalContentAlignment="Center"/>
+					<TabItem Header="XInput" VerticalContentAlignment="Center"/>
+					<TabItem Header="DS4W" VerticalContentAlignment="Center"/>
+				</TabControl>
+
+
+				<!-- Mode Settings groups -->
+
+				<TabControl DockPanel.Dock="Bottom" Margin="0,2,0,0" Background="LightGray" >
+
+					<!-- Basic options -->
+					<TabItem>
+						<TabItem.Header>
+							<TextBlock VerticalAlignment="Center" FontSize="14"  >Basic</TextBlock>
+						</TabItem.Header>
+						<ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
+							<ItemsControl Items="{Binding ModeSettingsBasicList}" ItemTemplate="{StaticResource ModeSetting}" Margin="0"/>
+						</ScrollViewer>
+
+					</TabItem>
+					<!-- Advanced options -->
+					<TabItem>
+						<TabItem.Header>
+							<TextBlock VerticalAlignment="Center" FontSize="14" >Advanced</TextBlock>
+						</TabItem.Header>
+						<DockPanel>
+							<ContentControl DockPanel.Dock="Top" IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker, Converter={StaticResource BooleanToReverseConverterKey}}">
+								<StackPanel>
+									<TextBlock Text="Advanced settings should not be tweaked by the average user. Their purpose may not be clear and their default values were chosen based on many tests in order to deliver the best experience." HorizontalAlignment="Stretch" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,20"/>
+									<TextBlock Text="To those that want to procceed anyway, check the DsHidMini documentation in the vigem.org website." HorizontalAlignment="Stretch" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,20"/>
+									<ToggleButton x:Name="Toggle_AdvancedSettingsUnlocker" HorizontalAlignment="Center">
+										<TextBlock Text="I've read the documentation and know what I'm doing. Unlock the advanced settings." TextWrapping="Wrap"/>
+									</ToggleButton>
+								</StackPanel>
+							</ContentControl>
+							<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
+								<ItemsControl Items="{Binding ModeSettingsAdvancedList}" ItemTemplate="{StaticResource ModeSetting}" Margin="0"/>
+							</ScrollViewer>
+						</DockPanel>
+					</TabItem>
+				</TabControl>
+
+		</DockPanel>
+
+
+
+
+	</DockPanel>
 </UserControl>
