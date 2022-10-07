@@ -166,7 +166,7 @@
 		</DataTemplate>
 
 		<!-- Template draft -->
-		<DataTemplate x:Key="Template_Draft">
+		<DataTemplate x:Key="Template_ToDo">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>

@@ -8,10 +8,14 @@ using Nefarius.DsHidMini.ControlApp.Drivers;
 using Nefarius.DsHidMini.ControlApp.Util;
 using Nefarius.DsHidMini.ControlApp.Util.Web;
 using Nefarius.Utilities.DeviceManagement.PnP;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ControlApp.UI.Devices;
+using System.Collections.ObjectModel;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
-    public class DeviceViewModel : INotifyPropertyChanged
+    public class DeviceViewModel : ObservableObject
     {
         private readonly Timer _batteryQuery;
         private readonly PnPDevice _device;
@@ -20,9 +24,15 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             _device = device;
 
+            DeviceModesSettings GeneralSettings = new();
+
             _batteryQuery = new Timer(UpdateBatteryStatus, null, 10000, 10000);
+
         }
 
+
+        private ObservableCollection<SettingTabViewModel> _settingsTabs;
+        private SettingTabViewModel _currentTab;
 
 
         /*
@@ -245,5 +255,193 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         }
 
 
+    }
+
+    public class DeviceModesSettings : ObservableObject
+    {
+
+        public SettingsContext currentSettingContext { get; set; } = SettingsContext.DS4W;
+
+        private bool isGroupSticksDeadzoneEnabled = true;
+        public bool IsGroupSticksDeadzoneEnabled { get => isGroupSticksDeadzoneEnabled; set => isGroupSticksDeadzoneEnabled = value; }
+        public bool IsEnable_GroupLEDsCustomizationEnabled { get => isEnable_GroupLEDsCustomizationEnabled; set => isEnable_GroupLEDsCustomizationEnabled = value; }
+
+        private bool isEnable_GroupLEDsCustomizationEnabled = true;
+        public bool IsGroupWirelessSettingsEnabled { get; set; }
+        private bool isGroupWirelessSettingsEnable = true;
+
+        private bool isEnable_GroupRumbleBasicEnabled = true;
+        public bool IsGroupRumbleBasicEnabled { get; set; }
+
+        public bool IsGroupOutRepControlEnabled { get; set; }
+        private bool isEnable_GroupOutRepControlEnabled = true;
+        public bool IsGroupRumbleStrEnabled { get; set; }
+        private bool isEnable_GroupRumbleStrEnabled = true;
+        public bool IsGroupRumbleLightConversionEnabled { get; set; }
+        private bool isGroupRumbleLightConversionEnabled = true;
+
+        private LEDsModes ledMode = LEDsModes.BatterySingleLED;
+        public LEDsModes LEDMode { get => ledMode; set => ledMode = value; }
+
+        private LEDCustoms[] LEDsCustoms = new LEDCustoms[4]
+        {
+            new LEDCustoms(), new LEDCustoms(), new LEDCustoms(), new LEDCustoms(),
+        };
+
+        public bool isWirelessIdleDisconnectDisabled = false;
+        public bool IsWirelessIdleDisconnectDisabled { get; set; }
+
+        public byte WirelessIdleDisconnectTime { get; set; }
+
+        public QuickDisconnectCombo DisconnectCombo { get; set; }
+        public byte DisconnectComboHoldTime { get; set; }
+
+        public bool ApplyLeftStickDeadzone { get; set; }
+        public bool ApplyRightStickDeadzone { get; set; }
+        public double LeftStickDeadzone { get; set; }
+        public double RightStickDeadzone { get; set; }
+        public bool IsVariableLightRumbleEmulationEnabled { get; set; }
+
+        public byte RightRumbleConversionUpperRange { get; set; }
+        public byte RightRumbleConversionLowerRange { get; set; }
+        public bool IsForcedRightMotorLightThresholdEnabled { get; set; }
+        public bool IsForcedRightMotorHeavyThreasholdEnabled { get; set; }
+        public byte ForcedRightMotorLightThreshold { get; set; }
+        public byte ForcedRightMotorHeavyThreshold { get; set; }
+
+
+        public bool IsLeftMotorEnabled { get; set; }
+        public bool IsRightMotorEnabled { get; set; }
+        public bool IsOutputReportRateControlEnabled { get; set; }
+        public byte MaxOutputRate { get; set; }
+        public bool IsOutputReportDeduplicatorEnabled { get; set; }
+        public bool IsLeftMotorStrRescalingEnabled { get; set; }
+        public byte LeftMotorStrRescalingUpperRange { get; set; }
+        public byte LeftMotorStrRescalingLowerRange { get; set; }
+
+        public DsPressureExposureMode PressureExposureMode { get; set; } = DsPressureExposureMode.DsPressureExposureModeBoth;
+        public DS_DPAD_EXPOSURE_MODE PadExposureMode { get; set; } = DS_DPAD_EXPOSURE_MODE.DsDPadExposureModeHAT;
+
+    }
+
+    public class LEDCustoms
+    {
+        private byte isLEDEnabled = 0x10;
+        public bool IsLEDEnabled
+        {
+            get => (isLEDEnabled == 0x10) ? true : false;
+            set
+            {
+                if (value) isLEDEnabled = 0x10;
+                isLEDEnabled = 0x00; // ????
+
+            }
+        }
+
+        public byte Duration { get; set; } = 0xFF;
+        public byte IntervalDuration { get; set; } = 0xFF;
+        public byte IntervalPortionON { get; set; } = 0xFF;
+        public byte IntervalPortionOFF { get; set; } = 0x00;
+    }
+
+    public enum SettingsContext
+    {
+        Global,
+        General,
+        SDF,
+        GPJ,
+        DS4W,
+        XInput,
+    }
+
+    public enum SettingsModeGroups
+    {
+        LEDsControl,
+        /// <summary>
+        ///     WirelessIdleTimeoutPeriodMs  <br/>
+        ///     QuickDisconnectCombo  <br/>
+        ///     QuickDisconnectHoldTime  <br/>
+        /// 	DisableWirelessIdleTimeout  <br/>
+        /// </summary>
+        WirelessSettings,
+        /// <summary>
+        /// 	IsOutputRateControlEnabled  <br/>
+        /// 	OutputRateControlPeriodMs  <br/>
+        /// 	IsOutputDeduplicatorEnabled  <br/>
+        /// </summary>
+        OutputReportControl,
+        /// <summary>
+        /// 	ThumbSettings.DeadZoneLeft.Apply <br/>
+        ///     ThumbSettings.DeadZoneLeft.PolarValue <br/>
+        ///     ThumbSettings.DeadZoneRight.Apply <br/>
+        ///     ThumbSettings.DeadZoneRight.PolarValue <br/>
+        /// </summary>
+        SticksDeadzone,
+        /// <summary>
+        /// 	RumbleSettings.SMToBMConversion.Enabled <br/>
+        /// 	RumbleSettings.DisableBM <br/>
+        ///     RumbleSettings.DisableSM <br/>
+        /// </summary>
+        RumbleBasicFunctions,
+        /// <summary>
+        /// 	RumbleSettings.BMStrRescale.Enabled <br/>
+        ///     RumbleSettings.BMStrRescale.MinValue <br/>
+        ///     RumbleSettings.BMStrRescale.MaxValue <br/>
+        /// </summary>
+        RumbleHeavyStrRescale,
+        /// <summary>
+        ///     RumbleSettings.SMToBMConversion.RescaleMinValue <br/>
+        ///     RumbleSettings.SMToBMConversion.RescaleMaxValue <br/>
+        ///     RumbleSettings.ForcedSM.BMThresholdEnabled <br/>
+        ///     RumbleSettings.ForcedSM.BMThresholdValue <br/>
+        ///     RumbleSettings.ForcedSM.SMThresholdEnabled <br/>
+        ///     RumbleSettings.ForcedSM.SMThresholdValue <br/>
+        /// </summary>
+        RumbleLightConversion,
+        /// <summary>
+        ///     SDF.PressureExposureMode <br/>
+        ///     SDF.DPadExposureMode <br/>
+        /// </summary>
+        Unique_SDF,
+        /// <summary>
+        /// 	GPJ.PressureExposureMode <br/>
+        ///     GPJ.DPadExposureMode <br/>
+        /// </summary>
+        Unique_GPJ,
+        Unique_DS4W,
+        Unique_XInput,
+    }
+
+    public enum LEDsModes
+    {
+        BatterySingleLED,
+        BatteryFillingBar,
+        CustomSimple,
+        CustomComplete,
+    }
+
+    public enum QuickDisconnectCombo
+    {
+        Disabled,
+        PS_R1_L1,
+        PS_Start,
+        PS_Select,
+        Start_R1_L1,
+        Select_R1_L1,
+        Start_Select,
+    }
+
+    public enum DsPressureExposureMode
+    {
+        DsPressureExposureModeDigital,
+        DsPressureExposureModeAnalogue,
+        DsPressureExposureModeBoth,
+    }
+
+    public enum DS_DPAD_EXPOSURE_MODE
+    {
+        DsDPadExposureModeHAT,
+        DsDPadExposureModeIndividualButtons,
+        DsDPadExposureModeBoth,
     }
 }
