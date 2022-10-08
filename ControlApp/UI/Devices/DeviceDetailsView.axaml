@@ -7,6 +7,11 @@
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
 			 x:Class="ControlApp.UI.Devices.DeviceDetailsView">
 	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/UI/GroupSettingsTemplates.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 		<super:BooleanToReverseConverter x:Key="BooleanToReverseConverterKey"/>
 		<DataTemplate x:Key="ctrlBtns">
 			<Viewbox>
@@ -15,6 +20,8 @@
                     Text="{Binding Path=Content}" TextAlignment="Center"/>
 			</Viewbox>
 		</DataTemplate>
+
+	
 		
 		<!-- Settings groups templates -->
 		<DataTemplate x:Key="ModeSetting">
@@ -28,16 +35,34 @@
 						<RowDefinition MinHeight="35"/>
 						<RowDefinition MinHeight="50"/>
 					</Grid.RowDefinitions>
+					<!-- Outer settings container with override button -->
 					<Border Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
 					<Label Content="{Binding Header}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
-					<CheckBox x:Name="CheckBox_Override" IsVisible="{Binding IsOverrideCheckboxVisible}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center"/>
-					<ContentControl HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding Path=SettingsGroup}">
-						<ContentControl.ContentTemplate>
+					<CheckBox x:Name="CheckBox_Override" IsChecked="{Binding IsGroupEnabled}" IsVisible="{Binding IsOverrideCheckboxVisible}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center"/>
+					<!-- Internal settings group specific containter -->
+					<ContentControl HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding}">
+						<!-- ContentControl.ContentTemplate>
 							<local:TemplateSelector/>
-						</ContentControl.ContentTemplate>
+						</ContentControl.ContentTemplate -->
 					</ContentControl>
+					<!-- Warning when override is disabled -->
 					<Border Background="Gray" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
 						<TextBlock  Text="Using general settings (override disabled)" FontSize="10" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+					</Border>
+					<!-- Warning when settings are locked for specific mode -->
+					<Border
+						Background="Black"
+						ZIndex="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+						IsVisible="{Binding IsSettingLocked, FallbackValue=false}">
+						<TextBlock
+						Text="This settings group can't be edited for this mode."
+						FontSize="10"
+						Foreground="White"
+						TextWrapping="Wrap"
+						TextAlignment="Center"
+					
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"/>
 					</Border>
 				</Grid>
 			</Border>
@@ -65,7 +90,7 @@
 		
 				<!-- Right side -->
 
-		<DockPanel DockPanel.Dock="Right" Margin="10" Width="420" >
+		<DockPanel DockPanel.Dock="Right" Margin="10" Width="500" >
 
 				<!-- Upper tab control -->
 

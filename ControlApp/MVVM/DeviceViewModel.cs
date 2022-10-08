@@ -24,8 +24,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             _device = device;
 
-            DeviceModesSettings GeneralSettings = new();
-
             _batteryQuery = new Timer(UpdateBatteryStatus, null, 10000, 10000);
 
         }
@@ -260,25 +258,23 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     public class DeviceModesSettings : ObservableObject
     {
 
-        public SettingsContext currentSettingContext { get; set; } = SettingsContext.DS4W;
+        public SettingsContext CurrentSettingContext { get; set; } = SettingsContext.DS4W;
 
-        private bool isGroupSticksDeadzoneEnabled = true;
-        public bool IsGroupSticksDeadzoneEnabled { get => isGroupSticksDeadzoneEnabled; set => isGroupSticksDeadzoneEnabled = value; }
-        public bool IsEnable_GroupLEDsCustomizationEnabled { get => isEnable_GroupLEDsCustomizationEnabled; set => isEnable_GroupLEDsCustomizationEnabled = value; }
-
-        private bool isEnable_GroupLEDsCustomizationEnabled = true;
+        //private bool isGroupSticksDeadzoneEnabled = false;
+        //public bool IsGroupSticksDeadzoneEnabled = false;
+        // private bool isEnable_GroupLEDsCustomizationEnabled = false;
+        //private bool isGroupWirelessSettingsEnable = false;
+        //private bool isGroupRumbleBasicEnabled = true;
+        // private bool isGroupOutRepControlEnabled = true;
+        //private bool isGroupRumbleStrEnabled = true;
+        public bool IsGroupLEDsCustomizationEnabled { get; set; }
         public bool IsGroupWirelessSettingsEnabled { get; set; }
-        private bool isGroupWirelessSettingsEnable = true;
-
-        private bool isEnable_GroupRumbleBasicEnabled = true;
-        public bool IsGroupRumbleBasicEnabled { get; set; }
-
+        public bool IsGroupSticksDeadzoneEnabled { get; set; }
+        public bool IsGroupRumbleGeneralEnabled { get; set; }
         public bool IsGroupOutRepControlEnabled { get; set; }
-        private bool isEnable_GroupOutRepControlEnabled = true;
-        public bool IsGroupRumbleStrEnabled { get; set; }
-        private bool isEnable_GroupRumbleStrEnabled = true;
-        public bool IsGroupRumbleLightConversionEnabled { get; set; }
-        private bool isGroupRumbleLightConversionEnabled = true;
+        public bool IsGroupRumbleLeftRescaleEnabled { get; set; }
+        public bool IsGroupRumbleRightConversionEnabled { get; set; }
+        
 
         private LEDsModes ledMode = LEDsModes.BatterySingleLED;
         public LEDsModes LEDMode { get => ledMode; set => ledMode = value; }
@@ -322,6 +318,21 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public DsPressureExposureMode PressureExposureMode { get; set; } = DsPressureExposureMode.DsPressureExposureModeBoth;
         public DS_DPAD_EXPOSURE_MODE PadExposureMode { get; set; } = DS_DPAD_EXPOSURE_MODE.DsDPadExposureModeHAT;
 
+        public DeviceModesSettings(SettingsContext settingsContext)
+        {
+            CurrentSettingContext = settingsContext;
+            bool tempBool = (CurrentSettingContext == SettingsContext.General || CurrentSettingContext == SettingsContext.Global) ? true : false;
+            IsGroupLEDsCustomizationEnabled =
+                IsGroupWirelessSettingsEnabled =
+                IsGroupSticksDeadzoneEnabled =
+                IsGroupRumbleGeneralEnabled =
+                IsGroupOutRepControlEnabled =
+                IsGroupRumbleLeftRescaleEnabled =
+                IsGroupRumbleRightConversionEnabled = tempBool;
+
+
+
+        }
     }
 
     public class LEDCustoms
@@ -382,13 +393,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         /// 	RumbleSettings.DisableBM <br/>
         ///     RumbleSettings.DisableSM <br/>
         /// </summary>
-        RumbleBasicFunctions,
+        RumbleGeneral,
         /// <summary>
         /// 	RumbleSettings.BMStrRescale.Enabled <br/>
         ///     RumbleSettings.BMStrRescale.MinValue <br/>
         ///     RumbleSettings.BMStrRescale.MaxValue <br/>
         /// </summary>
-        RumbleHeavyStrRescale,
+        RumbleLeftStrRescale,
         /// <summary>
         ///     RumbleSettings.SMToBMConversion.RescaleMinValue <br/>
         ///     RumbleSettings.SMToBMConversion.RescaleMaxValue <br/>
@@ -397,7 +408,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         ///     RumbleSettings.ForcedSM.SMThresholdEnabled <br/>
         ///     RumbleSettings.ForcedSM.SMThresholdValue <br/>
         /// </summary>
-        RumbleLightConversion,
+        RumbleRightConversion,
         /// <summary>
         ///     SDF.PressureExposureMode <br/>
         ///     SDF.DPadExposureMode <br/>

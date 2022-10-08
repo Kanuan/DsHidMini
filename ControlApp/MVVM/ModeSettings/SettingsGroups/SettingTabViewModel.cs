@@ -68,32 +68,32 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             _tabName = tabName;
             _basicSettings = new ObservableCollection<GroupSettingsVM>
                     {
-                        new GroupSettingsVM(SettingsModeGroups.LEDsControl, modeSettings),
-                        new GroupSettingsVM(SettingsModeGroups.WirelessSettings, modeSettings),
-                        new GroupSettingsVM(SettingsModeGroups.SticksDeadzone, modeSettings),
-                        new GroupSettingsVM(SettingsModeGroups.RumbleBasicFunctions, modeSettings),
+                        new GroupLEDsCustomsVM(modeSettings),
+                        new GroupWirelessSettingsVM(modeSettings),
+                        new GroupSticksDeadzoneVM(modeSettings),
+                        new GroupRumbleGeneralVM(modeSettings),
                     };
 
             _advancedSettings = new ObservableCollection<GroupSettingsVM>
                     {
-                        new GroupSettingsVM(SettingsModeGroups.OutputReportControl, modeSettings),
-                        new GroupSettingsVM(SettingsModeGroups.RumbleHeavyStrRescale, modeSettings),
-                        new GroupSettingsVM(SettingsModeGroups.RumbleLightConversion, modeSettings),
+                        new GroupOutRepControlVM(modeSettings),
+                        new GroupRumbleLeftRescaleVM(modeSettings),
+                        new GroupRumbleRightConversionAdjustsVM(modeSettings),
                     };
+
             _modeUniqueSettings = new ObservableCollection<GroupSettingsVM>();
 
-
-            if (modeSettings.currentSettingContext == SettingsContext.SDF
-                || modeSettings.currentSettingContext == SettingsContext.Global)
+            if (modeSettings.CurrentSettingContext == SettingsContext.SDF
+                || modeSettings.CurrentSettingContext == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_SDF, modeSettings));
-            if (modeSettings.currentSettingContext == SettingsContext.GPJ
-                || modeSettings.currentSettingContext == SettingsContext.Global)
+            if (modeSettings.CurrentSettingContext == SettingsContext.GPJ
+                || modeSettings.CurrentSettingContext == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_GPJ, modeSettings));
-            if (modeSettings.currentSettingContext == SettingsContext.DS4W
-                || modeSettings.currentSettingContext == SettingsContext.Global)
+            if (modeSettings.CurrentSettingContext == SettingsContext.DS4W
+                || modeSettings.CurrentSettingContext == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_DS4W, modeSettings));
-            if (modeSettings.currentSettingContext == SettingsContext.XInput
-                || modeSettings.currentSettingContext == SettingsContext.Global)
+            if (modeSettings.CurrentSettingContext == SettingsContext.XInput
+                || modeSettings.CurrentSettingContext == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_XInput, modeSettings));
         }
     }

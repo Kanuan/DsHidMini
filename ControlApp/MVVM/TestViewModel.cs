@@ -15,8 +15,7 @@ using System.Collections.ObjectModel;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
-    internal class TestViewModel
-        : ObservableObject
+    internal class TestViewModel : ObservableObject
     {
 
         public TestViewModel()
@@ -26,16 +25,12 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             /// Creating dummy device settings object for testing
             /// 
             ///
-            DeviceModesSettings GlobalSettings = new();
-            GlobalSettings.currentSettingContext = SettingsContext.Global;
-
-            DeviceModesSettings GeneralSettings = new();
-            GeneralSettings.currentSettingContext = SettingsContext.General;
-
-            DeviceModesSettings SDFSettings = new();
-            DeviceModesSettings GPJSettings = new();
-            DeviceModesSettings XInputSettings = new();
-            DeviceModesSettings DS4WSettings = new();
+            DeviceModesSettings GlobalSettings = new(SettingsContext.Global);
+            DeviceModesSettings GeneralSettings = new(SettingsContext.General);
+            DeviceModesSettings SDFSettings = new(SettingsContext.SDF);
+            DeviceModesSettings GPJSettings = new(SettingsContext.GPJ);
+            DeviceModesSettings XInputSettings = new(SettingsContext.XInput);
+            DeviceModesSettings DS4WSettings = new(SettingsContext.DS4W);
 
             /// Creating Tabs
             _settingsTabs = new ObservableCollection<SettingTabViewModel>

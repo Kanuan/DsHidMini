@@ -7,6 +7,11 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ControlApp.MainWindow"
         Title="DsHidMini Control">
+
+	<Window.Resources>
+
+	</Window.Resources>
+	
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
