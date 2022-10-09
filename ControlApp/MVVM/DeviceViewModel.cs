@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ControlApp.UI.Devices;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json.Linq;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -252,6 +253,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             _device.Restart();
         }
 
+        
 
     }
 
@@ -260,63 +262,144 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public SettingsContext CurrentSettingContext { get; set; } = SettingsContext.DS4W;
 
-        //private bool isGroupSticksDeadzoneEnabled = false;
-        //public bool IsGroupSticksDeadzoneEnabled = false;
-        // private bool isEnable_GroupLEDsCustomizationEnabled = false;
-        //private bool isGroupWirelessSettingsEnable = false;
-        //private bool isGroupRumbleBasicEnabled = true;
-        // private bool isGroupOutRepControlEnabled = true;
-        //private bool isGroupRumbleStrEnabled = true;
-        public bool IsGroupLEDsCustomizationEnabled { get; set; }
-        public bool IsGroupWirelessSettingsEnabled { get; set; }
-        public bool IsGroupSticksDeadzoneEnabled { get; set; }
-        public bool IsGroupRumbleGeneralEnabled { get; set; }
-        public bool IsGroupOutRepControlEnabled { get; set; }
-        public bool IsGroupRumbleLeftRescaleEnabled { get; set; }
-        public bool IsGroupRumbleRightConversionEnabled { get; set; }
-        
+        private bool isGroupLEDsCustomizationEnabled = false;
+        public bool isGroupWirelessSettingsEnabled = false;
+        private bool isGroupSticksDeadzoneEnabled = false;
+        private bool isGroupRumbleGeneralEnabled = false;
+        private bool isGroupOutRepControlEnabled = false;
+        private bool isGroupRumbleLeftRescaleEnabled = false;
+        private bool isGroupRumbleRightConversionEnabled = false;
 
         private LEDsModes ledMode = LEDsModes.BatterySingleLED;
-        public LEDsModes LEDMode { get => ledMode; set => ledMode = value; }
+        public bool isWirelessIdleDisconnectDisabled = false;
+        public byte wirelessIdleDisconnectTime;
+        private QuickDisconnectCombo disconnectCombo;
+        private byte disconnectComboHoldTime;
+        private bool applyLeftStickDeadzone;
 
-        private LEDCustoms[] LEDsCustoms = new LEDCustoms[4]
+        public LEDCustoms currentLEDCustoms;
+
+        private bool applyRightStickDeadzone;
+        private double leftStickDeadzone;
+        private double rightStickDeadzone;
+        private bool isVariableLightRumbleEmulationEnabled;
+        private byte rightRumbleConversionUpperRange;
+        private byte rightRumbleConversionLowerRange;
+        private bool isForcedRightMotorLightThresholdEnabled;
+        private bool isForcedRightMotorHeavyThreasholdEnabled;
+        private byte forcedRightMotorLightThreshold;
+        private byte forcedRightMotorHeavyThreshold;
+        private bool isLeftMotorEnabled;
+        private bool isRightMotorEnabled;
+        private bool isOutputReportRateControlEnabled;
+        private byte maxOutputRate;
+        private bool isOutputReportDeduplicatorEnabled;
+        private bool isLeftMotorStrRescalingEnabled;
+        private byte leftMotorStrRescalingUpperRange;
+        private byte leftMotorStrRescalingLowerRange;
+        private DsPressureExposureMode pressureExposureMode = DsPressureExposureMode.DsPressureExposureModeBoth;
+        private DS_DPAD_EXPOSURE_MODE padExposureMode = DS_DPAD_EXPOSURE_MODE.DsDPadExposureModeHAT;
+
+
+        // -------------------------------------------- LEDS GROUP
+
+        public bool IsGroupLEDsCustomizationEnabled { get => isGroupLEDsCustomizationEnabled; set => SetProperty(ref isGroupLEDsCustomizationEnabled, value); }
+        public LEDsModes LEDMode
         {
-            new LEDCustoms(), new LEDCustoms(), new LEDCustoms(), new LEDCustoms(),
+            get => ledMode;
+            set => SetProperty(ref ledMode, value);
+        }
+
+        private LEDCustoms[] ledsCustoms = new LEDCustoms[4]
+        {
+            new LEDCustoms(0), new LEDCustoms(1), new LEDCustoms(2), new LEDCustoms(3),
         };
 
-        public bool isWirelessIdleDisconnectDisabled = false;
-        public bool IsWirelessIdleDisconnectDisabled { get; set; }
-
-        public byte WirelessIdleDisconnectTime { get; set; }
-
-        public QuickDisconnectCombo DisconnectCombo { get; set; }
-        public byte DisconnectComboHoldTime { get; set; }
-
-        public bool ApplyLeftStickDeadzone { get; set; }
-        public bool ApplyRightStickDeadzone { get; set; }
-        public double LeftStickDeadzone { get; set; }
-        public double RightStickDeadzone { get; set; }
-        public bool IsVariableLightRumbleEmulationEnabled { get; set; }
-
-        public byte RightRumbleConversionUpperRange { get; set; }
-        public byte RightRumbleConversionLowerRange { get; set; }
-        public bool IsForcedRightMotorLightThresholdEnabled { get; set; }
-        public bool IsForcedRightMotorHeavyThreasholdEnabled { get; set; }
-        public byte ForcedRightMotorLightThreshold { get; set; }
-        public byte ForcedRightMotorHeavyThreshold { get; set; }
+        public LEDCustoms[] LEDsCustoms  { get => ledsCustoms; set => SetProperty(ref ledsCustoms, value); }
 
 
-        public bool IsLeftMotorEnabled { get; set; }
-        public bool IsRightMotorEnabled { get; set; }
-        public bool IsOutputReportRateControlEnabled { get; set; }
-        public byte MaxOutputRate { get; set; }
-        public bool IsOutputReportDeduplicatorEnabled { get; set; }
-        public bool IsLeftMotorStrRescalingEnabled { get; set; }
-        public byte LeftMotorStrRescalingUpperRange { get; set; }
-        public byte LeftMotorStrRescalingLowerRange { get; set; }
+        public LEDCustoms CurrentLEDCustoms { get => currentLEDCustoms; set => SetProperty(ref currentLEDCustoms, value); }
+        public int CurrentLEDCustomsIndex
+        {
+            get => CurrentLEDCustoms.LEDIndex;
+            set
+            {
+                CurrentLEDCustoms = LEDsCustoms[value];
+                OnPropertyChanged("CurrentLEDCustomsIndex"); // Is this correct?
+            }
+        }
 
-        public DsPressureExposureMode PressureExposureMode { get; set; } = DsPressureExposureMode.DsPressureExposureModeBoth;
-        public DS_DPAD_EXPOSURE_MODE PadExposureMode { get; set; } = DS_DPAD_EXPOSURE_MODE.DsDPadExposureModeHAT;
+
+
+        // -------------------------------------------- WIRELESS SETTINGS GROUP
+
+        public bool IsGroupWirelessSettingsEnabled { get => isGroupWirelessSettingsEnabled; set => SetProperty(ref isGroupWirelessSettingsEnabled, value); }
+        public bool IsWirelessIdleDisconnectDisabled { get => isWirelessIdleDisconnectDisabled; set => SetProperty(ref isWirelessIdleDisconnectDisabled, value); }
+        public byte WirelessIdleDisconnectTime { get => wirelessIdleDisconnectTime; set => SetProperty(ref wirelessIdleDisconnectTime, value); }
+        public QuickDisconnectCombo DisconnectCombo { get => disconnectCombo; set => SetProperty(ref disconnectCombo, value); }
+        public byte DisconnectComboHoldTime { get => disconnectComboHoldTime; set => SetProperty(ref disconnectComboHoldTime, value); }
+
+        // -------------------------------------------- STICKS DEADZONE GROUP
+
+        public bool IsGroupSticksDeadzoneEnabled { get => isGroupSticksDeadzoneEnabled; set => SetProperty(ref isGroupSticksDeadzoneEnabled, value); }
+        public bool ApplyLeftStickDeadzone { get => applyLeftStickDeadzone; set => SetProperty(ref applyLeftStickDeadzone, value); }
+        public bool ApplyRightStickDeadzone { get => applyRightStickDeadzone; set => SetProperty(ref applyRightStickDeadzone, value); }
+        public double LeftStickDeadzone { get => leftStickDeadzone; set => SetProperty(ref leftStickDeadzone, value); }
+        public double RightStickDeadzone { get => rightStickDeadzone; set => SetProperty(ref rightStickDeadzone, value); }
+
+        // --------------------------------------------  GENERAL RUMBLE SETTINGS GROUP
+
+        public bool IsGroupRumbleGeneralEnabled { get => isGroupRumbleGeneralEnabled; set => SetProperty(ref isGroupRumbleGeneralEnabled, value); }
+        public bool IsVariableLightRumbleEmulationEnabled { get => isVariableLightRumbleEmulationEnabled; set => SetProperty(ref isVariableLightRumbleEmulationEnabled, value); }
+        public bool IsLeftMotorEnabled { get => isLeftMotorEnabled; set => SetProperty(ref isLeftMotorEnabled, value); }
+        public bool IsRightMotorEnabled { get => isRightMotorEnabled; set => SetProperty(ref isRightMotorEnabled, value); }
+
+        // --------------------------------------------  OUTPUT REPORT CONTROL GROUP
+
+        public bool IsGroupOutRepControlEnabled { get => isGroupOutRepControlEnabled; set => SetProperty(ref isGroupOutRepControlEnabled, value); }
+        public bool IsOutputReportRateControlEnabled { get => isOutputReportRateControlEnabled; set => SetProperty(ref isOutputReportRateControlEnabled, value); }
+        public byte MaxOutputRate { get => maxOutputRate; set => SetProperty(ref maxOutputRate, value); }
+        public bool IsOutputReportDeduplicatorEnabled { get => isOutputReportDeduplicatorEnabled; set => SetProperty(ref isOutputReportDeduplicatorEnabled, value); }
+
+        // -------------------------------------------- LEFT MOTOR RESCALING GROUP
+
+        public bool IsGroupRumbleLeftRescaleEnabled { get => isGroupRumbleLeftRescaleEnabled; set => SetProperty(ref isGroupRumbleLeftRescaleEnabled, value); }
+        public bool IsLeftMotorStrRescalingEnabled { get => isLeftMotorStrRescalingEnabled; set => SetProperty(ref isLeftMotorStrRescalingEnabled, value); }
+        public byte LeftMotorStrRescalingUpperRange { get => leftMotorStrRescalingUpperRange; set => SetProperty(ref leftMotorStrRescalingUpperRange, value); }
+        public byte LeftMotorStrRescalingLowerRange { get => leftMotorStrRescalingLowerRange; set => SetProperty(ref leftMotorStrRescalingLowerRange, value); }
+
+        // -------------------------------------------- RIGHT MOTOR CONVERSION GROUP
+
+        public bool IsGroupRumbleRightConversionEnabled { get => isGroupRumbleRightConversionEnabled; set => SetProperty(ref isGroupRumbleRightConversionEnabled, value); }
+        public byte RightRumbleConversionUpperRange
+        {
+            get => rightRumbleConversionUpperRange;
+            set
+            {
+                byte tempByte = ( value < RightRumbleConversionLowerRange ) ? (byte)(RightRumbleConversionLowerRange + 1 ) : value;
+                SetProperty(ref rightRumbleConversionUpperRange, tempByte);
+            }
+        }
+        public byte RightRumbleConversionLowerRange
+        {
+            get => rightRumbleConversionLowerRange;
+            set
+            {
+                byte tempByte = (value > RightRumbleConversionUpperRange) ? (byte)(RightRumbleConversionUpperRange - 1) : value;
+                SetProperty(ref rightRumbleConversionLowerRange, tempByte);
+            }
+        }
+        public bool IsForcedRightMotorLightThresholdEnabled { get => isForcedRightMotorLightThresholdEnabled; set => SetProperty(ref isForcedRightMotorLightThresholdEnabled, value); }
+        public bool IsForcedRightMotorHeavyThreasholdEnabled { get => isForcedRightMotorHeavyThreasholdEnabled; set => SetProperty(ref isForcedRightMotorHeavyThreasholdEnabled, value); }
+        public byte ForcedRightMotorLightThreshold { get => forcedRightMotorLightThreshold; set => SetProperty(ref forcedRightMotorLightThreshold, value); }
+        public byte ForcedRightMotorHeavyThreshold { get => forcedRightMotorHeavyThreshold; set => SetProperty(ref forcedRightMotorHeavyThreshold, value); }
+
+        // -------------------------------------------- 
+
+        public DsPressureExposureMode PressureExposureMode { get => pressureExposureMode; set => SetProperty(ref pressureExposureMode, value); }
+        public DS_DPAD_EXPOSURE_MODE PadExposureMode { get => padExposureMode; set => SetProperty(ref padExposureMode, value); }
+
+        // -------------------------------------------- 
 
         public DeviceModesSettings(SettingsContext settingsContext)
         {
@@ -330,29 +413,41 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 IsGroupRumbleLeftRescaleEnabled =
                 IsGroupRumbleRightConversionEnabled = tempBool;
 
-
+            currentLEDCustoms = LEDsCustoms[0];
 
         }
     }
 
-    public class LEDCustoms
+    public class LEDCustoms : ObservableObject
     {
+        private int ledIndex;
+
         private byte isLEDEnabled = 0x10;
+        private byte duration = 0xFF;
+        private byte intervalDuration = 0xFF;
+        private byte intervalPortionON = 0xFF;
+        private byte intervalPortionOFF = 0x00;
+
         public bool IsLEDEnabled
         {
             get => (isLEDEnabled == 0x10) ? true : false;
             set
             {
-                if (value) isLEDEnabled = 0x10;
-                isLEDEnabled = 0x00; // ????
+                byte tempByte = value ? (byte)0x10 : (byte)0x00;
+                SetProperty(ref isLEDEnabled, tempByte);
 
             }
         }
 
-        public byte Duration { get; set; } = 0xFF;
-        public byte IntervalDuration { get; set; } = 0xFF;
-        public byte IntervalPortionON { get; set; } = 0xFF;
-        public byte IntervalPortionOFF { get; set; } = 0x00;
+        public int LEDIndex { get => ledIndex; private set => SetProperty(ref ledIndex, value); }
+        public byte Duration { get => duration; set => SetProperty(ref duration, value); }
+        public byte IntervalDuration { get => intervalDuration; set => SetProperty(ref intervalDuration, value); }
+        public byte IntervalPortionON { get => intervalPortionON; set => SetProperty(ref intervalPortionON, value); }
+        public byte IntervalPortionOFF { get => intervalPortionOFF; set => SetProperty(ref intervalPortionOFF, value); }
+        public LEDCustoms(int ledIndex)
+        {
+            this.ledIndex = ledIndex;
+        }
     }
 
     public enum SettingsContext

@@ -10,58 +10,18 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     internal class SettingTabViewModel : ObservableObject
     {
+        private bool isTabSelected = false;
         private ObservableCollection<GroupSettingsVM> _basicSettings;
         private ObservableCollection<GroupSettingsVM> _advancedSettings;
         private ObservableCollection<GroupSettingsVM> _modeUniqueSettings;
         private string _tabName;
 
-        public ObservableCollection<GroupSettingsVM> BasicSettingsGroupsList
-        {
-            get
-            {
-                return _basicSettings;
-            }
-            set
-            {
-                SetProperty(ref _basicSettings, value);
-            }
-        }
+        public ObservableCollection<GroupSettingsVM> BasicSettingsGroupsList { get => _basicSettings; set => SetProperty(ref _basicSettings, value); }
+        public ObservableCollection<GroupSettingsVM> AdvancedSettingsGroupsList {  get => _advancedSettings; set => SetProperty(ref _advancedSettings, value); }
+        public ObservableCollection<GroupSettingsVM> ModeUniqueSettingsGroupsList {  get => _modeUniqueSettings; set => SetProperty(ref _modeUniqueSettings, value); }
+        public string TabName { get => _tabName; set => SetProperty(ref _tabName, value); }
+        public bool IsTabSelected { get => isTabSelected; set => SetProperty(ref isTabSelected, value); }
 
-        public ObservableCollection<GroupSettingsVM> AdvancedSettingsGroupsList
-        {
-            get
-            {
-                return _advancedSettings;
-            }
-            set
-            {
-                SetProperty(ref _advancedSettings, value);
-            }
-        }
-
-        public ObservableCollection<GroupSettingsVM> ModeUniqueSettingsGroupsList
-        {
-            get
-            {
-                return _modeUniqueSettings;
-            }
-            set
-            {
-                SetProperty(ref _modeUniqueSettings, value);
-            }
-        }
-
-        public string TabName
-        {
-            get
-            {
-                return _tabName;
-            }
-            set
-            {
-                SetProperty(ref _tabName, value);
-            }
-        }
 
         public SettingTabViewModel(string tabName, DeviceModesSettings modeSettings)
         {

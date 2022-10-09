@@ -35,7 +35,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             /// Creating Tabs
             _settingsTabs = new ObservableCollection<SettingTabViewModel>
             {
-                new SettingTabViewModel("Global/Default", GlobalSettings),
+                //new SettingTabViewModel("Global/Default", GlobalSettings),
                 new SettingTabViewModel("General", GeneralSettings),
                 new SettingTabViewModel("SDF", SDFSettings),
                 new SettingTabViewModel("GPJ", GPJSettings),
@@ -80,6 +80,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private void OnTabSelected(SettingTabViewModel? obj)
         {
             CurrentTab = obj;
+            foreach (var tab in _settingsTabs)
+            {
+                tab.IsTabSelected = (tab == CurrentTab) ? true : false;
+            }
         }
 
     }

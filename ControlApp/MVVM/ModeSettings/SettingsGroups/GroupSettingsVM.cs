@@ -31,7 +31,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         private static Dictionary<SettingsModeGroups, string> SettingsGroupToTemplateDict = new()
         {
-            { SettingsModeGroups.LEDsControl, "Template_ToDo" },
+            { SettingsModeGroups.LEDsControl, "Template_LEDsSettings" },
             { SettingsModeGroups.WirelessSettings, "Template_WirelessSettings" },
             { SettingsModeGroups.SticksDeadzone, "Template_SticksDeadZone" },
             { SettingsModeGroups.RumbleGeneral, "Template_RumbleBasicFunctions" },
