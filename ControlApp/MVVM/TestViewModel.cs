@@ -25,22 +25,18 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             /// Creating dummy device settings object for testing
             /// 
             ///
-            DeviceModesSettings GlobalSettings = new(SettingsContext.Global);
-            DeviceModesSettings GeneralSettings = new(SettingsContext.General);
-            DeviceModesSettings SDFSettings = new(SettingsContext.SDF);
-            DeviceModesSettings GPJSettings = new(SettingsContext.GPJ);
-            DeviceModesSettings XInputSettings = new(SettingsContext.XInput);
-            DeviceModesSettings DS4WSettings = new(SettingsContext.DS4W);
+            DeviceSettingsManager deviceSettings = new();
+
 
             /// Creating Tabs
             _settingsTabs = new ObservableCollection<SettingTabViewModel>
             {
                 //new SettingTabViewModel("Global/Default", GlobalSettings),
-                new SettingTabViewModel("General", GeneralSettings),
-                new SettingTabViewModel("SDF", SDFSettings),
-                new SettingTabViewModel("GPJ", GPJSettings),
-                new SettingTabViewModel("XInput", XInputSettings),
-                new SettingTabViewModel("DS4W", DS4WSettings),
+                new SettingTabViewModel("General", deviceSettings.GeneralSettings),
+                new SettingTabViewModel("SDF", deviceSettings.SDFSettings),
+                new SettingTabViewModel("GPJ", deviceSettings.GPJSettings),
+                new SettingTabViewModel("XInput", deviceSettings.XInputSettings),
+                new SettingTabViewModel("DS4W", deviceSettings.DS4WSettings),
             };
 
             CurrentTab = SettingsTabs[1];   

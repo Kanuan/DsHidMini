@@ -68,6 +68,19 @@
 			</Border>
 		</DataTemplate>
 		
+		<!-- Settings groups templates -->
+		<DataTemplate x:Key="ModeUniqueSettings">
+			<DockPanel>
+				<Border DockPanel.Dock="Top"  MinHeight="35">
+					<Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="{Binding Header}"/>
+				</Border>
+				<ContentControl DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" Content="{Binding SettingsGroup}">
+					<ContentControl.ContentTemplate>
+						<local:TemplateSelector/>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</DockPanel>
+		</DataTemplate>
 	</UserControl.Resources>
 
 	<!-- View area -->
@@ -113,10 +126,10 @@
 					</ItemsControl.ItemTemplate>
 			</ItemsControl>
 
-			<!-- Mode specific settings -->
+			<!-- Mode unique settings -->
 			<ContentControl DockPanel.Dock="Top"  Margin="0,2,0,0" Background="LightGray" MaxHeight="200">
 				<ScrollViewer DockPanel.Dock="Top">
-				<ItemsControl Items="{Binding CurrentTab.ModeUniqueSettingsGroupsList}" ItemTemplate="{StaticResource ModeSetting}" />
+				<ItemsControl Items="{Binding CurrentTab.ModeUniqueSettingsGroupsList}" ItemTemplate="{StaticResource ModeUniqueSettings}" />
 				</ScrollViewer>
 			</ContentControl>
 

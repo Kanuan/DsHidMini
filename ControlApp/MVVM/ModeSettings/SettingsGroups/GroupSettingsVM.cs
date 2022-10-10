@@ -38,6 +38,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.OutputReportControl, "Template_OutputRateControl" },
             { SettingsModeGroups.RumbleLeftStrRescale, "Template_RumbleHeavyStrRescale" },
             { SettingsModeGroups.RumbleRightConversion, "Template_RumbleVariableLightEmuTuning" },
+            { SettingsModeGroups.Unique_Global, "Template_ToDo" },
+            { SettingsModeGroups.Unique_General, "Template_ToDo" },
             { SettingsModeGroups.Unique_SDF, "Template_ToDo" },
             { SettingsModeGroups.Unique_GPJ, "Template_ToDo" },
             { SettingsModeGroups.Unique_DS4W, "Template_ToDo" },
@@ -49,7 +51,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     public class GroupSettingsVM : ObservableObject
     {
 
-
+        /// Replace with LexLoc
         private static Dictionary<SettingsModeGroups, string> DictGroupHeader = new()
         {
             { SettingsModeGroups.LEDsControl, "LEDs control" },
@@ -59,6 +61,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.OutputReportControl, "Output report control" },
             { SettingsModeGroups.RumbleLeftStrRescale, "Left motor (heavy) rescale" },
             { SettingsModeGroups.RumbleRightConversion, "Variable light rumble emulation adjuster" },
+            { SettingsModeGroups.Unique_Global, "Default settings" },
+            { SettingsModeGroups.Unique_General, "General settings" },
+            { SettingsModeGroups.Unique_SDF, "SDF mode specific settings" },
+            { SettingsModeGroups.Unique_GPJ, "GPJ mode specific settings" },
+            { SettingsModeGroups.Unique_DS4W, "DS4W mode specific settings" },
+            { SettingsModeGroups.Unique_XInput, "GPJ mode specific settings" },
+
         };
 
         private DeviceModesSettings _settings; // This object already contains all the necessary logic

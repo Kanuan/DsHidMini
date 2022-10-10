@@ -281,11 +281,11 @@
 				<CheckBox
 					DockPanel.Dock="Top"
 					Content="Disable left motor (heavy)"
-					IsChecked="{Binding IsLeftMotorEnabled}"/>
+					IsChecked="{Binding IsLeftMotorDisabled}"/>
 				<CheckBox
 					DockPanel.Dock="Top"
 					Content="Disable right motor (small)"
-					IsChecked="{Binding IsRightMotorEnabled}"/>
+					IsChecked="{Binding IsRightMotorDisabled}"/>
 			</DockPanel>
 		</DataTemplate>
 
