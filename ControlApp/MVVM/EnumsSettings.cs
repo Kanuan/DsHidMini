@@ -60,6 +60,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         ///     RumbleSettings.ForcedSM.SMThresholdValue <br/>
         /// </summary>
         RumbleRightConversion,
+        Unique_All,
         Unique_Global,
         Unique_General,
         /// <summary>

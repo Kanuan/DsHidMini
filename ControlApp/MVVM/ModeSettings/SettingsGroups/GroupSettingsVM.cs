@@ -105,7 +105,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             SettingsGroup = settingsGroup;
             Settings = settings;
-            IsOverrideCheckboxVisible = (Settings.CurrentSettingContext == SettingsContext.General || Settings.CurrentSettingContext == SettingsContext.Global) ? false : true;
+            IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
             if (DictGroupHeader.TryGetValue(SettingsGroup, out string groupHeader)) Header = groupHeader;
         }
     }
@@ -114,10 +114,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.IsGroupLEDsCustomizationEnabled;
+            get => Settings.GroupLEDsControl.IsGroupLEDsCustomizationEnabled;
             set
             {
-                Settings.IsGroupLEDsCustomizationEnabled = value;
+                Settings.GroupLEDsControl.IsGroupLEDsCustomizationEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -129,10 +129,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.IsGroupWirelessSettingsEnabled;
+            get => Settings.GroupWireless.IsGroupWirelessSettingsEnabled;
             set
             {
-                Settings.IsGroupWirelessSettingsEnabled = value;
+                Settings.GroupWireless.IsGroupWirelessSettingsEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -144,10 +144,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.IsGroupSticksDeadzoneEnabled;
+            get => Settings.GroupSticksDZ.IsGroupSticksDeadzoneEnabled;
             set
             {
-                Settings.IsGroupSticksDeadzoneEnabled = value;
+                Settings.GroupSticksDZ.IsGroupSticksDeadzoneEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -161,7 +161,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public GroupSticksDeadzoneVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.SticksDeadzone, modesSettings) 
         {
-            if(Settings.CurrentSettingContext == SettingsContext.DS4W)
+            if(Settings.Context == SettingsContext.DS4W)
             {
                 IsOverrideCheckboxVisible = false;
                 IsSettingLocked = true;
@@ -173,10 +173,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.IsGroupRumbleGeneralEnabled;
+            get => Settings.GroupRumbleGeneral.IsGroupRumbleGeneralEnabled;
             set
             {
-                Settings.IsGroupRumbleGeneralEnabled = value;
+                Settings.GroupRumbleGeneral.IsGroupRumbleGeneralEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -188,10 +188,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.IsGroupOutRepControlEnabled;
+            get => Settings.GroupOutRepControl.IsGroupOutRepControlEnabled;
             set
             {
-                Settings.IsGroupOutRepControlEnabled = value;
+                Settings.GroupOutRepControl.IsGroupOutRepControlEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -203,10 +203,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.IsGroupRumbleLeftRescaleEnabled;
+            get => Settings.GroupRumbleLeftRescale.IsGroupRumbleLeftRescaleEnabled;
             set
             {
-                Settings.IsGroupRumbleLeftRescaleEnabled = value;
+                Settings.GroupRumbleLeftRescale.IsGroupRumbleLeftRescaleEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -218,10 +218,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.IsGroupRumbleRightConversionEnabled;
+            get => Settings.GroupRumbleRightConversion.IsGroupRumbleRightConversionEnabled;
             set
             {
-                Settings.IsGroupRumbleRightConversionEnabled = value;
+                Settings.GroupRumbleRightConversion.IsGroupRumbleRightConversionEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }

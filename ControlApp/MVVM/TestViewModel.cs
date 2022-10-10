@@ -39,7 +39,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 new SettingTabViewModel("DS4W", deviceSettings.DS4WSettings),
             };
 
-            CurrentTab = SettingsTabs[1];   
+            OnTabSelected(SettingsTabs[0]);  
         }
 
 

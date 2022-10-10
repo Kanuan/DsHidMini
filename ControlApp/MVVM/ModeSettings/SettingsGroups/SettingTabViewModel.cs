@@ -43,17 +43,17 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             _modeUniqueSettings = new ObservableCollection<GroupSettingsVM>();
 
-            if (modeSettings.CurrentSettingContext == SettingsContext.SDF
-                || modeSettings.CurrentSettingContext == SettingsContext.Global)
+            if (modeSettings.Context == SettingsContext.SDF
+                || modeSettings.Context == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_SDF, modeSettings));
-            if (modeSettings.CurrentSettingContext == SettingsContext.GPJ
-                || modeSettings.CurrentSettingContext == SettingsContext.Global)
+            if (modeSettings.Context == SettingsContext.GPJ
+                || modeSettings.Context == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_GPJ, modeSettings));
-            if (modeSettings.CurrentSettingContext == SettingsContext.DS4W
-                || modeSettings.CurrentSettingContext == SettingsContext.Global)
+            if (modeSettings.Context == SettingsContext.DS4W
+                || modeSettings.Context == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_DS4W, modeSettings));
-            if (modeSettings.CurrentSettingContext == SettingsContext.XInput
-                || modeSettings.CurrentSettingContext == SettingsContext.Global)
+            if (modeSettings.Context == SettingsContext.XInput
+                || modeSettings.Context == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_XInput, modeSettings));
         }
     }

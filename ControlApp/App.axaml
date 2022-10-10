@@ -14,7 +14,7 @@
 		</ResourceDictionary>
 		<!-- LED Group  DataContext="{Binding $parent[Grid].DataContext}" Settings  -->
 		<DataTemplate x:Key="Template_LEDsSettings" DataType="{x:Type devmvvm:DeviceModesSettings}">
-			<ContentControl DataContext="{Binding $parent[Grid].DataContext.Settings}">
+			<ContentControl DataContext="{Binding $parent[Grid].DataContext.Settings.GroupLEDsControl}">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition/>
@@ -184,7 +184,7 @@
 
 		<!-- Template: sticks deadzone -->
 		<DataTemplate x:Key="Template_SticksDeadZone">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupSticksDeadzone}">
 				<!-- Left stick DZ -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -222,7 +222,7 @@
 
 		<!-- Basic wireless settings -->
 		<DataTemplate x:Key="Template_WirelessSettings">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupWireless}">
 				<!-- Idle disconnect -->
 				<CheckBox
 					x:Name="IdleDisconnectEnableCheckbox"
@@ -270,7 +270,7 @@
 
 		<!-- Rumble template -->
 		<DataTemplate x:Key="Template_RumbleBasicFunctions">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleGeneral}">
 				<!-- Variable light rumble emulationg enabler -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -291,7 +291,7 @@
 
 		<!-- Template: rumble heavy strength rescale -->
 		<DataTemplate x:Key="Template_RumbleHeavyStrRescale">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleLeftRescale}">
 				<!-- Left motor str rescaling checkbox -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -336,7 +336,7 @@
 
 		<!-- Template: variable light rumble emulation tuning -->
 		<DataTemplate x:Key="Template_RumbleVariableLightEmuTuning">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleRightConversion}">
 				<!-- Conversion upper range -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -426,7 +426,7 @@
 
 		<!-- Template: Output Rate Control -->
 		<DataTemplate x:Key="Template_OutputRateControl">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupOutRepControl}">
 				<!-- Output rate enabler -->
 				<CheckBox
 					DockPanel.Dock="Top"
