@@ -1,8 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
+using IValueConverter = System.Windows.Data.IValueConverter;
 
-namespace Nefarius.DsHidMini.ControlApp.Util.WPF
+namespace Nefarius.DsHidMini.ControlApp.Util.W2PF
 {
+
     public class EnumBindingSourceExtension : MarkupExtension
     {
         private Type _enumType;
@@ -51,4 +59,6 @@ namespace Nefarius.DsHidMini.ControlApp.Util.WPF
             return tempArray;
         }
     }
+
+
 }

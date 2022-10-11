@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
-    public class DeviceSettingsManager : ObservableObject
+    public class DeviceSettingsManager
     {
-        public DeviceModesSettings GeneralSettings = new(SettingsContext.General);
-        public DeviceModesSettings SDFSettings = new(SettingsContext.SDF);
-        public DeviceModesSettings GPJSettings = new(SettingsContext.GPJ);
-        public DeviceModesSettings XInputSettings = new(SettingsContext.XInput);
-        public DeviceModesSettings DS4WSettings = new(SettingsContext.DS4W);
-
+        [Reactive] public DeviceModesSettings GeneralSettings { get; set; } = new(SettingsContext.General);
+        [Reactive] public DeviceModesSettings SDFSettings { get; set; } = new(SettingsContext.SDF);
+        [Reactive] public DeviceModesSettings GPJSettings { get; set; } = new(SettingsContext.GPJ);
+        [Reactive] public DeviceModesSettings SXSSettings { get; set; } = new(SettingsContext.SXS);
+        [Reactive] public DeviceModesSettings XInputSettings { get; set; } = new(SettingsContext.XInput);
+        [Reactive] public DeviceModesSettings DS4WSettings { get; set; } = new(SettingsContext.DS4W);
 
         public void ResetSettingsToDefault(DeviceModesSettings modeContextSettings)
         {
@@ -23,7 +26,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     }
 
-    public class LEDCustoms : ObservableObject
+    public class LEDCustoms
     {
         private int ledIndex;
 
@@ -32,19 +35,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private byte DEFAULT_intervalPortionON = 0xFF;
         private byte DEFAULT_intervalPortionOFF = 0x00;
 
-        private bool isLEDEnabled;
-        private byte duration;
-        private byte intervalDuration;
-        private byte intervalPortionON;
-        private byte intervalPortionOFF;
+        [Reactive] public bool IsLEDEnabled { get; set; }
 
-        public bool IsLEDEnabled { get => isLEDEnabled; set => SetProperty(ref isLEDEnabled, value); }
-
-        public int LEDIndex { get => ledIndex; private set => SetProperty(ref ledIndex, value); }
-        public byte Duration { get => duration; set => SetProperty(ref duration, value); }
-        public byte IntervalDuration { get => intervalDuration; set => SetProperty(ref intervalDuration, value); }
-        public byte IntervalPortionON { get => intervalPortionON; set => SetProperty(ref intervalPortionON, value); }
-        public byte IntervalPortionOFF { get => intervalPortionOFF; set => SetProperty(ref intervalPortionOFF, value); }
+        [Reactive] public int LEDIndex { get; set; }
+        [Reactive] public byte Duration { get; set; }
+        [Reactive] public byte IntervalDuration { get; set; }
+        [Reactive] public byte IntervalPortionON { get; set; }
+        [Reactive] public byte IntervalPortionOFF { get; set; }
         public LEDCustoms(int ledIndex)
         {
             this.ledIndex = ledIndex;
@@ -53,36 +50,27 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         internal void Reset()
         {
-        isLEDEnabled = ledIndex == 0 ? true : false;
-        duration = DEFAULT_duration;
-        intervalDuration = DEFAULT_intervalDuration;
-        intervalPortionON = DEFAULT_intervalPortionON;
-        intervalPortionOFF = DEFAULT_intervalPortionOFF;
+        IsLEDEnabled = ledIndex == 0 ? true : false;
+        Duration = DEFAULT_duration;
+        IntervalDuration = DEFAULT_intervalDuration;
+        IntervalPortionON = DEFAULT_intervalPortionON;
+        IntervalPortionOFF = DEFAULT_intervalPortionOFF;
     }
     }
 
     public class DeviceModesSettings : ObservableObject
     {
 
-        private SettingsContext context;
-        private GroupLEDsControl groupLEDsControl;
-        private GroupWireless groupWireless;
-        private GroupSticksDeadzone groupSticksDZ;
-        private GroupRumbleGeneral groupRumbleGeneral;
-        private GroupOutRepControl groupOutRepControl;
-        private GroupRumbleLeftRescale groupRumbleLeftRescale;
-        private GroupRumbleRightConversion groupRumbleRightConversion;
-
         internal List<GroupSettings> GroupSettingsList = new();
 
-        public SettingsContext Context { get => context; set => SetProperty(ref context, value); }
-        public GroupLEDsControl GroupLEDsControl { get => groupLEDsControl; set => SetProperty(ref groupLEDsControl, value); }
-        public GroupWireless GroupWireless { get => groupWireless; set => SetProperty(ref groupWireless, value); }
-        public GroupSticksDeadzone GroupSticksDZ { get => groupSticksDZ; set => SetProperty(ref groupSticksDZ, value); }
-        public GroupRumbleGeneral GroupRumbleGeneral { get => groupRumbleGeneral; set => SetProperty(ref groupRumbleGeneral, value); }
-        public GroupOutRepControl GroupOutRepControl { get => groupOutRepControl; set => SetProperty(ref groupOutRepControl, value); }
-        public GroupRumbleLeftRescale GroupRumbleLeftRescale { get => groupRumbleLeftRescale; set => SetProperty(ref groupRumbleLeftRescale, value); }
-        public GroupRumbleRightConversion GroupRumbleRightConversion { get => groupRumbleRightConversion; set => SetProperty(ref groupRumbleRightConversion, value); }
+        [Reactive] public SettingsContext Context { get; set; }
+        [Reactive] public GroupLEDsControl GroupLEDsControl { get; set; }
+        [Reactive] public GroupWireless GroupWireless { get; set; }
+        [Reactive] public GroupSticksDeadzone GroupSticksDZ { get; set; }
+        [Reactive] public GroupRumbleGeneral GroupRumbleGeneral { get; set; }
+        [Reactive] public GroupOutRepControl GroupOutRepControl { get; set; }
+        [Reactive] public GroupRumbleLeftRescale GroupRumbleLeftRescale { get; set; }
+        [Reactive] public GroupRumbleRightConversion GroupRumbleRightConversion { get; set; }
 
         public DeviceModesSettings(SettingsContext settingsContext)
         {
@@ -109,16 +97,21 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         }
     }
 
-    public abstract class GroupSettings : ObservableObject
+    public abstract class GroupSettings : ReactiveObject
     {
         abstract public SettingsModeGroups Group { get; }
 
         // DEFAULT VALUES ----------------------------------------------------- START
 
-        public const LEDsModes DEFAULT_ledMode = LEDsModes.BatterySingleLED;
-        public bool DEFAULT_isWirelessIdleDisconnectDisabled = false;
+        public const ControlApp_LEDsModes DEFAULT_ledMode = ControlApp_LEDsModes.BatteryIndicatorPlayerIndex;
+        public bool DEFAULT_isWirelessIdleDisconnectEnabled = true;
         public byte DEFAULT_wirelessIdleDisconnectTime = 5;
-        public const QuickDisconnectCombo DEFAULT_disconnectCombo = QuickDisconnectCombo.PS_R1_L1;
+        public readonly ButtonsCombo DEFAULT_disconnectCombo = new()
+        {
+            Button1 =  ControlApp_ComboButtons.PS,
+            Button2 = ControlApp_ComboButtons.R1,
+            Button3 = ControlApp_ComboButtons.L1,
+            };
         public const byte DEFAULT_disconnectComboHoldTime = 3;
 
         public const bool DEFAULT_applyLeftStickDeadzone = true;
@@ -144,10 +137,19 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public const byte DEFAULT_leftMotorStrRescalingUpperRange = 255;
         public const byte DEFAULT_leftMotorStrRescalingLowerRange = 64;
 
-        public const DsPressureExposureMode DEFAULT_pressureExposureMode = DsPressureExposureMode.DsPressureExposureModeBoth;
-        public const DS_DPAD_EXPOSURE_MODE DEFAULT_padExposureMode = DS_DPAD_EXPOSURE_MODE.DsDPadExposureModeHAT;
+        public const ControlApp_DsPressureMode DEFAULT_pressureExposureMode = ControlApp_DsPressureMode.Both;
+        public const ControlApp_DPADModes DEFAULT_padExposureMode = ControlApp_DPADModes.HAT;
+
 
         // DEFAULT VALUES ----------------------------------------------------- END
+
+        public class ButtonsCombo
+        {
+            [Reactive] public ControlApp_ComboButtons Button1 { get; set; }
+            [Reactive] public ControlApp_ComboButtons Button2 { get; set; }
+            [Reactive] public ControlApp_ComboButtons Button3 { get; set; }
+
+        }
 
         public GroupSettings(SettingsContext context)
         {
@@ -163,31 +165,26 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         
     }
 
+
     public class GroupLEDsControl : GroupSettings
     {
         // -------------------------------------------- LEDS GROUP
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.LEDsControl;
-
-        private bool isGroupLEDsCustomizationEnabled;
-        private LEDsModes ledMode = LEDsModes.BatterySingleLED;
-        private LEDCustoms currentLEDCustoms;
-        private LEDCustoms[] ledsCustoms = new LEDCustoms[4]
-       {
+        [Reactive] public bool IsGroupLEDsCustomizationEnabled { get; set; }
+        [Reactive] public ControlApp_LEDsModes LEDMode { get; set; }
+        [Reactive] public LEDCustoms[] LEDsCustoms { get; set; } =
+            {
             new LEDCustoms(0), new LEDCustoms(1), new LEDCustoms(2), new LEDCustoms(3),
-       };
-
-        public bool IsGroupLEDsCustomizationEnabled { get => isGroupLEDsCustomizationEnabled; set => SetProperty(ref isGroupLEDsCustomizationEnabled, value); }
-        public LEDsModes LEDMode { get => ledMode; set => SetProperty(ref ledMode, value); }
-        public LEDCustoms[] LEDsCustoms { get => ledsCustoms; set => SetProperty(ref ledsCustoms, value); }
-        public LEDCustoms CurrentLEDCustoms { get => currentLEDCustoms; set => SetProperty(ref currentLEDCustoms, value); }
+            };
+        [Reactive] public LEDCustoms CurrentLEDCustoms { get; set; }
         public int CurrentLEDCustomsIndex
         {
             get => CurrentLEDCustoms.LEDIndex;
             set
             {
                 CurrentLEDCustoms = LEDsCustoms[value];
-                OnPropertyChanged("CurrentLEDCustomsIndex"); // Is this correct?
+                this.RaisePropertyChanged();
             }
         }
 
@@ -201,7 +198,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             IsGroupLEDsCustomizationEnabled = ShouldGroupBeEnabledOnReset(context);
 
             LEDMode = DEFAULT_ledMode;
-            foreach (LEDCustoms led in ledsCustoms)
+            foreach (LEDCustoms led in LEDsCustoms)
             {
                 led.Reset();
             }
@@ -214,17 +211,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // -------------------------------------------- WIRELESS SETTINGS GROUP
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.WirelessSettings;
-
-        public bool isGroupWirelessSettingsEnabled;
-        public bool isWirelessIdleDisconnectDisabled;
-        public byte wirelessIdleDisconnectTime;
-        private QuickDisconnectCombo disconnectCombo;
-        private byte disconnectComboHoldTime;
-        public bool IsGroupWirelessSettingsEnabled { get => isGroupWirelessSettingsEnabled; set => SetProperty(ref isGroupWirelessSettingsEnabled, value); }
-        public bool IsWirelessIdleDisconnectDisabled { get => isWirelessIdleDisconnectDisabled; set => SetProperty(ref isWirelessIdleDisconnectDisabled, value); }
-        public byte WirelessIdleDisconnectTime { get => wirelessIdleDisconnectTime; set => SetProperty(ref wirelessIdleDisconnectTime, value); }
-        public QuickDisconnectCombo DisconnectCombo { get => disconnectCombo; set => SetProperty(ref disconnectCombo, value); }
-        public byte DisconnectComboHoldTime { get => disconnectComboHoldTime; set => SetProperty(ref disconnectComboHoldTime, value); }
+        [Reactive] public bool IsGroupWirelessSettingsEnabled { get; set; }
+        [Reactive] public bool IsWirelessIdleDisconnectEnabled { get; set; }
+        [Reactive] public byte WirelessIdleDisconnectTime { get; set; }
+        [Reactive] public ButtonsCombo QuickDisconnectCombo { get; set; }
 
 
         public GroupWireless(SettingsContext context) : base(context)
@@ -235,10 +225,16 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public override void ResetGroupToOriginalDefaults(SettingsContext context)
         {
             IsGroupWirelessSettingsEnabled = ShouldGroupBeEnabledOnReset(context);
-            IsWirelessIdleDisconnectDisabled = DEFAULT_isWirelessIdleDisconnectDisabled;
+            IsWirelessIdleDisconnectEnabled = DEFAULT_isWirelessIdleDisconnectEnabled;
             WirelessIdleDisconnectTime = DEFAULT_wirelessIdleDisconnectTime;
-            DisconnectCombo = DEFAULT_disconnectCombo;
-            DisconnectComboHoldTime = DEFAULT_disconnectComboHoldTime;
+            QuickDisconnectCombo = new()
+            {
+                Button1 = ControlApp_ComboButtons.PS,
+                Button2 = ControlApp_ComboButtons.L1,
+                Button3 = ControlApp_ComboButtons.R1,
+            };
+            //DisconnectComboHoldTime = DEFAULT_disconnectComboHoldTime;
+
         }
     }
 
@@ -247,18 +243,11 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // -------------------------------------------- STICKS DEADZONE GROUP
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.SticksDeadzone;
-
-        private bool isGroupSticksDeadzoneEnabled;
-        private bool applyLeftStickDeadzone;
-        private bool applyRightStickDeadzone;
-        private double leftStickDeadzone;
-        private double rightStickDeadzone;
-
-        public bool IsGroupSticksDeadzoneEnabled { get => isGroupSticksDeadzoneEnabled; set => SetProperty(ref isGroupSticksDeadzoneEnabled, value); }
-        public bool ApplyLeftStickDeadzone { get => applyLeftStickDeadzone; set => SetProperty(ref applyLeftStickDeadzone, value); }
-        public bool ApplyRightStickDeadzone { get => applyRightStickDeadzone; set => SetProperty(ref applyRightStickDeadzone, value); }
-        public double LeftStickDeadzone { get => leftStickDeadzone; set => SetProperty(ref leftStickDeadzone, value); }
-        public double RightStickDeadzone { get => rightStickDeadzone; set => SetProperty(ref rightStickDeadzone, value); }
+        [Reactive] public bool IsGroupSticksDeadzoneEnabled { get; set; }
+        [Reactive] public bool ApplyLeftStickDeadzone { get; set; }
+        [Reactive] public bool ApplyRightStickDeadzone { get; set; }
+        [Reactive] public double LeftStickDeadzone { get; set; }
+        [Reactive] public double RightStickDeadzone { get; set; }
 
         public GroupSticksDeadzone(SettingsContext context) : base(context)
         {
@@ -282,11 +271,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleGeneral;
 
-        private bool isGroupRumbleGeneralEnabled;
         private bool isVariableLightRumbleEmulationEnabled;
         private bool isLeftMotorDisabled;
         private bool isRightMotorDisabled;
-        public bool IsGroupRumbleGeneralEnabled { get => isGroupRumbleGeneralEnabled; set => SetProperty(ref isGroupRumbleGeneralEnabled, value); }
+        [Reactive] public bool IsGroupRumbleGeneralEnabled { get; set; }
         public bool IsVariableLightRumbleEmulationEnabled
         {
             get => isVariableLightRumbleEmulationEnabled;
@@ -296,7 +284,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 {
                     IsLeftMotorDisabled = IsRightMotorDisabled = false;
                 }
-                SetProperty(ref isVariableLightRumbleEmulationEnabled, value);
+                this.RaiseAndSetIfChanged(ref isVariableLightRumbleEmulationEnabled, value);
             }
         }
 
@@ -306,7 +294,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 if (value) IsVariableLightRumbleEmulationEnabled = false;
-                SetProperty(ref isLeftMotorDisabled, value);
+                this.RaiseAndSetIfChanged(ref isLeftMotorDisabled, value);
             }
         }
         public bool IsRightMotorDisabled
@@ -315,13 +303,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 if (value) IsVariableLightRumbleEmulationEnabled = false;
-                SetProperty(ref isRightMotorDisabled, value);
+                this.RaiseAndSetIfChanged(ref isRightMotorDisabled, value);
             }
         }
-        public GroupRumbleGeneral(SettingsContext context) : base(context)
-        {
-
-        }
+        public GroupRumbleGeneral(SettingsContext context) : base(context) { }
 
         public override void ResetGroupToOriginalDefaults(SettingsContext context)
         {
@@ -339,15 +324,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // --------------------------------------------  OUTPUT REPORT CONTROL GROUP
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.OutputReportControl;
-
-        private bool isGroupOutRepControlEnabled;
-        private bool isOutputReportRateControlEnabled;
-        private byte maxOutputRate;
-        private bool isOutputReportDeduplicatorEnabled;
-        public bool IsGroupOutRepControlEnabled { get => isGroupOutRepControlEnabled; set => SetProperty(ref isGroupOutRepControlEnabled, value); }
-        public bool IsOutputReportRateControlEnabled { get => isOutputReportRateControlEnabled; set => SetProperty(ref isOutputReportRateControlEnabled, value); }
-        public byte MaxOutputRate { get => maxOutputRate; set => SetProperty(ref maxOutputRate, value); }
-        public bool IsOutputReportDeduplicatorEnabled { get => isOutputReportDeduplicatorEnabled; set => SetProperty(ref isOutputReportDeduplicatorEnabled, value); }
+        [Reactive] public bool IsGroupOutRepControlEnabled { get; set; }
+        [Reactive] public bool IsOutputReportRateControlEnabled { get; set; }
+        [Reactive] public byte MaxOutputRate { get; set; }
+        [Reactive] public bool IsOutputReportDeduplicatorEnabled { get; set; }
 
         public GroupOutRepControl(SettingsContext context) : base(context) { }
 
@@ -366,15 +346,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // -------------------------------------------- LEFT MOTOR RESCALING GROUP
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleLeftStrRescale;
-
-        private bool isGroupRumbleLeftRescaleEnabled;
-        private bool isLeftMotorStrRescalingEnabled;
-        private byte leftMotorStrRescalingUpperRange;
-        private byte leftMotorStrRescalingLowerRange;
-        public bool IsGroupRumbleLeftRescaleEnabled { get => isGroupRumbleLeftRescaleEnabled; set => SetProperty(ref isGroupRumbleLeftRescaleEnabled, value); }
-        public bool IsLeftMotorStrRescalingEnabled { get => isLeftMotorStrRescalingEnabled; set => SetProperty(ref isLeftMotorStrRescalingEnabled, value); }
-        public byte LeftMotorStrRescalingUpperRange { get => leftMotorStrRescalingUpperRange; set => SetProperty(ref leftMotorStrRescalingUpperRange, value); }
-        public byte LeftMotorStrRescalingLowerRange { get => leftMotorStrRescalingLowerRange; set => SetProperty(ref leftMotorStrRescalingLowerRange, value); }
+        [Reactive] public bool IsGroupRumbleLeftRescaleEnabled { get; set; }
+        [Reactive] public bool IsLeftMotorStrRescalingEnabled { get; set; }
+        [Reactive] public byte LeftMotorStrRescalingUpperRange { get; set; }
+        [Reactive] public byte LeftMotorStrRescalingLowerRange { get; set; }
 
         public GroupRumbleLeftRescale(SettingsContext context) : base(context)
         {
@@ -396,22 +371,17 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // -------------------------------------------- RIGHT MOTOR CONVERSION GROUP
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleRightConversion;
 
-        private bool isGroupRumbleRightConversionEnabled;
         private byte rightRumbleConversionUpperRange;
         private byte rightRumbleConversionLowerRange;
-        private bool isForcedRightMotorLightThresholdEnabled;
-        private bool isForcedRightMotorHeavyThreasholdEnabled;
-        private byte forcedRightMotorLightThreshold;
-        private byte forcedRightMotorHeavyThreshold;
 
-        public bool IsGroupRumbleRightConversionEnabled { get => isGroupRumbleRightConversionEnabled; set => SetProperty(ref isGroupRumbleRightConversionEnabled, value); }
+        [Reactive] public bool IsGroupRumbleRightConversionEnabled { get; set; }
         public byte RightRumbleConversionUpperRange
         {
             get => rightRumbleConversionUpperRange;
             set
             {
                 byte tempByte = (value < RightRumbleConversionLowerRange) ? (byte)(RightRumbleConversionLowerRange + 1) : value;
-                SetProperty(ref rightRumbleConversionUpperRange, tempByte);
+                this.RaiseAndSetIfChanged(ref rightRumbleConversionUpperRange, tempByte);
             }
         }
         public byte RightRumbleConversionLowerRange
@@ -420,13 +390,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 byte tempByte = (value > RightRumbleConversionUpperRange) ? (byte)(RightRumbleConversionUpperRange - 1) : value;
-                SetProperty(ref rightRumbleConversionLowerRange, tempByte);
+                this.RaiseAndSetIfChanged(ref rightRumbleConversionLowerRange, tempByte);
             }
         }
-        public bool IsForcedRightMotorLightThresholdEnabled { get => isForcedRightMotorLightThresholdEnabled; set => SetProperty(ref isForcedRightMotorLightThresholdEnabled, value); }
-        public bool IsForcedRightMotorHeavyThreasholdEnabled { get => isForcedRightMotorHeavyThreasholdEnabled; set => SetProperty(ref isForcedRightMotorHeavyThreasholdEnabled, value); }
-        public byte ForcedRightMotorLightThreshold { get => forcedRightMotorLightThreshold; set => SetProperty(ref forcedRightMotorLightThreshold, value); }
-        public byte ForcedRightMotorHeavyThreshold { get => forcedRightMotorHeavyThreshold; set => SetProperty(ref forcedRightMotorHeavyThreshold, value); }
+        [Reactive] public bool IsForcedRightMotorLightThresholdEnabled { get; set; }
+        [Reactive] public bool IsForcedRightMotorHeavyThreasholdEnabled { get; set; }
+        [Reactive] public byte ForcedRightMotorLightThreshold { get; set; }
+        [Reactive] public byte ForcedRightMotorHeavyThreshold { get; set; }
 
         public GroupRumbleRightConversion(SettingsContext context) : base(context)
         {
@@ -449,10 +419,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.Unique_All;
 
-        private DsPressureExposureMode pressureExposureMode = DsPressureExposureMode.DsPressureExposureModeBoth;
-        private DS_DPAD_EXPOSURE_MODE padExposureMode = DS_DPAD_EXPOSURE_MODE.DsDPadExposureModeHAT;
-        public DsPressureExposureMode PressureExposureMode { get => pressureExposureMode; set => SetProperty(ref pressureExposureMode, value); }
-        public DS_DPAD_EXPOSURE_MODE PadExposureMode { get => padExposureMode; set => SetProperty(ref padExposureMode, value); }
+        [Reactive] public ControlApp_DsPressureMode PressureExposureMode { get; set; }
+        [Reactive] public ControlApp_DPADModes PadExposureMode { get; set; }
 
         public GroupModeUnique(SettingsContext context) : base(context)
         {

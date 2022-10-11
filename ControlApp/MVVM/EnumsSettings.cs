@@ -12,6 +12,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         General,
         SDF,
         GPJ,
+        SXS,
         DS4W,
         XInput,
     }
@@ -73,21 +74,21 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         ///     GPJ.DPadExposureMode <br/>
         /// </summary>
         Unique_GPJ,
+        Unique_SXS,
         Unique_DS4W,
         Unique_XInput,
     }
 
-    public enum LEDsModes
+    public enum ControlApp_LEDsModes
     {
-        BatterySingleLED,
-        BatteryFillingBar,
-        CustomSimple,
-        CustomComplete,
+        BatteryIndicatorPlayerIndex,
+        BatteryIndicatorBarGraph,
+        CustomStatic,
+        CustomPattern,
     }
 
-    public enum QuickDisconnectCombo
+    public enum ControlApp_QuickDisconnectCombo
     {
-        Disabled,
         PS_R1_L1,
         PS_Start,
         PS_Select,
@@ -96,17 +97,39 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         Start_Select,
     }
 
-    public enum DsPressureExposureMode
+    public enum ControlApp_ComboButtons
+    {
+        PS,
+        START,
+        SELECT,
+        R1,
+        L1,
+        R2,
+        L2,
+        R3,
+        L3,
+        Triangle,
+        Circle,
+        Cross,
+        Square,
+        Up,
+        Right,
+        Dowm,
+        Left,
+    }
+
+    public enum ControlApp_DsPressureMode
     {
         DsPressureExposureModeDigital,
         DsPressureExposureModeAnalogue,
-        DsPressureExposureModeBoth,
+        Both,
     }
 
-    public enum DS_DPAD_EXPOSURE_MODE
+    public enum ControlApp_DPADModes
     {
-        DsDPadExposureModeHAT,
-        DsDPadExposureModeIndividualButtons,
+        Default,
+        HAT,
+        IndividualButtons,
         DsDPadExposureModeBoth,
     }
 }

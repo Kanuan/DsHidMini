@@ -35,6 +35,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 new SettingTabViewModel("General", deviceSettings.GeneralSettings),
                 new SettingTabViewModel("SDF", deviceSettings.SDFSettings),
                 new SettingTabViewModel("GPJ", deviceSettings.GPJSettings),
+                new SettingTabViewModel("SXS", deviceSettings.SXSSettings),
                 new SettingTabViewModel("XInput", deviceSettings.XInputSettings),
                 new SettingTabViewModel("DS4W", deviceSettings.DS4WSettings),
             };

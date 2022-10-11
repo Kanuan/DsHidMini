@@ -42,6 +42,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.Unique_General, "Template_ToDo" },
             { SettingsModeGroups.Unique_SDF, "Template_ToDo" },
             { SettingsModeGroups.Unique_GPJ, "Template_ToDo" },
+            { SettingsModeGroups.Unique_SXS, "Template_ToDo" },
             { SettingsModeGroups.Unique_DS4W, "Template_ToDo" },
             { SettingsModeGroups.Unique_XInput, "Template_ToDo" },
         };
@@ -65,6 +66,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.Unique_General, "General settings" },
             { SettingsModeGroups.Unique_SDF, "SDF mode specific settings" },
             { SettingsModeGroups.Unique_GPJ, "GPJ mode specific settings" },
+            { SettingsModeGroups.Unique_SXS, "SXS mode specific settings" },
             { SettingsModeGroups.Unique_DS4W, "DS4W mode specific settings" },
             { SettingsModeGroups.Unique_XInput, "GPJ mode specific settings" },
 

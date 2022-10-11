@@ -1,6 +1,8 @@
 <Application xmlns="https://github.com/avaloniaui"
+			 xmlns:wpf="using:Nefarius.DsHidMini.Util.WPF"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:devmvvm="clr-namespace:Nefarius.DsHidMini.ControlApp.MVVM"
+			 xmlns:devmvvm="using:Nefarius.DsHidMini.ControlApp.MVVM"
+
              x:Class="ControlApp.App">
 	
 	<Application.Styles>
@@ -254,16 +256,9 @@
 					VerticalAlignment="Center"/>
 					<!-- Change ComboBox later so it's binding to a enum -->
 					<ComboBox
-						DockPanel.Dock="Right"
-						SelectedIndex="{Binding , FallbackValue=1}"> 
-						<ComboBoxItem Content="Disabled"/>
-						<ComboBoxItem Content="PS | R1 | L1"/>
-						<ComboBoxItem Content="PS | Start"/>
-						<ComboBoxItem Content="PS | Select"/>
-						<ComboBoxItem Content="Start | R1 | L1"/>
-						<ComboBoxItem Content="Select | R1 | L1"/>
-						<ComboBoxItem Content="Start | Select"/>
-					</ComboBox>
+						Width="160"
+						DockPanel.Dock="Left"
+						/>
 				</DockPanel>
 			</DockPanel>
 		</DataTemplate>
