@@ -8,7 +8,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 using IValueConverter = System.Windows.Data.IValueConverter;
 
-namespace Nefarius.DsHidMini.ControlApp.Util.W2PF
+namespace Nefarius.DsHidMini.ControlApp.Util.WPF
 {
 
     public class EnumBindingSourceExtension : MarkupExtension
