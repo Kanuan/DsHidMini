@@ -2,13 +2,13 @@
 			 xmlns:wpf="using:Nefarius.DsHidMini.Util.WPF"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:devmvvm="using:Nefarius.DsHidMini.ControlApp.MVVM"
-
              x:Class="ControlApp.App">
 	
 	<Application.Styles>
         <FluentTheme Mode="Light"/>
     </Application.Styles>
 	<Application.Resources>
+		<wpf:EnumToCollectionConverter x:Key="EnumToListConverter"/>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="/UI/GroupSettingsTemplates.axaml"/>
