@@ -40,8 +40,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.RumbleRightConversion, "Template_RumbleVariableLightEmuTuning" },
             { SettingsModeGroups.Unique_Global, "Template_ToDo" },
             { SettingsModeGroups.Unique_General, "Template_ToDo" },
-            { SettingsModeGroups.Unique_SDF, "Template_ToDo" },
-            { SettingsModeGroups.Unique_GPJ, "Template_ToDo" },
+            { SettingsModeGroups.Unique_SDF, "Template_SDF_GPJ_PressureButtons" },
+            { SettingsModeGroups.Unique_GPJ, "Template_SDF_GPJ_PressureButtons" },
             { SettingsModeGroups.Unique_SXS, "Template_ToDo" },
             { SettingsModeGroups.Unique_DS4W, "Template_ToDo" },
             { SettingsModeGroups.Unique_XInput, "Template_ToDo" },
@@ -116,10 +116,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.GroupLEDsControl.IsGroupLEDsCustomizationEnabled;
+            get => Settings.GroupLEDsControl.IsGroupEnabled;
             set
             {
-                Settings.GroupLEDsControl.IsGroupLEDsCustomizationEnabled = value;
+                Settings.GroupLEDsControl.IsGroupEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -131,10 +131,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.GroupWireless.IsGroupWirelessSettingsEnabled;
+            get => Settings.GroupWireless.IsGroupEnabled;
             set
             {
-                Settings.GroupWireless.IsGroupWirelessSettingsEnabled = value;
+                Settings.GroupWireless.IsGroupEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -146,10 +146,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.GroupSticksDZ.IsGroupSticksDeadzoneEnabled;
+            get => Settings.GroupSticksDZ.IsGroupEnabled;
             set
             {
-                Settings.GroupSticksDZ.IsGroupSticksDeadzoneEnabled = value;
+                Settings.GroupSticksDZ.IsGroupEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -175,10 +175,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.GroupRumbleGeneral.IsGroupRumbleGeneralEnabled;
+            get => Settings.GroupRumbleGeneral.IsGroupEnabled;
             set
             {
-                Settings.GroupRumbleGeneral.IsGroupRumbleGeneralEnabled = value;
+                Settings.GroupRumbleGeneral.IsGroupEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -190,10 +190,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.GroupOutRepControl.IsGroupOutRepControlEnabled;
+            get => Settings.GroupOutRepControl.IsGroupEnabled;
             set
             {
-                Settings.GroupOutRepControl.IsGroupOutRepControlEnabled = value;
+                Settings.GroupOutRepControl.IsGroupEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -205,10 +205,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.GroupRumbleLeftRescale.IsGroupRumbleLeftRescaleEnabled;
+            get => Settings.GroupRumbleLeftRescale.IsGroupEnabled;
             set
             {
-                Settings.GroupRumbleLeftRescale.IsGroupRumbleLeftRescaleEnabled = value;
+                Settings.GroupRumbleLeftRescale.IsGroupEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }
@@ -220,10 +220,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         public bool IsGroupEnabled
         {
-            get => Settings.GroupRumbleRightConversion.IsGroupRumbleRightConversionEnabled;
+            get => Settings.GroupRumbleRightConversion.IsGroupEnabled;
             set
             {
-                Settings.GroupRumbleRightConversion.IsGroupRumbleRightConversionEnabled = value;
+                Settings.GroupRumbleRightConversion.IsGroupEnabled = value;
                 OnPropertyChanged("IsGroupEnabled");
             }
         }

@@ -12,35 +12,59 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ControlApp.UI.Devices;
 using System.Collections.ObjectModel;
+using DynamicData;
+using ReactiveUI.Fody.Helpers;
+using ReactiveUI;
+using System.Reactive;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     internal class TestViewModel : ObservableObject
     {
+        [Reactive] public DeviceSettingsManager DeviceSettings { get; set; } = new();
+
+        public void SaveSettingsToJson()
+        {
+            DeviceSettings.SaveToJsonTest();
+        }
 
         public TestViewModel()
         {
-            TabSelectedCommand = new RelayCommand<SettingTabViewModel>(OnTabSelected);
-
-            /// Creating dummy device settings object for testing
-            /// 
-            ///
-            DeviceSettingsManager deviceSettings = new();
-
+            
+         
 
             /// Creating Tabs
-            _settingsTabs = new ObservableCollection<SettingTabViewModel>
-            {
+            _settingsTabs = new ObservableCollection<SettingTabViewModel>();
+
+
+            /*{
                 //new SettingTabViewModel("Global/Default", GlobalSettings),
-                new SettingTabViewModel("General", deviceSettings.GeneralSettings),
+                new SettingTabViewModel("General", deviceSettings.SettingsPerContext[SettingsContext.General]),
                 new SettingTabViewModel("SDF", deviceSettings.SDFSettings),
                 new SettingTabViewModel("GPJ", deviceSettings.GPJSettings),
                 new SettingTabViewModel("SXS", deviceSettings.SXSSettings),
                 new SettingTabViewModel("XInput", deviceSettings.XInputSettings),
                 new SettingTabViewModel("DS4W", deviceSettings.DS4WSettings),
-            };
+            };*/
 
-            OnTabSelected(SettingsTabs[0]);  
+
+            
+            foreach(SettingsContext context in DeviceSettings.ActiveContexts)
+            {
+                SettingTabViewModel tempTab = new SettingTabViewModel(context.ToString(), DeviceSettings.SettingsPerContext[context]);
+                _settingsTabs.Add(tempTab);
+            }
+            
+
+            /*
+            "This is the code to be collapsed"
+            _settingsTabs.Add(new SettingTabViewModel("Profile: Global", DeviceSettings.SettingsPerContext[SettingsContext.SDF]));
+             _settingsTabs.Add(new SettingTabViewModel("Custom", DeviceSettings.SettingsPerContext[SettingsContext.SDF]));
+            */
+
+            OnTabSelected(SettingsTabs[0]);
+            ButtonpressedCommand = new RelayCommand(SaveSettingsToJson);
+            TabSelectedCommand = new RelayCommand<SettingTabViewModel>(OnTabSelected);
         }
 
 
@@ -73,6 +97,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
+        public IRelayCommand ButtonpressedCommand { get; }
         public IRelayCommand<SettingTabViewModel> TabSelectedCommand { get; }
         private void OnTabSelected(SettingTabViewModel? obj)
         {

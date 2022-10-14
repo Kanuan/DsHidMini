@@ -95,7 +95,21 @@
 		<Slider DockPanel.Dock="Left" x:Name="test" IsSnapToTickEnabled="True" TickFrequency="1" ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}" ToolTip.Placement="Top" Minimum="1" Maximum="255" Width="300"/>
 		-->
 
-		<ContentControl DockPanel.Dock="Top" Width="300" MaxHeight="600" />
+		<DockPanel DockPanel.Dock="Left" Width="500">
+			<ScrollViewer
+				DockPanel.Dock="Top" MaxHeight="500">
+				<TextBox
+					TextWrapping="Wrap"
+					HorizontalAlignment="Stretch"
+					Text="{Binding DeviceSettings.TestSaveJson}"/>
+			</ScrollViewer>
+
+			<Button
+				DockPanel.Dock="Top"
+				Content="Save test"
+				Command="{Binding ButtonpressedCommand}"
+				/>
+		</DockPanel>
 
 		<!-- LED Group Settings  -->
 

@@ -56,6 +56,14 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 || modeSettings.Context == SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_XInput, modeSettings));
         }
+
+        private void SettingTabViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(_basicSettings[2] is GroupSticksDeadzoneVM groupSticksDeadzoneVM)
+            {
+                groupSticksDeadzoneVM.IsSettingLocked = !groupSticksDeadzoneVM.IsSettingLocked;
+            }
+        }
     }
 
 

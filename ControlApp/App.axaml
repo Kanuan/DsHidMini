@@ -8,7 +8,6 @@
         <FluentTheme Mode="Light"/>
     </Application.Styles>
 	<Application.Resources>
-		<wpf:EnumToCollectionConverter x:Key="EnumToListConverter"/>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="/UI/GroupSettingsTemplates.axaml"/>
@@ -186,7 +185,7 @@
 
 		<!-- Template: sticks deadzone -->
 		<DataTemplate x:Key="Template_SticksDeadZone">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupSticksDeadzone}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupSticksDZ}">
 				<!-- Left stick DZ -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -194,30 +193,44 @@
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"
 						DockPanel.Dock="Left"/>
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="{Binding LeftStickDeadZone, StringFormat={}{0}%}}%"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						Margin="5,0,5,0"/>
 					<Slider
+						DockPanel.Dock="Right"
 						IsSnapToTickEnabled="True"
 						TickFrequency="1"
 						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
 						ToolTip.Placement="Top"
 						Minimum="0"
-						Maximum="100"
-						DockPanel.Dock="Right"
-						Value="{Binding LeftStickDeadzone}"/>
+						Maximum="141"
+						Value="{Binding LeftStickDeadZone}"/>
 				</DockPanel>
 				<!-- Right stick DZ -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
+						DockPanel.Dock="Left"
 						Text="Right Stick DZ:"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"/>
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="{Binding RightStickDeadZone, StringFormat={}{0}%}}%"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						Margin="5,0,5,0"/>
 					<Slider
+						DockPanel.Dock="Right"
 						IsSnapToTickEnabled="True"
 						TickFrequency="1"
 						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
 						ToolTip.Placement="Top"
 						Minimum="0"
-						Maximum="100"
-						Value="{Binding RightStickDeadzone}"/>
+						Maximum="141"
+						Value="{Binding RightStickDeadZone}"/>
 				</DockPanel>
 			</DockPanel>
 		</DataTemplate>
@@ -230,7 +243,7 @@
 					x:Name="IdleDisconnectEnableCheckbox"
 					DockPanel.Dock="Top"
 					Content="Disconnect the controller after idle period"
-					IsChecked="{Binding IsGroupWirelessSettingsEnabled}"/>
+					IsChecked="{Binding IsWirelessIdleDisconnectEnabled}"/>
 				<DockPanel DockPanel.Dock="Top">
 					<Label
 						DockPanel.Dock="Left"
@@ -415,6 +428,43 @@
 						Minimum="1"
 						Maximum="255"
 						Value="{Binding ForcedRightMotorLightThreshold}"/>
+				</DockPanel>
+			</DockPanel>
+		</DataTemplate>
+
+		<!-- Template: Pressure buttons and DPAD (SDF/GPJ) -->
+		<DataTemplate x:Key="Template_SDF_GPJ_PressureButtons">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupModeUnique}">
+				<!-- Max output rate adjuster -->
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="Pressure buttons mode:"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"/>
+					<ComboBox
+						DockPanel.Dock="Right"					
+						VerticalAlignment="Center"
+						SelectedIndex="{Binding PressureExposureMode, FallbackValue=2}">
+						<ComboBoxItem Content="Digital buttons only"/>
+						<ComboBoxItem Content="Pressure axes only"/>
+						<ComboBoxItem Content="Pressure axes + digital buttons (default)"/>
+					</ComboBox>
+				</DockPanel>
+				<!-- DPAD modes -->
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="Expose D-Pad as:"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"/>
+					<ComboBox
+						DockPanel.Dock="Right"
+						VerticalAlignment="Center"
+						SelectedIndex="{Binding DPadExposureMode, FallbackValue=0}">
+						<ComboBoxItem Content="HAT (Default)"/>
+						<ComboBoxItem Content="Buttons"/>
+					</ComboBox>
 				</DockPanel>
 			</DockPanel>
 		</DataTemplate>

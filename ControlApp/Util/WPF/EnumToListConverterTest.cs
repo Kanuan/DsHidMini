@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
+/*
+
 namespace Nefarius.DsHidMini.ControlApp.Util.WPF
 {
     public static class EnumHelper
@@ -56,3 +58,5 @@ namespace Nefarius.DsHidMini.ControlApp.Util.WPF
         public object Value { get; set; }
     }
 }
+
+*/
