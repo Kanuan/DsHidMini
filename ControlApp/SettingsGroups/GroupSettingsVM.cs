@@ -4,6 +4,7 @@ using Nefarius.DsHidMini.ControlApp.JsonSettings;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -65,6 +66,29 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.Unique_XInput, "GPJ mode specific settings" },
 
         };
+
+        public ObservableCollection<ControlApp_ComboButtons> controlApp_ComboButtons { get; set; } = new ObservableCollection<ControlApp_ComboButtons> {
+            ControlApp_ComboButtons.None,
+            ControlApp_ComboButtons.PS,
+            ControlApp_ComboButtons.START,
+            ControlApp_ComboButtons.SELECT,
+            ControlApp_ComboButtons.R1,
+            ControlApp_ComboButtons.L1,
+            ControlApp_ComboButtons.R2,
+            ControlApp_ComboButtons.L2,
+            ControlApp_ComboButtons.R3,
+            ControlApp_ComboButtons.L3,
+            ControlApp_ComboButtons.Triangle,
+            ControlApp_ComboButtons.Circle,
+            ControlApp_ComboButtons.Cross,
+            ControlApp_ComboButtons.Square,
+            ControlApp_ComboButtons.Up,
+            ControlApp_ComboButtons.Right,
+            ControlApp_ComboButtons.Dowm,
+            ControlApp_ComboButtons.Left,
+        };
+
+        [Reactive] public bool IsEditingAllowed { get; set; }
 
         [Reactive] public DeviceModesSettings Settings { get; set; }
 

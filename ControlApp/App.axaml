@@ -13,6 +13,7 @@
 				<ResourceInclude Source="/UI/GroupSettingsTemplates.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
+		
 		<!-- LED Group  DataContext="{Binding $parent[Grid].DataContext}" Settings  -->
 		<DataTemplate x:Key="Template_LEDsSettings" DataType="{x:Type devmvvm:GroupLEDsCustomsVM}">
 			<ContentControl DataContext="{Binding $parent[Grid].DataContext}">
@@ -166,6 +167,47 @@
 
 
 		</DataTemplate>
+		
+		<!-- Basic wireless settings -->
+		<DataTemplate x:Key="Template_WirelessSettings">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+				<!-- Idle disconnect -->
+				<CheckBox
+					x:Name="IdleDisconnectEnableCheckbox"
+					DockPanel.Dock="Top"
+					Content="Disconnect the controller after idle period"
+					IsChecked="{Binding IsWirelessIdleDisconnectEnabled}"/>
+				<DockPanel DockPanel.Dock="Top">
+					<Label
+						DockPanel.Dock="Left"
+						Content="Idle disconnect period:"
+						VerticalAlignment="Center"/>
+					<Slider
+						Value="{Binding WirelessIdleDisconnectTime}"
+						DockPanel.Dock="Right"
+						IsEnabled="{Binding IsChecked, ElementName=IdleDisconnectEnableCheckbox}"
+						IsSnapToTickEnabled="True"
+						TickFrequency="1"
+						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
+						ToolTip.Placement="Top"
+						Minimum="0"
+						Maximum="60"
+					/>
+				</DockPanel>
+				<!-- Quick disconnect combo selection -->
+				<DockPanel DockPanel.Dock="Top">
+					<Label
+					DockPanel.Dock="Left"
+					Content="Hold for 3s to disconnect:"
+					VerticalAlignment="Center"/>
+					<!-- Change ComboBox later so it's binding to a enum -->
+					<ComboBox
+						Width="160"
+						DockPanel.Dock="Left"
+						/>
+				</DockPanel>
+			</DockPanel>
+		</DataTemplate>
 
 		<!-- Template draft -->
 		<DataTemplate x:Key="Template_ToDo">
@@ -231,47 +273,6 @@
 						Minimum="0"
 						Maximum="141"
 						Value="{Binding RightStickDeadZone}"/>
-				</DockPanel>
-			</DockPanel>
-		</DataTemplate>
-
-		<!-- Basic wireless settings -->
-		<DataTemplate x:Key="Template_WirelessSettings">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
-				<!-- Idle disconnect -->
-				<CheckBox
-					x:Name="IdleDisconnectEnableCheckbox"
-					DockPanel.Dock="Top"
-					Content="Disconnect the controller after idle period"
-					IsChecked="{Binding IsWirelessIdleDisconnectEnabled}"/>
-				<DockPanel DockPanel.Dock="Top">
-					<Label
-						DockPanel.Dock="Left"
-						Content="Idle disconnect period:"
-						VerticalAlignment="Center"/>
-					<Slider
-						Value="{Binding WirelessIdleDisconnectTime}"
-						DockPanel.Dock="Right"
-						IsEnabled="{Binding IsChecked, ElementName=IdleDisconnectEnableCheckbox}"
-						IsSnapToTickEnabled="True"
-						TickFrequency="1"
-						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
-						ToolTip.Placement="Top"
-						Minimum="0"
-						Maximum="60"
-					/>
-				</DockPanel>
-				<!-- Quick disconnect combo selection -->
-				<DockPanel DockPanel.Dock="Top">
-					<Label
-					DockPanel.Dock="Left"
-					Content="Hold for 3s to disconnect:"
-					VerticalAlignment="Center"/>
-					<!-- Change ComboBox later so it's binding to a enum -->
-					<ComboBox
-						Width="160"
-						DockPanel.Dock="Left"
-						/>
 				</DockPanel>
 			</DockPanel>
 		</DataTemplate>

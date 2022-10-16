@@ -99,6 +99,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     public enum ControlApp_ComboButtons
     {
+        None,
         PS,
         START,
         SELECT,
