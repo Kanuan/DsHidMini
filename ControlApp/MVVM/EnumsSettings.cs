@@ -120,9 +120,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     public enum ControlApp_DsPressureMode
     {
-        DsPressureExposureModeDigital,
-        DsPressureExposureModeAnalogue,
-        Both,
+        Digital,
+        Analogue,
+        Default,
     }
 
     public enum ControlApp_DPADModes

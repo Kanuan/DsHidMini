@@ -14,8 +14,8 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 		<!-- LED Group  DataContext="{Binding $parent[Grid].DataContext}" Settings  -->
-		<DataTemplate x:Key="Template_LEDsSettings" DataType="{x:Type devmvvm:DeviceModesSettings}">
-			<ContentControl DataContext="{Binding $parent[Grid].DataContext.Settings.GroupLEDsControl}">
+		<DataTemplate x:Key="Template_LEDsSettings" DataType="{x:Type devmvvm:GroupLEDsCustomsVM}">
+			<ContentControl DataContext="{Binding $parent[Grid].DataContext}">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition/>
@@ -185,7 +185,7 @@
 
 		<!-- Template: sticks deadzone -->
 		<DataTemplate x:Key="Template_SticksDeadZone">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupSticksDZ}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Left stick DZ -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -237,7 +237,7 @@
 
 		<!-- Basic wireless settings -->
 		<DataTemplate x:Key="Template_WirelessSettings">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupWireless}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Idle disconnect -->
 				<CheckBox
 					x:Name="IdleDisconnectEnableCheckbox"
@@ -278,7 +278,7 @@
 
 		<!-- Rumble template -->
 		<DataTemplate x:Key="Template_RumbleBasicFunctions">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleGeneral}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Variable light rumble emulationg enabler -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -299,7 +299,7 @@
 
 		<!-- Template: rumble heavy strength rescale -->
 		<DataTemplate x:Key="Template_RumbleHeavyStrRescale">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleLeftRescale}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Left motor str rescaling checkbox -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -344,7 +344,7 @@
 
 		<!-- Template: variable light rumble emulation tuning -->
 		<DataTemplate x:Key="Template_RumbleVariableLightEmuTuning">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleRightConversion}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Conversion upper range -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -434,7 +434,7 @@
 
 		<!-- Template: Pressure buttons and DPAD (SDF/GPJ) -->
 		<DataTemplate x:Key="Template_SDF_GPJ_PressureButtons">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupModeUnique}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Max output rate adjuster -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -471,7 +471,7 @@
 
 		<!-- Template: Output Rate Control -->
 		<DataTemplate x:Key="Template_OutputRateControl">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupOutRepControl}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Output rate enabler -->
 				<CheckBox
 					DockPanel.Dock="Top"

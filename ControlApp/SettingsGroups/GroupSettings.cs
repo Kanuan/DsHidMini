@@ -14,44 +14,9 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
     {
         // DEFAULT VALUES ----------------------------------------------------- START
 
-        public const ControlApp_LEDsModes DEFAULT_ledMode = ControlApp_LEDsModes.BatteryIndicatorPlayerIndex;
-        public bool DEFAULT_isWirelessIdleDisconnectEnabled = true;
-        public byte DEFAULT_wirelessIdleDisconnectTime = 5;
-        public readonly ButtonsCombo DEFAULT_disconnectCombo = new()
-        {
-            Button1 = ControlApp_ComboButtons.PS,
-            Button2 = ControlApp_ComboButtons.R1,
-            Button3 = ControlApp_ComboButtons.L1,
-        };
-        public const byte DEFAULT_disconnectComboHoldTime = 3;
 
-        public const bool DEFAULT_applyLeftStickDeadzone = true;
-        public const bool DEFAULT_applyRightStickDeadzone = true;
-        public const int DEFAULT_leftStickDeadzone = 0;
-        public const int DEFAULT_rightStickDeadzone = 0;
 
-        public const bool DEFAULT_isVariableLightRumbleEmulationEnabled = false;
-        public const byte DEFAULT_rightRumbleConversionUpperRange = 140;
-        public const byte DEFAULT_rightRumbleConversionLowerRange = 1;
-        public const bool DEFAULT_isForcedRightMotorLightThresholdEnabled = false;
-        public const bool DEFAULT_isForcedRightMotorHeavyThreasholdEnabled = false;
-        public const byte DEFAULT_forcedRightMotorLightThreshold = 230;
-        public const byte DEFAULT_forcedRightMotorHeavyThreshold = 230;
 
-        public const bool DEFAULT_isLeftMotorDisabled = false;
-        public const bool DEFAULT_isRightMotorDisabled = false;
-        public const bool DEFAULT_isOutputReportRateControlEnabled = true;
-        public const byte DEFAULT_maxOutputRate = 150;
-        public const bool DEFAULT_isOutputReportDeduplicatorEnabled = false;
-
-        public const bool DEFAULT_isLeftMotorStrRescalingEnabled = true;
-        public const byte DEFAULT_leftMotorStrRescalingUpperRange = 255;
-        public const byte DEFAULT_leftMotorStrRescalingLowerRange = 64;
-
-        public const ControlApp_DsPressureMode DEFAULT_pressureExposureMode = ControlApp_DsPressureMode.Both;
-        public const ControlApp_DPADModes DEFAULT_padExposureMode = ControlApp_DPADModes.HAT;
-        public const bool DEFAULT_isLEDsAsXInputSlotEnabled = false;
-        public const bool DEFAULT_isDS4LightbarTranslationEnabled = false;
 
 
         // DEFAULT VALUES ----------------------------------------------------- END
@@ -59,18 +24,18 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         abstract public SettingsModeGroups Group { get; }
         [Reactive] public SettingsContext Context { get; internal set; }
 
+        public GroupSettings(SettingsContext context)
+        {
+            Context = context;
+            ResetGroupToOriginalDefaults();
+        }
+
         public class ButtonsCombo
         {
             [Reactive] public ControlApp_ComboButtons Button1 { get; set; }
             [Reactive] public ControlApp_ComboButtons Button2 { get; set; }
             [Reactive] public ControlApp_ComboButtons Button3 { get; set; }
 
-        }
-
-        public GroupSettings(SettingsContext context)
-        {
-            Context = context;
-            ResetGroupToOriginalDefaults();
         }
 
         public bool ShouldGroupBeEnabledOnReset()
@@ -82,12 +47,16 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         public abstract void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings);
 
         public abstract void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings);
+    
     }
 
 
     public class GroupLEDsControl : GroupSettings
     {
         // -------------------------------------------- LEDS GROUP
+        public const ControlApp_LEDsModes DEFAULT_ledMode = ControlApp_LEDsModes.BatteryIndicatorPlayerIndex;
+
+
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.LEDsControl;
         [Reactive] public bool IsGroupEnabled { get; set; }
@@ -133,7 +102,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
                 return;
             }
 
-            dshm_AllLEDsSettings.Mode = SaveLoadUtils.LEDModes_Control_DSHM_Pair[this.LEDMode];
+            dshm_AllLEDsSettings.Mode = SaveLoadUtils.Get_DSHM_LEDModes_From_ControlApp[this.LEDMode];
 
             var dshm_singleLED = new DSHM_Format_ContextSettings.SingleLEDCustoms[]
             { dshm_AllLEDsSettings.Player1, dshm_AllLEDsSettings.Player2,dshm_AllLEDsSettings.Player3,dshm_AllLEDsSettings.Player4, };
@@ -204,6 +173,16 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
     public class GroupWireless : GroupSettings
     {
         // -------------------------------------------- WIRELESS SETTINGS GROUP
+        public bool DEFAULT_isWirelessIdleDisconnectEnabled = true;
+        public byte DEFAULT_wirelessIdleDisconnectTime = 5;
+        public readonly ButtonsCombo DEFAULT_disconnectCombo = new()
+        {
+            Button1 = ControlApp_ComboButtons.PS,
+            Button2 = ControlApp_ComboButtons.R1,
+            Button3 = ControlApp_ComboButtons.L1,
+        };
+        public const byte DEFAULT_disconnectComboHoldTime = 3;
+
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.WirelessSettings;
         [Reactive] public bool IsGroupEnabled { get; set; }
@@ -257,10 +236,14 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
     public class GroupSticksDeadZone : GroupSettings
     {
         // -------------------------------------------- STICKS DEADZONE GROUP
+        public const bool DEFAULT_applyLeftStickDeadzone = true;
+        public const bool DEFAULT_applyRightStickDeadzone = true;
+        public const int DEFAULT_leftStickDeadzone = 0;
+        public const int DEFAULT_rightStickDeadzone = 0;
+
         private bool isGroupEnabled;
         private bool applyLeftStickDeadZone;
         private bool applyRightStickDeadZone;
-
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.SticksDeadzone;
         public bool IsGroupEnabled
@@ -336,6 +319,9 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
     public class GroupRumbleGeneral : GroupSettings
     {
         // --------------------------------------------  GENERAL RUMBLE SETTINGS 
+        public const bool DEFAULT_isVariableLightRumbleEmulationEnabled = false;
+        public const bool DEFAULT_isLeftMotorDisabled = false;
+        public const bool DEFAULT_isRightMotorDisabled = false;
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleGeneral;
 
@@ -412,7 +398,9 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
     public class GroupOutRepControl : GroupSettings
     {
         // --------------------------------------------  OUTPUT REPORT CONTROL GROUP
-
+        public const bool DEFAULT_isOutputReportRateControlEnabled = true;
+        public const byte DEFAULT_maxOutputRate = 150;
+        public const bool DEFAULT_isOutputReportDeduplicatorEnabled = false;
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.OutputReportControl;
         [Reactive] public bool IsGroupEnabled { get; set; }
         [Reactive] public bool IsOutputReportRateControlEnabled { get; set; }
@@ -452,10 +440,15 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
 
     public class GroupRumbleLeftRescale : GroupSettings
     {
-        private byte leftMotorStrRescalingUpperRange;
-        private byte leftMotorStrRescalingLowerRange;
+
 
         // -------------------------------------------- LEFT MOTOR RESCALING GROUP
+        public const bool DEFAULT_isLeftMotorStrRescalingEnabled = true;
+        public const byte DEFAULT_leftMotorStrRescalingUpperRange = 255;
+        public const byte DEFAULT_leftMotorStrRescalingLowerRange = 64;
+
+        private byte leftMotorStrRescalingUpperRange;
+        private byte leftMotorStrRescalingLowerRange;
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleLeftStrRescale;
         [Reactive] public bool IsGroupEnabled { get; set; }
@@ -516,6 +509,15 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
     public class GroupRumbleRightConversion : GroupSettings
     {
         // -------------------------------------------- RIGHT MOTOR CONVERSION GROUP
+
+        public const byte DEFAULT_rightRumbleConversionUpperRange = 140;
+        public const byte DEFAULT_rightRumbleConversionLowerRange = 1;
+        public const bool DEFAULT_isForcedRightMotorLightThresholdEnabled = false;
+        public const bool DEFAULT_isForcedRightMotorHeavyThreasholdEnabled = false;
+        public const byte DEFAULT_forcedRightMotorLightThreshold = 230;
+        public const byte DEFAULT_forcedRightMotorHeavyThreshold = 230;
+
+
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleRightConversion;
 
         private byte rightRumbleConversionUpperRange;
@@ -596,7 +598,10 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
 
     public class GroupModeUnique : GroupSettings
     {
-
+        public const ControlApp_DsPressureMode DEFAULT_pressureExposureMode = ControlApp_DsPressureMode.Default;
+        public const ControlApp_DPADModes DEFAULT_padExposureMode = ControlApp_DPADModes.HAT;
+        public const bool DEFAULT_isLEDsAsXInputSlotEnabled = false;
+        public const bool DEFAULT_isDS4LightbarTranslationEnabled = false;
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.Unique_All;
 
@@ -641,12 +646,12 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             dshmContextSettings.PressureExposureMode =
                 (this.Context == SettingsContext.SDF
                 || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.PressureModes_Control_DSHM_Pair[this.PressureExposureMode] : null;
+                ? SaveLoadUtils.Get_DSHM_DsPressureMode_From_ControlApp[this.PressureExposureMode] : null;
 
             dshmContextSettings.DPadExposureMode =
                 (this.Context == SettingsContext.SDF
                 || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.DPadModes_Control_DSHM_Pair[this.DPadExposureMode] : null;
+                ? SaveLoadUtils.Get_DSHM_DPadMode_From_ControlApp[this.DPadExposureMode] : null;
 
         }
 
@@ -668,12 +673,12 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             dshmContextSettings.PressureExposureMode =
                 (this.Context == SettingsContext.SDF
                 || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.PressureModes_Control_DSHM_Pair[this.PressureExposureMode] : null;
+                ? SaveLoadUtils.Get_DSHM_DsPressureMode_From_ControlApp[this.PressureExposureMode] : null;
 
             dshmContextSettings.DPadExposureMode =
                 (this.Context == SettingsContext.SDF
                 || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.DPadModes_Control_DSHM_Pair[this.DPadExposureMode] : null;
+                ? SaveLoadUtils.Get_DSHM_DPadMode_From_ControlApp[this.DPadExposureMode] : null;
         }
     }
 }

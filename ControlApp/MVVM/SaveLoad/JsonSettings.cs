@@ -31,7 +31,11 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
 
         public class DeadZoneSettings
         {
-            public bool? Apply { get; set; }// = true;
+            public bool? Apply
+            {
+                get;
+                set;
+            }
             public double? PolarValue { get; set; }// = 10.0;
 
         }
@@ -148,36 +152,6 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
             return jsonString;
         }
 
-        /*
-        public void SaveGroupLEDsCustoms(GroupLEDsControl group, DsHidMini_JsonFormatSettings dshmContextSettings)
-        {
-
-        }
-
-        public void SaveGroupWireless(GroupWireless this, DsHidMini_JsonFormatSettings dshmContextSettings)
-        {
-
-        }
-
-        public void SaveGroupSticksDeadZone(GroupSticksDeadZone this, DsHidMini_JsonFormatSettings dshmContextSettings, SettingsContext context)
-        {
-        }
-
-        public void SaveGroupRumbleGeneral(GroupRumbleGeneral this, DsHidMini_JsonFormatSettings dshmContextSettings, SettingsContext context)
-        {
-
-        }
-
-        public void SaveGroupOutputReportControl(GroupOutRepControl this, DsHidMini_JsonFormatSettings dshmContextSettings)
-        {
-
-        }
-
-        public void SaveGroupRumbleLefRescale(GroupRumbleLeftRescale this, DsHidMini_JsonFormatSettings dshmContextSettings)
-        {
-
-        }
-        */
     }
 }
 

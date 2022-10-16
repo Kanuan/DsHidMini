@@ -40,7 +40,7 @@
 					<Label Content="{Binding Header}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
 					<CheckBox x:Name="CheckBox_Override" IsChecked="{Binding IsGroupEnabled}" IsVisible="{Binding IsOverrideCheckboxVisible}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center"/>
 					<!-- Internal settings group specific containter -->
-					<ContentControl HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding SettingsGroup}">
+					<ContentControl HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding Group}">
 						<ContentControl.ContentTemplate>
 							<local:TemplateSelector/>
 						</ContentControl.ContentTemplate>

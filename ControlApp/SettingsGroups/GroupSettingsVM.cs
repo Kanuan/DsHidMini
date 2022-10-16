@@ -1,15 +1,9 @@
-﻿using Avalonia.Controls.Templates;
-using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Controls.Shapes;
-using Avalonia.Styling;
-using System.Reflection.Metadata;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -49,7 +43,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     }
 
 
-    public class GroupSettingsVM : ObservableObject
+    public abstract class GroupSettingsVM : ReactiveObject
     {
 
         /// Replace with LexLoc
@@ -72,163 +66,50 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         };
 
-        private DeviceModesSettings _settings; // This object already contains all the necessary logic
-        public DeviceModesSettings Settings
+        [Reactive] public DeviceModesSettings Settings { get; set; }
+
+        [Reactive] public SettingsContext Context { get; internal set; }
+
+        [Reactive] public bool IsOverrideCheckboxVisible { get; set; }
+
+        public abstract SettingsModeGroups Group { get; }
+
+        [Reactive] public string Header { get; set; }
+
+        public class ButtonsCombo
         {
-            get { return _settings; }
-            set { SetProperty(ref _settings, value); }
+            [Reactive] public ControlApp_ComboButtons Button1 { get; set; }
+            [Reactive] public ControlApp_ComboButtons Button2 { get; set; }
+            [Reactive] public ControlApp_ComboButtons Button3 { get; set; }
+
+        }
+        
+        // Some GroupSettings, like SticksDeadzone, require overriding this since they change behavior depending on the context
+        public virtual void ChangeContext(SettingsContext context)
+        {
+            Context = context;
         }
 
-        private bool _isOverrideCheckboxVisible;
-        public bool IsOverrideCheckboxVisible
+        public abstract void ResetGroupToOriginalDefaults();
+
+        public abstract void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings);
+
+        public abstract void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings);
+
+
+        public bool ShouldGroupBeEnabledOnReset()
         {
-            get { return _isOverrideCheckboxVisible; }
-            set { SetProperty(ref _isOverrideCheckboxVisible, value); }
+            return (Context == SettingsContext.General || Context == SettingsContext.Global);
         }
 
-        private SettingsModeGroups _settingsGroups;
-        public SettingsModeGroups SettingsGroup
+        public GroupSettingsVM(SettingsContext context)
         {
-            get { return _settingsGroups; }
-            set { SetProperty(ref _settingsGroups, value); }
+            //IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
+            if (DictGroupHeader.TryGetValue(Group, out string groupHeader)) Header = groupHeader;
+            Context = context;
+            ResetGroupToOriginalDefaults();
+
         }
-
-        private string _header = "";
-        public string Header
-        {
-            get => _header;
-            set
-            {
-                SetProperty(ref _header, value);
-            }
-        }
-
-        public GroupSettingsVM(SettingsModeGroups settingsGroup, DeviceModesSettings settings)
-        {
-            SettingsGroup = settingsGroup;
-            Settings = settings;
-            IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
-            if (DictGroupHeader.TryGetValue(SettingsGroup, out string groupHeader)) Header = groupHeader;
-        }
-    }
-
-    public class GroupLEDsCustomsVM : GroupSettingsVM
-    {
-        public bool IsGroupEnabled
-        {
-            get => Settings.GroupLEDsControl.IsGroupEnabled;
-            set
-            {
-                Settings.GroupLEDsControl.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
-            }
-        }
-
-        public GroupLEDsCustomsVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.LEDsControl, modesSettings) { }
-    }
-
-    public class GroupWirelessSettingsVM : GroupSettingsVM
-    {
-        public bool IsGroupEnabled
-        {
-            get => Settings.GroupWireless.IsGroupEnabled;
-            set
-            {
-                Settings.GroupWireless.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
-            }
-        }
-
-        public GroupWirelessSettingsVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.WirelessSettings, modesSettings) { }
-    }
-
-    public class GroupSticksDeadzoneVM : GroupSettingsVM
-    {
-        public bool IsGroupEnabled
-        {
-            get => Settings.GroupSticksDZ.IsGroupEnabled;
-            set
-            {
-                Settings.GroupSticksDZ.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
-            }
-        }
-
-        private bool isSettingLocked = false;
-        public bool IsSettingLocked
-        {
-            get => isSettingLocked;
-            set => SetProperty(ref isSettingLocked, value);
-        }
-
-        public GroupSticksDeadzoneVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.SticksDeadzone, modesSettings) 
-        {
-            if(Settings.Context == SettingsContext.DS4W)
-            {
-                IsOverrideCheckboxVisible = false;
-                IsSettingLocked = true;
-            }
-        }
-    }
-
-    public class GroupRumbleGeneralVM : GroupSettingsVM
-    {
-        public bool IsGroupEnabled
-        {
-            get => Settings.GroupRumbleGeneral.IsGroupEnabled;
-            set
-            {
-                Settings.GroupRumbleGeneral.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
-            }
-        }
-
-        public GroupRumbleGeneralVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.RumbleGeneral, modesSettings) { }
-    }
-
-    public class GroupOutRepControlVM : GroupSettingsVM
-    {
-        public bool IsGroupEnabled
-        {
-            get => Settings.GroupOutRepControl.IsGroupEnabled;
-            set
-            {
-                Settings.GroupOutRepControl.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
-            }
-        }
-
-        public GroupOutRepControlVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.OutputReportControl, modesSettings) { }
-    }
-
-    public class GroupRumbleLeftRescaleVM : GroupSettingsVM
-    {
-        public bool IsGroupEnabled
-        {
-            get => Settings.GroupRumbleLeftRescale.IsGroupEnabled;
-            set
-            {
-                Settings.GroupRumbleLeftRescale.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
-            }
-        }
-
-        public GroupRumbleLeftRescaleVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.RumbleLeftStrRescale, modesSettings) { }
-    }
-
-    public class GroupRumbleRightConversionAdjustsVM : GroupSettingsVM
-    {
-        public bool IsGroupEnabled
-        {
-            get => Settings.GroupRumbleRightConversion.IsGroupEnabled;
-            set
-            {
-                Settings.GroupRumbleRightConversion.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
-            }
-        }
-
-        public GroupRumbleRightConversionAdjustsVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.RumbleRightConversion, modesSettings) { }
     }
 
 

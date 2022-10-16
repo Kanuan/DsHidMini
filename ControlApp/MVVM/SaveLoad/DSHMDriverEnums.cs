@@ -70,7 +70,10 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
 
     public class SaveLoadUtils
     {
-        public static Dictionary<ControlApp_LEDsModes, DSHM_LEDsModes> LEDModes_Control_DSHM_Pair = new()
+
+        //---------------------------------------------------- LEDsModes
+
+        public static Dictionary<ControlApp_LEDsModes, DSHM_LEDsModes> Get_DSHM_LEDModes_From_ControlApp = new()
         {
             { ControlApp_LEDsModes.BatteryIndicatorPlayerIndex, DSHM_LEDsModes.BatteryIndicatorPlayerIndex },
             { ControlApp_LEDsModes.BatteryIndicatorBarGraph, DSHM_LEDsModes.BatteryIndicatorBarGraph },
@@ -78,19 +81,46 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
             { ControlApp_LEDsModes.CustomPattern, DSHM_LEDsModes.CustomPattern },
         };
 
-        public static Dictionary<ControlApp_DPADModes, DSHM_DPadExposureModes> DPadModes_Control_DSHM_Pair = new()
+        public static Dictionary<DSHM_LEDsModes, ControlApp_LEDsModes> Get_ControlApp_LEDModes_From_DSHM = new()
+        {
+            { DSHM_LEDsModes.BatteryIndicatorPlayerIndex, ControlApp_LEDsModes.BatteryIndicatorPlayerIndex },
+            { DSHM_LEDsModes.BatteryIndicatorBarGraph, ControlApp_LEDsModes.BatteryIndicatorBarGraph },
+            { DSHM_LEDsModes.CustomPattern, ControlApp_LEDsModes.CustomPattern },
+        };
+
+        //---------------------------------------------------- DPadModes
+
+        public static Dictionary<ControlApp_DPADModes, DSHM_DPadExposureModes> Get_DSHM_DPadMode_From_ControlApp = new()
         {
             { ControlApp_DPADModes.Default, DSHM_DPadExposureModes.Default },
             { ControlApp_DPADModes.HAT, DSHM_DPadExposureModes.HAT },
             { ControlApp_DPADModes.IndividualButtons, DSHM_DPadExposureModes.IndividualButtons },
         };
 
-        public static Dictionary<ControlApp_DsPressureMode, DSHM_PressureModes> PressureModes_Control_DSHM_Pair = new()
+        public static Dictionary<DSHM_DPadExposureModes, ControlApp_DPADModes> Get_ControlApp_DPadMode_From_DSHM = new()
         {
-            { ControlApp_DsPressureMode.Both, DSHM_PressureModes.Default },
-            { ControlApp_DsPressureMode.DsPressureExposureModeAnalogue, DSHM_PressureModes.Analogue },
-            { ControlApp_DsPressureMode.DsPressureExposureModeDigital, DSHM_PressureModes.Digital },
+            { DSHM_DPadExposureModes.Default, ControlApp_DPADModes.Default },
+            { DSHM_DPadExposureModes.HAT, ControlApp_DPADModes.HAT },
+            { DSHM_DPadExposureModes.IndividualButtons, ControlApp_DPADModes.IndividualButtons },
         };
+
+        //---------------------------------------------------- PressureModes
+
+        public static Dictionary<ControlApp_DsPressureMode, DSHM_PressureModes> Get_DSHM_DsPressureMode_From_ControlApp = new()
+        {
+            { ControlApp_DsPressureMode.Default, DSHM_PressureModes.Default },
+            { ControlApp_DsPressureMode.Analogue, DSHM_PressureModes.Analogue },
+            { ControlApp_DsPressureMode.Digital, DSHM_PressureModes.Digital },
+        };
+
+        public static Dictionary<DSHM_PressureModes, ControlApp_DsPressureMode> Get_ControlApp_DsPressureMode_From_DSHM = new()
+        {
+            { DSHM_PressureModes.Default, ControlApp_DsPressureMode.Default },
+            { DSHM_PressureModes.Analogue, ControlApp_DsPressureMode.Analogue },
+            { DSHM_PressureModes.Digital, ControlApp_DsPressureMode.Digital },
+        };
+
+
 
         public static Dictionary<ControlApp_QuickDisconnectCombo, DSHM_QuickDisconnectCombo> QuickDisconnectCombo_Control_DSHM_Pair = new()
         {

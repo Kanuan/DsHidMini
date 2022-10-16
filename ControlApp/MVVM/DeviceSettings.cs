@@ -22,11 +22,11 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         [Reactive] public List<SettingsContext> ActiveContexts { get; set; } = new List<SettingsContext>
         {
-            //SettingsContext.General,
+            SettingsContext.General,
             SettingsContext.SDF,
-            //SettingsContext.GPJ,
-            //SettingsContext.DS4W,
-            //SettingsContext.XInput,
+            SettingsContext.GPJ,
+            SettingsContext.DS4W,
+            SettingsContext.XInput,
         };
 
         /* delete later
@@ -79,18 +79,18 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public class DeviceModesSettings
     {
 
-        internal List<GroupSettings> GroupSettingsList = new();
+        internal List<GroupSettingsVM> GroupSettingsList = new();
 
 
         [Reactive] public SettingsContext Context { get; set; }
-        [Reactive] public GroupModeUnique GroupModeUnique { get; set; }
-        [Reactive] public GroupLEDsControl GroupLEDsControl { get; set; }
-        [Reactive] public GroupWireless GroupWireless { get; set; }
-        [Reactive] public GroupSticksDeadZone GroupSticksDZ { get; set; }
-        [Reactive] public GroupRumbleGeneral GroupRumbleGeneral { get; set; }
-        [Reactive] public GroupOutRepControl GroupOutRepControl { get; set; }
-        [Reactive] public GroupRumbleLeftRescale GroupRumbleLeftRescale { get; set; }
-        [Reactive] public GroupRumbleRightConversion GroupRumbleRightConversion { get; set; }
+        [Reactive] public GroupModeUniqueVM GroupModeUnique { get; set; }
+        [Reactive] public GroupLEDsCustomsVM GroupLEDsControl { get; set; }
+        [Reactive] public GroupWirelessSettingsVM GroupWireless { get; set; }
+        [Reactive] public GroupSticksDeadzoneVM GroupSticksDZ { get; set; }
+        [Reactive] public GroupRumbleGeneralVM GroupRumbleGeneral { get; set; }
+        [Reactive] public GroupOutRepControlVM GroupOutRepControl { get; set; }
+        [Reactive] public GroupRumbleLeftRescaleVM GroupRumbleLeftRescale { get; set; }
+        [Reactive] public GroupRumbleRightConversionAdjustsVM GroupRumbleRightConversion { get; set; }
 
         public DeviceModesSettings(SettingsContext settingsContext)
         {
@@ -104,11 +104,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             GroupSettingsList.Add(GroupOutRepControl = new(Context));
             GroupSettingsList.Add(GroupRumbleLeftRescale = new(Context));
             GroupSettingsList.Add(GroupRumbleRightConversion = new(Context));
-
-            foreach(GroupSettings group in GroupSettingsList)
-            {
-                group.ResetGroupToOriginalDefaults();
-            }
         }
 
         public void CopyGroupSettings(SettingsModeGroups group, DeviceModesSettings fromSettings, DeviceModesSettings toSettings)
