@@ -107,6 +107,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             //IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
             if (DictGroupHeader.TryGetValue(Group, out string groupHeader)) Header = groupHeader;
             Context = context;
+            IsOverrideCheckboxVisible = (Context == SettingsContext.General || Context == SettingsContext.Global) ? false : true;
             ResetGroupToOriginalDefaults();
 
         }
