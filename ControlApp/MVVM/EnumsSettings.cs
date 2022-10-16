@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
-    public enum SettingsContext
+    public enum SettingsModeContext
     {
         Global,
         General,
@@ -15,6 +15,12 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         SXS,
         DS4W,
         XInput,
+    }
+
+    public enum SettingsContainerContext
+    {
+        Profile,
+        Custom,
     }
 
     public enum SettingsModeGroups

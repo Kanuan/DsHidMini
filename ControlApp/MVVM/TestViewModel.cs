@@ -49,7 +49,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
 
             
-            foreach(SettingsContext context in DeviceSettings.ActiveContexts)
+            foreach(SettingsModeContext context in DeviceSettings.ActiveContexts)
             {
                 SettingTabViewModel tempTab = new SettingTabViewModel(context.ToString(), DeviceSettings.SettingsPerContext[context]);
                 _settingsTabs.Add(tempTab);

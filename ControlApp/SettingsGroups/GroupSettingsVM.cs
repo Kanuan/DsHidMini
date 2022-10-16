@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using Avalonia.Controls.Shapes;
 using Avalonia.Styling;
 using System.Reflection.Metadata;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using static Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings.GroupLEDsControl;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -49,7 +52,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     }
 
 
-    public class GroupSettingsVM : ObservableObject
+    public class GroupSettingsVM : ReactiveObject
     {
 
         /// Replace with LexLoc
@@ -72,43 +75,22 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         };
 
-        private DeviceModesSettings _settings; // This object already contains all the necessary logic
-        public DeviceModesSettings Settings
-        {
-            get { return _settings; }
-            set { SetProperty(ref _settings, value); }
-        }
+        [Reactive] public SettingsContainer Settings { get; set; }
 
-        private bool _isOverrideCheckboxVisible;
-        public bool IsOverrideCheckboxVisible
-        {
-            get { return _isOverrideCheckboxVisible; }
-            set { SetProperty(ref _isOverrideCheckboxVisible, value); }
-        }
+        [Reactive] public bool IsOverrideCheckboxVisible { get; set; }
 
-        private SettingsModeGroups _settingsGroups;
-        public SettingsModeGroups SettingsGroup
-        {
-            get { return _settingsGroups; }
-            set { SetProperty(ref _settingsGroups, value); }
-        }
+        [Reactive] public bool IsEditingAllowed { get; set; }
+        [Reactive] public SettingsModeGroups SettingsGroup { get; set; }
 
-        private string _header = "";
-        public string Header
-        {
-            get => _header;
-            set
-            {
-                SetProperty(ref _header, value);
-            }
-        }
+        [Reactive] public string Header { get; set; } = "";
 
-        public GroupSettingsVM(SettingsModeGroups settingsGroup, DeviceModesSettings settings)
+        public GroupSettingsVM(SettingsModeGroups settingsGroup, SettingsContainer settings)
         {
             SettingsGroup = settingsGroup;
             Settings = settings;
-            IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
+            IsOverrideCheckboxVisible = (Settings.ModeContext == SettingsModeContext.General || Settings.ModeContext == SettingsModeContext.Global) ? false : true;
             if (DictGroupHeader.TryGetValue(SettingsGroup, out string groupHeader)) Header = groupHeader;
+            IsEditingAllowed = settings.ContainerContext == SettingsContainerContext.Custom ? true : false;
         }
     }
 
@@ -119,12 +101,48 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => Settings.GroupLEDsControl.IsGroupEnabled;
             set
             {
+                
                 Settings.GroupLEDsControl.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
-        public GroupLEDsCustomsVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.LEDsControl, modesSettings) { }
+        public ControlApp_LEDsModes LEDMode
+        {
+            get => Settings.GroupLEDsControl.LEDMode;
+            set
+            {
+                Settings.GroupLEDsControl.LEDMode = value;
+                this.RaisePropertyChanged(nameof(LEDMode));
+            }
+        }
+
+        public LEDCustoms[] LEDsCustoms
+        {
+            get => Settings.GroupLEDsControl.LEDsCustoms;
+            set
+            {
+                Settings.GroupLEDsControl.LEDsCustoms = value;
+                this.RaisePropertyChanged(nameof(LEDsCustoms));
+            }
+        }
+
+        [Reactive] public LEDCustoms CurrentLEDCustoms { get; set; }
+        public int CurrentLEDCustomsIndex
+        {
+            get => CurrentLEDCustoms.LEDIndex;
+            set
+            {
+                CurrentLEDCustoms = LEDsCustoms[value];
+                this.RaisePropertyChanged(nameof(CurrentLEDCustomsIndex));
+            }
+        }
+
+
+        public GroupLEDsCustomsVM(SettingsContainer modesSettings) : base(SettingsModeGroups.LEDsControl, modesSettings)
+        {
+            CurrentLEDCustoms = LEDsCustoms[0];
+        }
     }
 
     public class GroupWirelessSettingsVM : GroupSettingsVM
@@ -135,35 +153,79 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 Settings.GroupWireless.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
-        public GroupWirelessSettingsVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.WirelessSettings, modesSettings) { }
+        public bool IsWirelessIdleDisconnectEnabled
+        {
+            get => !Settings.GroupWireless.IsWirelessIdleDisconnectDisabled;
+            set
+            {
+                Settings.GroupWireless.IsWirelessIdleDisconnectDisabled = !value;
+                this.RaisePropertyChanged(nameof(IsWirelessIdleDisconnectEnabled));
+            }
+        }
+        public byte WirelessIdleDisconnectTime
+        {
+            get => (byte)(Settings.GroupWireless.WirelessIdleDisconnectTime / (60.0 * 1000));
+            set
+            {
+                Settings.GroupWireless.WirelessIdleDisconnectTime = value * 60 * 1000;
+                this.RaisePropertyChanged(nameof(WirelessIdleDisconnectTime));
+            }
+        }
+
+        public GroupWirelessSettingsVM(SettingsContainer modesSettings) : base(SettingsModeGroups.WirelessSettings, modesSettings) { }
     }
 
     public class GroupSticksDeadzoneVM : GroupSettingsVM
     {
+        [Reactive] public bool IsSettingLocked { get; set; }
+
+        public byte LeftStickDeadZone
+        {
+            get => Settings.GroupSticksDZ.LeftStickDeadZone;
+            set
+            {
+                Settings.GroupSticksDZ.LeftStickDeadZone = value;
+                this.RaisePropertyChanged(nameof(LeftStickDeadZone));
+                this.RaisePropertyChanged(nameof(LeftStickDeadZoneInPercent));
+            }
+        }
+        public byte RightStickDeadZone
+        {
+            get => Settings.GroupSticksDZ.RightStickDeadZone;
+            set
+            {
+                Settings.GroupSticksDZ.RightStickDeadZone = value;
+                this.RaisePropertyChanged(nameof(RightStickDeadZone));
+                this.RaisePropertyChanged(nameof(RightStickDeadZoneInPercent));
+            }
+        }
+
+        public int LeftStickDeadZoneInPercent
+        {
+            get => LeftStickDeadZone * 141 / 180;
+        }
+        public int RightStickDeadZoneInPercent
+        {
+            get => RightStickDeadZone * 141 / 180;
+        }
+
         public bool IsGroupEnabled
         {
             get => Settings.GroupSticksDZ.IsGroupEnabled;
             set
             {
                 Settings.GroupSticksDZ.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
-        private bool isSettingLocked = false;
-        public bool IsSettingLocked
+        public GroupSticksDeadzoneVM(SettingsContainer modesSettings) : base(SettingsModeGroups.SticksDeadzone, modesSettings) 
         {
-            get => isSettingLocked;
-            set => SetProperty(ref isSettingLocked, value);
-        }
-
-        public GroupSticksDeadzoneVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.SticksDeadzone, modesSettings) 
-        {
-            if(Settings.Context == SettingsContext.DS4W)
+            if(Settings.ModeContext == SettingsModeContext.DS4W)
             {
                 IsOverrideCheckboxVisible = false;
                 IsSettingLocked = true;
@@ -179,11 +241,44 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 Settings.GroupRumbleGeneral.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
-        public GroupRumbleGeneralVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.RumbleGeneral, modesSettings) { }
+        public bool IsVariableLightRumbleEmulationEnabled
+        {
+            get => Settings.GroupRumbleGeneral.IsVariableLightRumbleEmulationEnabled;
+            set
+            {
+                Settings.GroupRumbleGeneral.IsVariableLightRumbleEmulationEnabled = value;
+                this.RaisePropertyChanged(nameof(IsVariableLightRumbleEmulationEnabled));
+                this.RaisePropertyChanged(nameof(IsLeftMotorDisabled));
+                this.RaisePropertyChanged(nameof(IsRightMotorDisabled));
+            }
+        }
+
+        public bool IsLeftMotorDisabled
+        {
+            get => Settings.GroupRumbleGeneral.IsLeftMotorDisabled;
+            set
+            {
+                Settings.GroupRumbleGeneral.IsLeftMotorDisabled = value;
+                this.RaisePropertyChanged(nameof(IsVariableLightRumbleEmulationEnabled));
+                this.RaisePropertyChanged(nameof(IsLeftMotorDisabled));
+            }
+        }
+        public bool IsRightMotorDisabled
+        {
+            get => Settings.GroupRumbleGeneral.IsRightMotorDisabled;
+            set
+            {
+                Settings.GroupRumbleGeneral.IsRightMotorDisabled = value;
+                this.RaisePropertyChanged(nameof(IsVariableLightRumbleEmulationEnabled));
+                this.RaisePropertyChanged(nameof(IsRightMotorDisabled));
+            }
+        }
+
+        public GroupRumbleGeneralVM(SettingsContainer modesSettings) : base(SettingsModeGroups.RumbleGeneral, modesSettings) { }
     }
 
     public class GroupOutRepControlVM : GroupSettingsVM
@@ -194,11 +289,40 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 Settings.GroupOutRepControl.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
-        public GroupOutRepControlVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.OutputReportControl, modesSettings) { }
+        public bool IsOutputReportRateControlEnabled
+        {
+            get => Settings.GroupOutRepControl.IsOutputReportRateControlEnabled;
+            set
+            {
+                Settings.GroupOutRepControl.IsOutputReportRateControlEnabled = value;
+                this.RaisePropertyChanged(nameof(IsOutputReportRateControlEnabled));
+            }
+        }
+        public byte MaxOutputRate
+        {
+            get => Settings.GroupOutRepControl.MaxOutputRate;
+            set
+            {
+                Settings.GroupOutRepControl.MaxOutputRate = value;
+                this.RaisePropertyChanged(nameof(MaxOutputRate));
+            }
+        }
+        public bool IsOutputReportDeduplicatorEnabled
+        {
+            get => Settings.GroupOutRepControl.IsOutputReportDeduplicatorEnabled;
+            set
+            {
+                Settings.GroupOutRepControl.IsOutputReportDeduplicatorEnabled = value;
+                this.RaisePropertyChanged(nameof(IsOutputReportDeduplicatorEnabled));
+            }
+        }
+
+
+        public GroupOutRepControlVM(SettingsContainer modesSettings) : base(SettingsModeGroups.OutputReportControl, modesSettings) { }
     }
 
     public class GroupRumbleLeftRescaleVM : GroupSettingsVM
@@ -209,11 +333,38 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 Settings.GroupRumbleLeftRescale.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
+            }
+        }
+        public bool IsLeftMotorStrRescalingEnabled
+        {
+            get => Settings.GroupRumbleLeftRescale.IsLeftMotorStrRescalingEnabled;
+            set
+            {
+                Settings.GroupRumbleLeftRescale.IsLeftMotorStrRescalingEnabled = value;
+                this.RaisePropertyChanged(nameof(IsLeftMotorStrRescalingEnabled));
+            }
+        }
+        public byte LeftMotorStrRescalingUpperRange
+        {
+            get => Settings.GroupRumbleLeftRescale.LeftMotorStrRescalingUpperRange;
+            set
+            {
+                Settings.GroupRumbleLeftRescale.LeftMotorStrRescalingUpperRange = value;
+                this.RaisePropertyChanged(nameof(LeftMotorStrRescalingUpperRange));
+            }
+        }
+        public byte LeftMotorStrRescalingLowerRange
+        {
+            get => Settings.GroupRumbleLeftRescale.LeftMotorStrRescalingLowerRange;
+            set
+            {
+                Settings.GroupRumbleLeftRescale.LeftMotorStrRescalingLowerRange = value;
+                this.RaisePropertyChanged(nameof(LeftMotorStrRescalingLowerRange));
             }
         }
 
-        public GroupRumbleLeftRescaleVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.RumbleLeftStrRescale, modesSettings) { }
+        public GroupRumbleLeftRescaleVM(SettingsContainer modesSettings) : base(SettingsModeGroups.RumbleLeftStrRescale, modesSettings) { }
     }
 
     public class GroupRumbleRightConversionAdjustsVM : GroupSettingsVM
@@ -224,11 +375,65 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 Settings.GroupRumbleRightConversion.IsGroupEnabled = value;
-                OnPropertyChanged("IsGroupEnabled");
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
+            }
+        }
+        public byte RightRumbleConversionUpperRange
+        {
+            get => Settings.GroupRumbleRightConversion.RightRumbleConversionUpperRange;
+            set
+            {
+                Settings.GroupRumbleRightConversion.RightRumbleConversionUpperRange = value;
+                this.RaisePropertyChanged(nameof(RightRumbleConversionUpperRange));
+            }
+        }
+        public byte RightRumbleConversionLowerRange
+        {
+            get => Settings.GroupRumbleRightConversion.RightRumbleConversionLowerRange;
+            set
+            {
+                Settings.GroupRumbleRightConversion.RightRumbleConversionLowerRange = value;
+                this.RaisePropertyChanged(nameof(RightRumbleConversionLowerRange));
+            }
+        }
+        public bool IsForcedRightMotorLightThresholdEnabled
+        {
+            get => Settings.GroupRumbleRightConversion.IsForcedRightMotorLightThresholdEnabled;
+            set
+            {
+                Settings.GroupRumbleRightConversion.IsForcedRightMotorLightThresholdEnabled = value;
+                this.RaisePropertyChanged(nameof(IsForcedRightMotorLightThresholdEnabled));
+            }
+        }
+        public bool IsForcedRightMotorHeavyThreasholdEnabled
+        {
+            get => Settings.GroupRumbleRightConversion.IsForcedRightMotorHeavyThreasholdEnabled;
+            set
+            {
+                Settings.GroupRumbleRightConversion.IsForcedRightMotorHeavyThreasholdEnabled = value;
+                this.RaisePropertyChanged(nameof(IsForcedRightMotorHeavyThreasholdEnabled));
+            }
+        }
+        public byte ForcedRightMotorLightThreshold
+        {
+            get => Settings.GroupRumbleRightConversion.ForcedRightMotorLightThreshold;
+            set
+            {
+                Settings.GroupRumbleRightConversion.ForcedRightMotorLightThreshold = value;
+                this.RaisePropertyChanged(nameof(ForcedRightMotorLightThreshold));
+            }
+        }
+        public byte ForcedRightMotorHeavyThreshold
+        {
+            get => Settings.GroupRumbleRightConversion.ForcedRightMotorHeavyThreshold;
+            set
+            {
+                Settings.GroupRumbleRightConversion.ForcedRightMotorHeavyThreshold = value;
+                this.RaisePropertyChanged(nameof(ForcedRightMotorHeavyThreshold));
             }
         }
 
-        public GroupRumbleRightConversionAdjustsVM(DeviceModesSettings modesSettings) : base(SettingsModeGroups.RumbleRightConversion, modesSettings) { }
+        public GroupRumbleRightConversionAdjustsVM(SettingsContainer modesSettings) : base(SettingsModeGroups.RumbleRightConversion, modesSettings) { }
     }
 
 

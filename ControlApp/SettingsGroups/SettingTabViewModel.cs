@@ -23,38 +23,38 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public bool IsTabSelected { get => isTabSelected; set => SetProperty(ref isTabSelected, value); }
 
 
-        public SettingTabViewModel(string tabName, DeviceModesSettings modeSettings)
+        public SettingTabViewModel(string tabName, SettingsContainer settingsContainer)
         {
             _tabName = tabName;
             _basicSettings = new ObservableCollection<GroupSettingsVM>
                     {
-                        new GroupLEDsCustomsVM(modeSettings),
-                        new GroupWirelessSettingsVM(modeSettings),
-                        new GroupSticksDeadzoneVM(modeSettings),
-                        new GroupRumbleGeneralVM(modeSettings),
+                        new GroupLEDsCustomsVM(settingsContainer),
+                        new GroupWirelessSettingsVM(settingsContainer),
+                        new GroupSticksDeadzoneVM(settingsContainer),
+                        new GroupRumbleGeneralVM(settingsContainer),
                     };
 
             _advancedSettings = new ObservableCollection<GroupSettingsVM>
                     {
-                        new GroupOutRepControlVM(modeSettings),
-                        new GroupRumbleLeftRescaleVM(modeSettings),
-                        new GroupRumbleRightConversionAdjustsVM(modeSettings),
+                        new GroupOutRepControlVM(settingsContainer),
+                        new GroupRumbleLeftRescaleVM(settingsContainer),
+                        new GroupRumbleRightConversionAdjustsVM(settingsContainer),
                     };
 
             _modeUniqueSettings = new ObservableCollection<GroupSettingsVM>();
 
-            if (modeSettings.Context == SettingsContext.SDF
-                || modeSettings.Context == SettingsContext.Global)
-                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_SDF, modeSettings));
-            if (modeSettings.Context == SettingsContext.GPJ
-                || modeSettings.Context == SettingsContext.Global)
-                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_GPJ, modeSettings));
-            if (modeSettings.Context == SettingsContext.DS4W
-                || modeSettings.Context == SettingsContext.Global)
-                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_DS4W, modeSettings));
-            if (modeSettings.Context == SettingsContext.XInput
-                || modeSettings.Context == SettingsContext.Global)
-                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_XInput, modeSettings));
+            if (settingsContainer.ModeContext == SettingsModeContext.SDF
+                || settingsContainer.ModeContext == SettingsModeContext.Global)
+                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_SDF, settingsContainer));
+            if (settingsContainer.ModeContext == SettingsModeContext.GPJ
+                || settingsContainer.ModeContext == SettingsModeContext.Global)
+                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_GPJ, settingsContainer));
+            if (settingsContainer.ModeContext == SettingsModeContext.DS4W
+                || settingsContainer.ModeContext == SettingsModeContext.Global)
+                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_DS4W, settingsContainer));
+            if (settingsContainer.ModeContext == SettingsModeContext.XInput
+                || settingsContainer.ModeContext == SettingsModeContext.Global)
+                ModeUniqueSettingsGroupsList.Add(new GroupSettingsVM(SettingsModeGroups.Unique_XInput, settingsContainer));
         }
 
         private void SettingTabViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

@@ -15,8 +15,8 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         // DEFAULT VALUES ----------------------------------------------------- START
 
         public const ControlApp_LEDsModes DEFAULT_ledMode = ControlApp_LEDsModes.BatteryIndicatorPlayerIndex;
-        public bool DEFAULT_isWirelessIdleDisconnectEnabled = true;
-        public byte DEFAULT_wirelessIdleDisconnectTime = 5;
+        public bool DEFAULT_isWirelessIdleDisconnectDisabled = false;
+        public double DEFAULT_wirelessIdleDisconnectTime = 300000;
         public readonly ButtonsCombo DEFAULT_disconnectCombo = new()
         {
             Button1 = ControlApp_ComboButtons.PS,
@@ -57,7 +57,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         // DEFAULT VALUES ----------------------------------------------------- END
 
         abstract public SettingsModeGroups Group { get; }
-        [Reactive] public SettingsContext Context { get; internal set; }
+        [Reactive] public SettingsModeContext Context { get; internal set; }
 
         public class ButtonsCombo
         {
@@ -67,7 +67,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
 
         }
 
-        public GroupSettings(SettingsContext context)
+        public GroupSettings(SettingsModeContext context)
         {
             Context = context;
             ResetGroupToOriginalDefaults();
@@ -75,7 +75,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
 
         public bool ShouldGroupBeEnabledOnReset()
         {
-            return (Context == SettingsContext.General || Context == SettingsContext.Global);
+            return (Context == SettingsModeContext.General || Context == SettingsModeContext.Global);
         }
         public abstract void ResetGroupToOriginalDefaults();
 
@@ -96,18 +96,8 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             {
             new LEDCustoms(0), new LEDCustoms(1), new LEDCustoms(2), new LEDCustoms(3),
             };
-        [Reactive] public LEDCustoms CurrentLEDCustoms { get; set; }
-        public int CurrentLEDCustomsIndex
-        {
-            get => CurrentLEDCustoms.LEDIndex;
-            set
-            {
-                CurrentLEDCustoms = LEDsCustoms[value];
-                this.RaisePropertyChanged("CurrentLEDCustomsIndex");
-            }
-        }
 
-        public GroupLEDsControl(SettingsContext context) : base(context)
+        public GroupLEDsControl(SettingsModeContext context) : base(context)
         {
 
         }
@@ -121,7 +111,6 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             {
                 led.Reset();
             }
-            CurrentLEDCustoms = LEDsCustoms[0];
         }
 
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
@@ -207,12 +196,12 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.WirelessSettings;
         [Reactive] public bool IsGroupEnabled { get; set; }
-        [Reactive] public bool IsWirelessIdleDisconnectEnabled { get; set; }
-        [Reactive] public byte WirelessIdleDisconnectTime { get; set; }
+        [Reactive] public bool IsWirelessIdleDisconnectDisabled { get; set; }
+        [Reactive] public double WirelessIdleDisconnectTime { get; set; }
         [Reactive] public ButtonsCombo QuickDisconnectCombo { get; set; }
 
 
-        public GroupWireless(SettingsContext context) : base(context)
+        public GroupWireless(SettingsModeContext context) : base(context)
         {
 
         }
@@ -220,7 +209,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         public override void ResetGroupToOriginalDefaults()
         {
             IsGroupEnabled = ShouldGroupBeEnabledOnReset();
-            IsWirelessIdleDisconnectEnabled = DEFAULT_isWirelessIdleDisconnectEnabled;
+            IsWirelessIdleDisconnectDisabled = DEFAULT_isWirelessIdleDisconnectDisabled;
             WirelessIdleDisconnectTime = DEFAULT_wirelessIdleDisconnectTime;
             QuickDisconnectCombo = new()
             {
@@ -243,7 +232,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
                 return;
             }
 
-            dshmContextSettings.DisableWirelessIdleTimeout = !this.IsWirelessIdleDisconnectEnabled;
+            dshmContextSettings.DisableWirelessIdleTimeout = !this.IsWirelessIdleDisconnectDisabled;
             dshmContextSettings.WirelessIdleTimeoutPeriodMs = this.WirelessIdleDisconnectTime * 60 * 1000;
             //dshmContextSettings.QuickDisconnectCombo = dictionary combo pair;
         }
@@ -268,7 +257,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             get => isGroupEnabled;
             set
             {
-                isGroupEnabled = Context == SettingsContext.DS4W ? true : value;
+                isGroupEnabled = Context == SettingsModeContext.DS4W ? true : value;
                 this.RaisePropertyChanged();
             }
         }
@@ -277,7 +266,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             get => applyLeftStickDeadZone;
             set
             {
-                applyLeftStickDeadZone = Context == SettingsContext.DS4W ? false : value;
+                applyLeftStickDeadZone = Context == SettingsModeContext.DS4W ? false : value;
                 this.RaisePropertyChanged();
             }
         }
@@ -286,14 +275,14 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             get => applyRightStickDeadZone;
             set
             {
-                applyRightStickDeadZone = Context == SettingsContext.DS4W ? false : value;
+                applyRightStickDeadZone = Context == SettingsModeContext.DS4W ? false : value;
                 this.RaisePropertyChanged();
             }
         }
-        [Reactive] public int LeftStickDeadZone { get; set; } // in %
-        [Reactive] public int RightStickDeadZone { get; set; } // in %
+        [Reactive] public byte LeftStickDeadZone { get; set; } // in %
+        [Reactive] public byte RightStickDeadZone { get; set; } // in %
 
-        public GroupSticksDeadZone(SettingsContext context) : base(context)
+        public GroupSticksDeadZone(SettingsModeContext context) : base(context)
         {
 
         }
@@ -374,7 +363,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
                 this.RaiseAndSetIfChanged(ref isRightMotorDisabled, value);
             }
         }
-        public GroupRumbleGeneral(SettingsContext context) : base(context) { }
+        public GroupRumbleGeneral(SettingsModeContext context) : base(context) { }
 
         public override void ResetGroupToOriginalDefaults()
         {
@@ -419,7 +408,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         [Reactive] public byte MaxOutputRate { get; set; }
         [Reactive] public bool IsOutputReportDeduplicatorEnabled { get; set; }
 
-        public GroupOutRepControl(SettingsContext context) : base(context) { }
+        public GroupOutRepControl(SettingsModeContext context) : base(context) { }
 
         public override void ResetGroupToOriginalDefaults()
         {
@@ -479,7 +468,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
             }
         }
 
-        public GroupRumbleLeftRescale(SettingsContext context) : base(context)
+        public GroupRumbleLeftRescale(SettingsModeContext context) : base(context)
         {
 
         }
@@ -545,7 +534,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         [Reactive] public byte ForcedRightMotorLightThreshold { get; set; }
         [Reactive] public byte ForcedRightMotorHeavyThreshold { get; set; }
 
-        public GroupRumbleRightConversion(SettingsContext context) : base(context)
+        public GroupRumbleRightConversion(SettingsModeContext context) : base(context)
         {
 
         }
@@ -613,7 +602,7 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         // DS4Windows
         [Reactive] public bool IsDS4LightbarTranslationEnabled { get; set; }
 
-        public GroupModeUnique(SettingsContext context) : base(context)
+        public GroupModeUnique(SettingsModeContext context) : base(context)
         {
             this.PropertyChanged += GroupModeUnique_PropertyChanged;
         }
@@ -635,17 +624,17 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
             dshmContextSettings.HIDDeviceMode =
-                (this.Context == SettingsContext.General)
+                (this.Context == SettingsModeContext.General)
                 ? this.HIDDeviceMode : null;
 
             dshmContextSettings.PressureExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
+                (this.Context == SettingsModeContext.SDF
+                || this.Context == SettingsModeContext.GPJ)
                 ? SaveLoadUtils.PressureModes_Control_DSHM_Pair[this.PressureExposureMode] : null;
 
             dshmContextSettings.DPadExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
+                (this.Context == SettingsModeContext.SDF
+                || this.Context == SettingsModeContext.GPJ)
                 ? SaveLoadUtils.DPadModes_Control_DSHM_Pair[this.DPadExposureMode] : null;
 
         }
@@ -653,26 +642,26 @@ namespace Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings
         public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
 
-            if ((this.Context == SettingsContext.General) && (dshmContextSettings.HIDDeviceMode != null))
+            if ((this.Context == SettingsModeContext.General) && (dshmContextSettings.HIDDeviceMode != null))
                 this.HIDDeviceMode = dshmContextSettings.HIDDeviceMode;
             else
                 this.HIDDeviceMode = DSHM_HidDeviceModes.XInput;
 
 
-            if ((this.Context == SettingsContext.General) && (dshmContextSettings.HIDDeviceMode != null))
+            if ((this.Context == SettingsModeContext.General) && (dshmContextSettings.HIDDeviceMode != null))
                 this.HIDDeviceMode = dshmContextSettings.HIDDeviceMode;
             else
                 this.HIDDeviceMode = DSHM_HidDeviceModes.XInput;
 
 
             dshmContextSettings.PressureExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
+                (this.Context == SettingsModeContext.SDF
+                || this.Context == SettingsModeContext.GPJ)
                 ? SaveLoadUtils.PressureModes_Control_DSHM_Pair[this.PressureExposureMode] : null;
 
             dshmContextSettings.DPadExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
+                (this.Context == SettingsModeContext.SDF
+                || this.Context == SettingsModeContext.GPJ)
                 ? SaveLoadUtils.DPadModes_Control_DSHM_Pair[this.DPadExposureMode] : null;
         }
     }

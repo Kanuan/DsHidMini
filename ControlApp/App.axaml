@@ -14,8 +14,8 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 		<!-- LED Group  DataContext="{Binding $parent[Grid].DataContext}" Settings  -->
-		<DataTemplate x:Key="Template_LEDsSettings" DataType="{x:Type devmvvm:DeviceModesSettings}">
-			<ContentControl DataContext="{Binding $parent[Grid].DataContext.Settings.GroupLEDsControl}">
+		<DataTemplate x:Key="Template_LEDsSettings" DataType="{x:Type devmvvm:GroupLEDsCustomsVM}">
+			<ContentControl DataContext="{Binding $parent[Grid].DataContext}">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition/>
@@ -183,61 +183,9 @@
 			</Grid>
 		</DataTemplate>
 
-		<!-- Template: sticks deadzone -->
-		<DataTemplate x:Key="Template_SticksDeadZone">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupSticksDZ}">
-				<!-- Left stick DZ -->
-				<DockPanel DockPanel.Dock="Top">
-					<TextBlock
-						Text="Left stick DZ:"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"
-						DockPanel.Dock="Left"/>
-					<TextBlock
-						DockPanel.Dock="Left"
-						Text="{Binding LeftStickDeadZone, StringFormat={}{0}%}}%"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"
-						Margin="5,0,5,0"/>
-					<Slider
-						DockPanel.Dock="Right"
-						IsSnapToTickEnabled="True"
-						TickFrequency="1"
-						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
-						ToolTip.Placement="Top"
-						Minimum="0"
-						Maximum="141"
-						Value="{Binding LeftStickDeadZone}"/>
-				</DockPanel>
-				<!-- Right stick DZ -->
-				<DockPanel DockPanel.Dock="Top">
-					<TextBlock
-						DockPanel.Dock="Left"
-						Text="Right Stick DZ:"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-					<TextBlock
-						DockPanel.Dock="Left"
-						Text="{Binding RightStickDeadZone, StringFormat={}{0}%}}%"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"
-						Margin="5,0,5,0"/>
-					<Slider
-						DockPanel.Dock="Right"
-						IsSnapToTickEnabled="True"
-						TickFrequency="1"
-						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
-						ToolTip.Placement="Top"
-						Minimum="0"
-						Maximum="141"
-						Value="{Binding RightStickDeadZone}"/>
-				</DockPanel>
-			</DockPanel>
-		</DataTemplate>
-
 		<!-- Basic wireless settings -->
 		<DataTemplate x:Key="Template_WirelessSettings">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupWireless}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Idle disconnect -->
 				<CheckBox
 					x:Name="IdleDisconnectEnableCheckbox"
@@ -276,9 +224,61 @@
 			</DockPanel>
 		</DataTemplate>
 
-		<!-- Rumble template -->
+		<!-- Template: sticks deadzone -->
+		<DataTemplate x:Key="Template_SticksDeadZone">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+				<!-- Left stick DZ -->
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock
+						Text="Left stick DZ:"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						DockPanel.Dock="Left"/>
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="{Binding LeftStickDeadZoneInPercent, StringFormat={}{0}%}}%"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						Margin="5,0,5,0"/>
+					<Slider
+						DockPanel.Dock="Right"
+						IsSnapToTickEnabled="True"
+						TickFrequency="1"
+						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
+						ToolTip.Placement="Top"
+						Minimum="0"
+						Maximum="180"
+						Value="{Binding LeftStickDeadZone}"/>
+				</DockPanel>
+				<!-- Right stick DZ -->
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="Right Stick DZ:"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"/>
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="{Binding RightStickDeadZoneInPercent, StringFormat={}{0}%}}%"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						Margin="5,0,5,0"/>
+					<Slider
+						DockPanel.Dock="Right"
+						IsSnapToTickEnabled="True"
+						TickFrequency="1"
+						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
+						ToolTip.Placement="Top"
+						Minimum="0"
+						Maximum="180"
+						Value="{Binding RightStickDeadZone}"/>
+				</DockPanel>
+			</DockPanel>
+		</DataTemplate>
+		
+		<!-- Rumble General -->
 		<DataTemplate x:Key="Template_RumbleBasicFunctions">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleGeneral}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Variable light rumble emulationg enabler -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -297,9 +297,42 @@
 			</DockPanel>
 		</DataTemplate>
 
+		<!-- Template: Output Rate Control -->
+		<DataTemplate x:Key="Template_OutputRateControl">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+				<!-- Output rate enabler -->
+				<CheckBox
+					DockPanel.Dock="Top"
+					Content="Limit maximum output rate when wireless"
+					IsChecked="{Binding IsOutputReportRateControlEnabled}"/>
+				<!-- Max output rate adjuster -->
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="Max output rate:"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"/>
+					<Slider
+						DockPanel.Dock="Right"
+						IsSnapToTickEnabled="True"
+						TickFrequency="1"
+						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
+						ToolTip.Placement="Top"
+						Minimum="1"
+						Maximum="255"
+						Value="{Binding MaxOutputRate}"/>
+				</DockPanel>
+				<!-- Output report detuplicator -->
+				<CheckBox
+					DockPanel.Dock="Top"
+					Content="Enable output report deduplicator"
+					IsChecked="{Binding IsOutputReportDeduplicatorEnabled}"/>
+			</DockPanel>
+		</DataTemplate>
+		
 		<!-- Template: rumble heavy strength rescale -->
 		<DataTemplate x:Key="Template_RumbleHeavyStrRescale">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleLeftRescale}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Left motor str rescaling checkbox -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -344,7 +377,7 @@
 
 		<!-- Template: variable light rumble emulation tuning -->
 		<DataTemplate x:Key="Template_RumbleVariableLightEmuTuning">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupRumbleRightConversion}">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
 				<!-- Conversion upper range -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -469,37 +502,5 @@
 			</DockPanel>
 		</DataTemplate>
 
-		<!-- Template: Output Rate Control -->
-		<DataTemplate x:Key="Template_OutputRateControl">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext.Settings.GroupOutRepControl}">
-				<!-- Output rate enabler -->
-				<CheckBox
-					DockPanel.Dock="Top"
-					Content="Limit maximum output rate when wireless"
-					IsChecked="{Binding IsOutputReportRateControlEnabled}"/>
-				<!-- Max output rate adjuster -->
-				<DockPanel DockPanel.Dock="Top">
-					<TextBlock
-						DockPanel.Dock="Left"
-						Text="Max output rate:"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-					<Slider
-						DockPanel.Dock="Right"
-						IsSnapToTickEnabled="True"
-						TickFrequency="1"
-						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
-						ToolTip.Placement="Top"
-						Minimum="1"
-						Maximum="255"
-						Value="{Binding MaxOutputRate}"/>
-				</DockPanel>
-				<!-- Output report detuplicator -->
-				<CheckBox
-					DockPanel.Dock="Top"
-					Content="Enable output report deduplicator"
-					IsChecked="{Binding IsOutputReportDeduplicatorEnabled}"/>
-			</DockPanel>
-		</DataTemplate>
 	</Application.Resources>
 </Application>
