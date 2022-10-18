@@ -16,7 +16,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         [Reactive] public byte MaxOutputRate { get; set; }
         [Reactive] public bool IsOutputReportDeduplicatorEnabled { get; set; }
 
-        public GroupOutRepControlVM(SettingsContext context) : base(context) { }
+        public GroupOutRepControlVM(SettingsContext context, SettingsContainer containter) : base(context, containter) { }
 
         public override void ResetGroupToOriginalDefaults()
         {

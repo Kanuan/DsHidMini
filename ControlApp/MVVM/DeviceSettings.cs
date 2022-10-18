@@ -8,7 +8,6 @@ using System.ComponentModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Nefarius.DsHidMini.ControlApp.JsonSettings;
-using Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -16,67 +15,39 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         [Reactive] public string DeviceName { get; set; }
 
-        [Reactive] public string TestSaveJson { get; set; } = "Binding working";
+        [Reactive] public static string TestSaveJson { get; set; } = "Binding working";
 
-        [Reactive] public Dictionary<SettingsContext, DeviceModesSettings> SettingsPerContext { get; set; } = new();
-
-        [Reactive] public List<SettingsContext> ActiveContexts { get; set; } = new List<SettingsContext>
-        {
-            SettingsContext.General,
-            SettingsContext.SDF,
-            SettingsContext.GPJ,
-            SettingsContext.DS4W,
-            SettingsContext.XInput,
-        };
-
-        /* delete later
-        [Reactive] public DeviceModesSettings GeneralSettings { get; set; } = new(SettingsContext.General);
-        [Reactive] public DeviceModesSettings SDFSettings { get; set; } = new(SettingsContext.SDF);
-        [Reactive] public DeviceModesSettings GPJSettings { get; set; } = new(SettingsContext.GPJ);
-        [Reactive] public DeviceModesSettings SXSSettings { get; set; } = new(SettingsContext.SXS);
-        [Reactive] public DeviceModesSettings XInputSettings { get; set; } = new(SettingsContext.XInput);
-        [Reactive] public DeviceModesSettings DS4WSettings { get; set; } = new(SettingsContext.DS4W);
-        */
 
         public DeviceSettingsManager()
         {
-            foreach(SettingsContext context in ActiveContexts)
-            {
-                SettingsPerContext.Add(context, new DeviceModesSettings(context));
-            }
-            SaveToJsonTest();
+
         }
 
-        public void ResetSettingsToDefault(DeviceModesSettings modeContextSettings)
+        public void ResetSettingsToDefault(SettingsContainer modeContextSettings)
         {
 
         }
 
-        public void SaveToJsonTest()
+        public static string SaveToJsonTest(SettingsContainer container)
         {
             var dshmSettings = new DSHM_Format_Settings();
             var dshmContextSettings = dshmSettings.General;
 
-            DeviceModesSettings Controltest = this.SettingsPerContext[SettingsContext.SDF];
+                container.GroupModeUnique.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupLEDsControl.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupWireless.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupSticksDZ.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupRumbleGeneral.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupOutRepControl.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupRumbleLeftRescale.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupRumbleRightConversion.SaveToDSHMSettings(dshmContextSettings);
 
-            //foreach (DeviceModesSettings contextSettings in SettingsPerContext.Values)
-            //{
-                Controltest.GroupModeUnique.SaveToDSHMSettings(dshmContextSettings);
-                Controltest.GroupLEDsControl.SaveToDSHMSettings(dshmContextSettings);
-                Controltest.GroupWireless.SaveToDSHMSettings(dshmContextSettings);
-                Controltest.GroupSticksDZ.SaveToDSHMSettings(dshmContextSettings);
-                Controltest.GroupRumbleGeneral.SaveToDSHMSettings(dshmContextSettings);
-                Controltest.GroupOutRepControl.SaveToDSHMSettings(dshmContextSettings);
-                Controltest.GroupRumbleLeftRescale.SaveToDSHMSettings(dshmContextSettings);
-                Controltest.GroupRumbleRightConversion.SaveToDSHMSettings(dshmContextSettings);
-            //}
-
-            TestSaveJson = SaveLoadJson.SaveToDSHMFormattedJson(dshmSettings);
+            return SaveLoadJson.SaveToDSHMFormattedJson(dshmSettings);
         }
 
     }
 
-        public class DeviceModesSettings
+        public class SettingsContainer
     {
 
         internal List<GroupSettingsVM> GroupSettingsList = new();
@@ -92,23 +63,47 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         [Reactive] public GroupRumbleLeftRescaleVM GroupRumbleLeftRescale { get; set; }
         [Reactive] public GroupRumbleRightConversionAdjustsVM GroupRumbleRightConversion { get; set; }
 
-        public DeviceModesSettings(SettingsContext settingsContext)
+        public SettingsContainer(SettingsContext settingsContext)
         {
             Context = settingsContext;
 
-            GroupSettingsList.Add(GroupModeUnique = new(Context));
-            GroupSettingsList.Add(GroupLEDsControl = new(Context));
-            GroupSettingsList.Add(GroupWireless = new(Context));
-            GroupSettingsList.Add(GroupSticksDZ = new(Context));
-            GroupSettingsList.Add(GroupRumbleGeneral = new(Context));
-            GroupSettingsList.Add(GroupOutRepControl = new(Context));
-            GroupSettingsList.Add(GroupRumbleLeftRescale = new(Context));
-            GroupSettingsList.Add(GroupRumbleRightConversion = new(Context));
+            GroupSettingsList.Add(GroupModeUnique = new(Context,this));
+            GroupSettingsList.Add(GroupLEDsControl = new(Context, this));
+            GroupSettingsList.Add(GroupWireless = new(Context, this));
+            GroupSettingsList.Add(GroupSticksDZ = new(Context, this));
+            GroupSettingsList.Add(GroupRumbleGeneral = new(Context, this));
+            GroupSettingsList.Add(GroupOutRepControl = new(Context, this));
+            GroupSettingsList.Add(GroupRumbleLeftRescale = new(Context, this));
+            GroupSettingsList.Add(GroupRumbleRightConversion = new(Context, this));
+
+            GroupModeUnique.PropertyChanged += GroupModeUnique_PropertyChanged;
         }
 
-        public void CopyGroupSettings(SettingsModeGroups group, DeviceModesSettings fromSettings, DeviceModesSettings toSettings)
+        public void ChangeContextOfAllGroups(SettingsContext context)
         {
+            Context = context;
+            foreach (GroupSettingsVM group in GroupSettingsList)
+            {
+                group.ChangeContext(context);
+            }
+        }
 
+        private void GroupModeUnique_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            /*
+            switch (e.PropertyName)
+            {
+                case nameof(GroupModeUnique.HIDDeviceMode):
+                    Context = GroupModeUnique.Context;
+                    foreach(GroupSettingsVM group in GroupSettingsList)
+                    {
+                        group.ChangeContext(Context);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            */
         }
     }
 

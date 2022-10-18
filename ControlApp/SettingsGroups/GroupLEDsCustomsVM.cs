@@ -28,7 +28,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         }
 
-        public GroupLEDsCustomsVM(SettingsContext context) : base(context)
+        public GroupLEDsCustomsVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
         {
 
         }

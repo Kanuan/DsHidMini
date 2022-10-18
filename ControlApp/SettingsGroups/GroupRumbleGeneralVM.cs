@@ -7,20 +7,33 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class GroupRumbleGeneralVM : GroupSettingsVM
     {
-        // --------------------------------------------  GENERAL RUMBLE SETTINGS 
+        // -------------------------------------------- DEFAULT GENERAL RUMBLE SETTINGS 
         public const bool DEFAULT_isVariableLightRumbleEmulationEnabled = false;
         public const bool DEFAULT_isLeftMotorDisabled = false;
         public const bool DEFAULT_isRightMotorDisabled = false;
+        public const bool DEFAULT_isVariableRightEmulToggleComboEnabled = false;
 
-        public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleGeneral;
+        // --------------------------------------------
 
         private bool isVariableLightRumbleEmulationEnabled;
         private bool isLeftMotorDisabled;
         private bool isRightMotorDisabled;
+
+        public static readonly ButtonsCombo DEFAULT_VariableRightEmuToggleCombo = new()
+        {
+            Button1 = ControlApp_ComboButtons.PS,
+            Button2 = ControlApp_ComboButtons.SELECT,
+            Button3 = ControlApp_ComboButtons.None,
+        };
+
+
+
+        public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleGeneral;
         [Reactive] public bool IsGroupEnabled { get; set; }
         public bool IsVariableLightRumbleEmulationEnabled
         {
             get => isVariableLightRumbleEmulationEnabled;
+
             set
             {
                 if (value)
@@ -31,9 +44,16 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
+        [Reactive] public bool IsVariableRightEmulToggleComboEnabled { get; set; }
+
+        [Reactive] public ButtonsCombo VariableRightEmulToggleCombo { get; set; } = new();
+
+
+
         public bool IsLeftMotorDisabled
         {
             get => isLeftMotorDisabled;
+
             set
             {
                 if (value) IsVariableLightRumbleEmulationEnabled = false;
@@ -43,6 +63,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public bool IsRightMotorDisabled
         {
             get => isRightMotorDisabled;
+
             set
             {
                 if (value) IsVariableLightRumbleEmulationEnabled = false;
@@ -57,12 +78,23 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             IsVariableLightRumbleEmulationEnabled = DEFAULT_isVariableLightRumbleEmulationEnabled;
             IsLeftMotorDisabled = DEFAULT_isLeftMotorDisabled;
             IsRightMotorDisabled = DEFAULT_isRightMotorDisabled;
-
+            IsVariableRightEmulToggleComboEnabled = DEFAULT_isVariableRightEmulToggleComboEnabled;
+            VariableRightEmulToggleCombo.copyCombo(DEFAULT_VariableRightEmuToggleCombo);
         }
 
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
             DSHM_Format_ContextSettings.AllRumbleSettings dshmRumbleSettings = dshmContextSettings.RumbleSettings;
+
+            /* Not necessary anymore I think
+            if(SettingsContainer.GroupModeUnique.PreventRemappingConflictsInSXSMode)
+            {
+                dshmRumbleSettings.SMToBMConversion.Enabled = false;
+                dshmRumbleSettings.DisableBM = false;
+                dshmRumbleSettings.DisableSM = false;
+                return;
+            }
+            */
 
             if (!this.IsGroupEnabled)
             {
@@ -81,6 +113,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             DSHM_Format_ContextSettings.AllRumbleSettings dshmRumbleSettings = dshmContextSettings.RumbleSettings;
 
+            /* Not necessary anymore I think
+            bool tempPreventSXSConflicts =
+                dshmContextSettings.PreventRemappingConflitsInSXSMode == null ?
+                false : dshmContextSettings.PreventRemappingConflitsInSXSMode.GetValueOrDefault();
+            if (tempPreventSXSConflicts) return;
+            */
+
             if (
                 dshmRumbleSettings.SMToBMConversion.Enabled == null
                 || dshmRumbleSettings.DisableBM == null
@@ -97,7 +136,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             this.IsLeftMotorDisabled = dshmRumbleSettings.DisableSM.GetValueOrDefault();
         }
 
-        public GroupRumbleGeneralVM(SettingsContext context) : base(context) { }
+        public GroupRumbleGeneralVM(SettingsContext context, SettingsContainer containter) : base(context, containter) { }
     }
 
 

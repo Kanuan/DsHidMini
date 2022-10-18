@@ -8,7 +8,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // -------------------------------------------- WIRELESS SETTINGS GROUP
         public bool DEFAULT_isWirelessIdleDisconnectEnabled = true;
         public byte DEFAULT_wirelessIdleDisconnectTime = 5;
-        public readonly ButtonsCombo DEFAULT_disconnectCombo = new()
+        public bool DEFAULT_isQuickDisconnectComboEnabled = true;
+        public static readonly ButtonsCombo DEFAULT_disconnectCombo = new()
         {
             Button1 = ControlApp_ComboButtons.PS,
             Button2 = ControlApp_ComboButtons.R1,
@@ -21,9 +22,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         [Reactive] public bool IsGroupEnabled { get; set; }
         [Reactive] public bool IsWirelessIdleDisconnectEnabled { get; set; }
         [Reactive] public byte WirelessIdleDisconnectTime { get; set; }
-        [Reactive] public ButtonsCombo QuickDisconnectCombo { get; set; }
+        [Reactive] public bool IsQuickDisconnectComboEnabled { get; set; }
+        [Reactive] public ButtonsCombo QuickDisconnectCombo { get; set; } = new();
 
-        public GroupWirelessSettingsVM(SettingsContext context) : base(context)
+        public GroupWirelessSettingsVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
         {
 
         }
@@ -33,14 +35,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             IsGroupEnabled = ShouldGroupBeEnabledOnReset();
             IsWirelessIdleDisconnectEnabled = DEFAULT_isWirelessIdleDisconnectEnabled;
             WirelessIdleDisconnectTime = DEFAULT_wirelessIdleDisconnectTime;
-            QuickDisconnectCombo = new()
-            {
-                Button1 = ControlApp_ComboButtons.PS,
-                Button2 = ControlApp_ComboButtons.L1,
-                Button3 = ControlApp_ComboButtons.R1,
-            };
-            //DisconnectComboHoldTime = DEFAULT_disconnectComboHoldTime;
+            IsQuickDisconnectComboEnabled = DEFAULT_isQuickDisconnectComboEnabled;
 
+            QuickDisconnectCombo.copyCombo(DEFAULT_disconnectCombo);
         }
 
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)

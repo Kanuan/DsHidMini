@@ -40,20 +40,20 @@
 					<Label Content="{Binding Header}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
 					<CheckBox x:Name="CheckBox_Override" IsChecked="{Binding IsGroupEnabled}" IsVisible="{Binding IsOverrideCheckboxVisible}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center"/>
 					<!-- Internal settings group specific containter -->
-					<ContentControl HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding Group}">
+					<ContentControl HorizontalAlignment="Stretch" Margin="10,0,0,0" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding Group}">
 						<ContentControl.ContentTemplate>
 							<local:TemplateSelector/>
 						</ContentControl.ContentTemplate>
 					</ContentControl>
 					<!-- Warning when override is disabled -->
 					<Border Background="Gray" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-						<TextBlock  Text="Using general settings (override disabled)" FontSize="10" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+						<TextBlock  Text="Using current profile settings. Mark the checkbox to override." FontSize="10" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
 					</Border>
 					<!-- Warning when settings are locked for specific mode -->
 					<Border
 						Background="Black"
 						ZIndex="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-						IsVisible="{Binding IsSettingLocked, FallbackValue=false}">
+						IsVisible="{Binding IsGroupLocked, FallbackValue=false}">
 						<TextBlock
 						Text="This settings group can't be edited for this mode"
 						FontSize="10"
@@ -68,13 +68,13 @@
 			</Border>
 		</DataTemplate>
 
-		<!-- Settings groups templates -->
+		<!-- ModeUniqueSettings -->
 		<DataTemplate x:Key="ModeUniqueSettings">
 			<DockPanel>
 				<Border DockPanel.Dock="Top"  MinHeight="35">
 					<Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="{Binding Header}"/>
 				</Border>
-				<ContentControl DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" Content="{Binding SettingsGroup}">
+				<ContentControl DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" Content="{Binding Group}">
 					<ContentControl.ContentTemplate>
 						<local:TemplateSelector/>
 					</ContentControl.ContentTemplate>
@@ -95,13 +95,13 @@
 		<Slider DockPanel.Dock="Left" x:Name="test" IsSnapToTickEnabled="True" TickFrequency="1" ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}" ToolTip.Placement="Top" Minimum="1" Maximum="255" Width="300"/>
 		-->
 
-		<DockPanel DockPanel.Dock="Left" Width="500">
+		<DockPanel DockPanel.Dock="Left" Width="400">
 			<ScrollViewer
 				DockPanel.Dock="Top" MaxHeight="500">
 				<TextBox
 					TextWrapping="Wrap"
 					HorizontalAlignment="Stretch"
-					Text="{Binding DeviceSettings.TestSaveJson}"/>
+					Text="{Binding JsonSaveTest}"/>
 			</ScrollViewer>
 
 			<Button
@@ -119,6 +119,27 @@
 
 		<DockPanel DockPanel.Dock="Right" Margin="10" Width="500" >
 
+			<!-- TO Name it -->
+			<DockPanel DockPanel.Dock="Top" >
+				<DockPanel DockPanel.Dock="Top" LastChildFill="True">
+					<Label
+						DockPanel.Dock="Left"
+						Content="HID Device Mode:"
+						VerticalContentAlignment="Center"
+						/>
+					<ComboBox
+						DockPanel.Dock="Right"
+						x:Name="HIDDeviceModeCombobox"
+						VerticalAlignment="Center"
+						Items="{Binding HIDDeviceModesList}"
+						SelectedItem="{Binding CurrentHIDMode}"
+						/>
+				</DockPanel>
+				
+			</DockPanel>
+			
+			
+			
 				<!-- Upper tab control -->
 
 			<ItemsControl x:Name="TabList"
@@ -143,22 +164,31 @@
 			<!-- Mode unique settings -->
 			<ContentControl DockPanel.Dock="Top"  Margin="0,2,0,0" Background="LightGray" MaxHeight="200">
 				<ScrollViewer DockPanel.Dock="Top">
-					<ItemsControl Items="{Binding CurrentTab.ModeUniqueSettingsGroupsList}" ItemTemplate="{StaticResource ModeUniqueSettings}" />
+					<ItemsControl Items="{Binding CurrentTab.ModeUniqueSettingsGroupsList}" ItemTemplate="{StaticResource ModeSetting}" />
 				</ScrollViewer>
 			</ContentControl>
 
 
 			<!-- Mode Settings groups -->
+			<Border
+				DockPanel.Dock="Top"
+				MinHeight="35"
+				BorderBrush="Black"
+				BorderThickness="1">
+				<Label	
+					Content="General settings"
+					VerticalContentAlignment="Center"
+					HorizontalAlignment="Center"/>
+			</Border>
 
 			<TabControl DockPanel.Dock="Bottom" Background="LightGray" >
-
 				<!-- Basic options -->
 				<TabItem>
 					<TabItem.Header>
 						<TextBlock VerticalAlignment="Center" FontSize="14"  >Basic</TextBlock>
 					</TabItem.Header>
 					<ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-						<ItemsControl Items="{Binding CurrentTab.BasicSettingsGroupsList}" ItemTemplate="{StaticResource ModeSetting}" />
+						<ItemsControl Items="{Binding CurrentTab.BasicSettingsGroupsList}" IsEnabled="{Binding CurrentTab.AllowEditing}"  ItemTemplate="{StaticResource ModeSetting}" />
 					</ScrollViewer>
 
 				</TabItem>
@@ -178,7 +208,7 @@
 							</StackPanel>
 						</ContentControl>
 						<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-							<ItemsControl Items="{Binding CurrentTab.AdvancedSettingsGroupsList}" ItemTemplate="{StaticResource ModeSetting}" />
+							<ItemsControl Items="{Binding CurrentTab.AdvancedSettingsGroupsList}" IsEnabled="{Binding CurrentTab.AllowEditing}" ItemTemplate="{StaticResource ModeSetting}" />
 						</ScrollViewer>
 					</DockPanel>
 				</TabItem>

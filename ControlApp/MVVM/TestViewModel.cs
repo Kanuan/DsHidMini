@@ -19,48 +19,37 @@ using System.Reactive;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
-    internal class TestViewModel : ObservableObject
+    internal class TestViewModel : ReactiveObject
     {
         [Reactive] public DeviceSettingsManager DeviceSettings { get; set; } = new();
 
+        [Reactive] public string JsonSaveTest { get; set; }
         public void SaveSettingsToJson()
         {
-            DeviceSettings.SaveToJsonTest();
+            JsonSaveTest = DeviceSettingsManager.SaveToJsonTest(DevicesCustomsExample);
         }
+
+        SettingsContainer ProfileExample = new(SettingsContext.General);
+        SettingsContainer DevicesCustomsExample = new(SettingsContext.SDF);
+
+        
 
         public TestViewModel()
         {
-            
-         
+
+
+            var profileTab = new SettingTabViewModel("Profile settings", ProfileExample, false);
+            var customsTab = new SettingTabViewModel("Device settings", DevicesCustomsExample, true);
+
 
             /// Creating Tabs
-            _settingsTabs = new ObservableCollection<SettingTabViewModel>();
-
-
-            /*{
-                //new SettingTabViewModel("Global/Default", GlobalSettings),
-                new SettingTabViewModel("General", deviceSettings.SettingsPerContext[SettingsContext.General]),
-                new SettingTabViewModel("SDF", deviceSettings.SDFSettings),
-                new SettingTabViewModel("GPJ", deviceSettings.GPJSettings),
-                new SettingTabViewModel("SXS", deviceSettings.SXSSettings),
-                new SettingTabViewModel("XInput", deviceSettings.XInputSettings),
-                new SettingTabViewModel("DS4W", deviceSettings.DS4WSettings),
-            };*/
-
-
-            
-            foreach(SettingsContext context in DeviceSettings.ActiveContexts)
+            /// _settingsTabs = new ObservableCollection<SettingTabViewModel>();
+            /// 
+            _settingsTabs = new ObservableCollection<SettingTabViewModel>
             {
-                SettingTabViewModel tempTab = new SettingTabViewModel(context.ToString(), DeviceSettings.SettingsPerContext[context]);
-                _settingsTabs.Add(tempTab);
-            }
-            
-
-            /*
-            "This is the code to be collapsed"
-            _settingsTabs.Add(new SettingTabViewModel("Profile: Global", DeviceSettings.SettingsPerContext[SettingsContext.SDF]));
-             _settingsTabs.Add(new SettingTabViewModel("Custom", DeviceSettings.SettingsPerContext[SettingsContext.SDF]));
-            */
+                customsTab,
+                profileTab,
+            };
 
             OnTabSelected(SettingsTabs[0]);
             ButtonpressedCommand = new RelayCommand(SaveSettingsToJson);
@@ -71,7 +60,25 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private ObservableCollection<SettingTabViewModel> _settingsTabs;
         private SettingTabViewModel _currentTab;
 
+        public readonly List<SettingsContext> hidDeviceModesList = new List<SettingsContext>
+        {
+            SettingsContext.SDF,
+            SettingsContext.GPJ,
+            SettingsContext.SXS,
+            SettingsContext.DS4W,
+            SettingsContext.XInput,
+        };
 
+        public List<SettingsContext> HIDDeviceModesList
+        {
+            get => hidDeviceModesList;
+        }
+
+        public SettingsContext CurrentHIDMode
+        {
+            get => DevicesCustomsExample.Context;
+            set => DevicesCustomsExample.ChangeContextOfAllGroups(value);
+        }
 
         public ObservableCollection<SettingTabViewModel> SettingsTabs
         {
@@ -81,7 +88,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
             set
             {
-                SetProperty(ref _settingsTabs, value);
+                this.RaiseAndSetIfChanged(ref _settingsTabs, value);
             }
         }
 
@@ -93,12 +100,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
             set
             {
-                SetProperty(ref _currentTab, value);
+                this.RaiseAndSetIfChanged(ref _currentTab, value);
             }
         }
 
         public IRelayCommand ButtonpressedCommand { get; }
         public IRelayCommand<SettingTabViewModel> TabSelectedCommand { get; }
+
         private void OnTabSelected(SettingTabViewModel? obj)
         {
             CurrentTab = obj;

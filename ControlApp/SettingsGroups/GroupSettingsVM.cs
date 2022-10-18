@@ -3,6 +3,7 @@ using Avalonia.Controls.Templates;
 using Nefarius.DsHidMini.ControlApp.JsonSettings;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -21,7 +22,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public bool Match(object data)
         {
             // Check if we can accept the provided data
-            return data is Nefarius.DsHidMini.ControlApp.MVVM.SettingsModeGroups;
+            return data is SettingsModeGroups;
         }
 
         private static Dictionary<SettingsModeGroups, string> SettingsGroupToTemplateDict = new()
@@ -33,6 +34,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.OutputReportControl, "Template_OutputRateControl" },
             { SettingsModeGroups.RumbleLeftStrRescale, "Template_RumbleHeavyStrRescale" },
             { SettingsModeGroups.RumbleRightConversion, "Template_RumbleVariableLightEmuTuning" },
+            { SettingsModeGroups.Unique_All, "Template_Unique_All" },
             { SettingsModeGroups.Unique_Global, "Template_ToDo" },
             { SettingsModeGroups.Unique_General, "Template_ToDo" },
             { SettingsModeGroups.Unique_SDF, "Template_SDF_GPJ_PressureButtons" },
@@ -57,6 +59,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             { SettingsModeGroups.OutputReportControl, "Output report control" },
             { SettingsModeGroups.RumbleLeftStrRescale, "Left motor (heavy) rescale" },
             { SettingsModeGroups.RumbleRightConversion, "Variable light rumble emulation adjuster" },
+            { SettingsModeGroups.Unique_All, "Mode specific settings" },
             { SettingsModeGroups.Unique_Global, "Default settings" },
             { SettingsModeGroups.Unique_General, "General settings" },
             { SettingsModeGroups.Unique_SDF, "SDF mode specific settings" },
@@ -90,11 +93,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         [Reactive] public bool IsEditingAllowed { get; set; }
 
-        [Reactive] public DeviceModesSettings Settings { get; set; }
+        [Reactive] public virtual bool IsGroupLocked { get; set; } = false;
+
+        [Reactive] public SettingsContainer SettingsContainer { get; set; }
 
         [Reactive] public SettingsContext Context { get; internal set; }
 
-        [Reactive] public bool IsOverrideCheckboxVisible { get; set; }
+        [Reactive] public virtual bool IsOverrideCheckboxVisible { get; set; }
 
         public abstract SettingsModeGroups Group { get; }
 
@@ -102,12 +107,53 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public class ButtonsCombo
         {
-            [Reactive] public ControlApp_ComboButtons Button1 { get; set; }
-            [Reactive] public ControlApp_ComboButtons Button2 { get; set; }
-            [Reactive] public ControlApp_ComboButtons Button3 { get; set; }
+            private ControlApp_ComboButtons button1;
+            private ControlApp_ComboButtons button2;
+            private ControlApp_ComboButtons button3;
+
+            public ControlApp_ComboButtons Button1
+            {
+                get => button1;
+                set
+                {
+                    if (value != button2 && value != button3)
+                        button1 = value;
+                }
+            }
+            public ControlApp_ComboButtons Button2
+            {
+                get => button2;
+                set
+                {
+                    if (value != button1 && value != button3)
+                        button2 = value;
+                }
+            }
+            public ControlApp_ComboButtons Button3
+            {
+                get => button3;
+                set
+                {
+                    if (value != button1 && value != button2)
+                        button3 = value;
+                }
+            }
+
+            public ButtonsCombo() {}
+            public ButtonsCombo(ButtonsCombo comboToCopy)
+            {
+                copyCombo(comboToCopy);
+            }
+
+            public void copyCombo(ButtonsCombo comboToCopy)
+            {
+                Button1 = comboToCopy.Button1;
+                Button2 = comboToCopy.Button2;
+                Button3 = comboToCopy.Button3;
+            }
 
         }
-        
+
         // Some GroupSettings, like SticksDeadzone, require overriding this since they change behavior depending on the context
         public virtual void ChangeContext(SettingsContext context)
         {
@@ -126,8 +172,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             return (Context == SettingsContext.General || Context == SettingsContext.Global);
         }
 
-        public GroupSettingsVM(SettingsContext context)
+        public GroupSettingsVM(SettingsContext context, SettingsContainer containter)
         {
+            SettingsContainer = containter;
             //IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
             if (DictGroupHeader.TryGetValue(Group, out string groupHeader)) Header = groupHeader;
             Context = context;

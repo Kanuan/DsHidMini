@@ -16,8 +16,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private byte leftMotorStrRescalingLowerRange;
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleLeftStrRescale;
+
         [Reactive] public bool IsGroupEnabled { get; set; }
-        [Reactive] public bool IsLeftMotorStrRescalingEnabled { get; set; }
+
+        public bool IsLeftMotorStrRescalingEnabled { get; set; }
         public byte LeftMotorStrRescalingUpperRange
         {
             get => leftMotorStrRescalingUpperRange;
@@ -37,7 +39,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
-        public GroupRumbleLeftRescaleVM(SettingsContext context) : base(context) { }
+        public GroupRumbleLeftRescaleVM(SettingsContext context, SettingsContainer containter) : base(context, containter) { }
 
         public override void ResetGroupToOriginalDefaults()
         {
@@ -66,7 +68,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             DSHM_Format_ContextSettings.BMStrRescaleSettings dshmLeftRumbleRescaleSettings = dshmContextSettings.RumbleSettings.BMStrRescale;
 
-            if(dshmLeftRumbleRescaleSettings == null)
+            if (dshmLeftRumbleRescaleSettings == null)
             {
                 this.IsGroupEnabled = false;
                 return;

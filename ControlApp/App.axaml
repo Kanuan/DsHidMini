@@ -194,16 +194,38 @@
 						Maximum="60"
 					/>
 				</DockPanel>
+				<CheckBox
+					x:Name="EnableQuickDisconnectComboCheckbox"
+					DockPanel.Dock="Top"
+					Content="Enable quick disconnect combo"
+					IsChecked="{Binding IsQuickDisconnectComboEnabled}"/>
 				<!-- Quick disconnect combo selection -->
 				<DockPanel DockPanel.Dock="Top">
 					<Label
 					DockPanel.Dock="Left"
-					Content="Hold for 3s to disconnect:"
+					Content="Quick disconnect combo (3s):"
 					VerticalAlignment="Center"/>
 					<!-- Change ComboBox later so it's binding to a enum -->
 					<ComboBox
-						Width="160"
+						Width="80"
 						DockPanel.Dock="Left"
+						Items="{Binding controlApp_ComboButtons}"
+						SelectedItem="{Binding QuickDisconnectCombo.Button1}"
+						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
+						/>
+					<ComboBox
+						Width="80"
+						DockPanel.Dock="Left"
+						Items="{Binding controlApp_ComboButtons}"
+						SelectedItem="{Binding QuickDisconnectCombo.Button2}"
+						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
+						/>
+					<ComboBox
+						Width="80"
+						DockPanel.Dock="Left"
+						Items="{Binding controlApp_ComboButtons}"
+						SelectedItem="{Binding QuickDisconnectCombo.Button3}"
+						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 				</DockPanel>
 			</DockPanel>
@@ -237,7 +259,7 @@
 						DockPanel.Dock="Left"/>
 					<TextBlock
 						DockPanel.Dock="Left"
-						Text="{Binding LeftStickDeadZone, StringFormat={}{0}%}}%"
+						Text="{Binding LeftStickDeadZoneInPercent, StringFormat={}{0}%}}%"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"
 						Margin="5,0,5,0"/>
@@ -248,7 +270,7 @@
 						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
 						ToolTip.Placement="Top"
 						Minimum="0"
-						Maximum="141"
+						Maximum="180"
 						Value="{Binding LeftStickDeadZone}"/>
 				</DockPanel>
 				<!-- Right stick DZ -->
@@ -260,7 +282,7 @@
 						VerticalAlignment="Center"/>
 					<TextBlock
 						DockPanel.Dock="Left"
-						Text="{Binding RightStickDeadZone, StringFormat={}{0}%}}%"
+						Text="{Binding RightStickDeadZoneInPercent, StringFormat={}{0}%}}%"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"
 						Margin="5,0,5,0"/>
@@ -271,7 +293,7 @@
 						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
 						ToolTip.Placement="Top"
 						Minimum="0"
-						Maximum="141"
+						Maximum="180"
 						Value="{Binding RightStickDeadZone}"/>
 				</DockPanel>
 			</DockPanel>
@@ -284,8 +306,41 @@
 				<CheckBox
 					DockPanel.Dock="Top"
 					IsChecked="{Binding IsVariableLightRumbleEmulationEnabled}">
-					<TextBlock Text="Use left motor for both left and right rumble (variable right rumble emulation)" TextWrapping="Wrap"/>
+					<TextBlock Text="Start with variable right rumble emulation enabled (Use left motor for both left and right rumble)" TextWrapping="Wrap"/>
 				</CheckBox>
+				<CheckBox
+					x:Name="EnableVariableRightRumbleEmulationToggleCheckbox"
+					DockPanel.Dock="Top"
+					Content="Toggle variable right rumble emulation via combo"
+					IsChecked="{Binding IsVariableRightEmulToggleComboEnabled}"/>
+				<DockPanel DockPanel.Dock="Top">
+					<Label
+					DockPanel.Dock="Left"
+					Content="Toogle combo (3s):"
+					VerticalAlignment="Center"/>
+					<!-- Change ComboBox later so it's binding to a enum -->
+					<ComboBox
+						Width="80"
+						DockPanel.Dock="Left"
+						Items="{Binding controlApp_ComboButtons}"
+						SelectedItem="{Binding VariableRightEmulToggleCombo.Button1}"
+						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
+						/>
+					<ComboBox
+						Width="80"
+						DockPanel.Dock="Left"
+						Items="{Binding controlApp_ComboButtons}"
+						SelectedItem="{Binding VariableRightEmulToggleCombo.Button2}"
+						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
+						/>
+					<ComboBox
+						Width="80"
+						DockPanel.Dock="Left"
+						Items="{Binding controlApp_ComboButtons}"
+						SelectedItem="{Binding VariableRightEmulToggleCombo.Button3}"
+						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
+						/>
+				</DockPanel>
 				<!-- Rumble motors disablers -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -470,6 +525,43 @@
 			</DockPanel>
 		</DataTemplate>
 
+				<!-- Template: Mode_Unique_All -->
+		<DataTemplate x:Key="Template_Unique_All">
+			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+				<!-- Pressure buttons mode -->
+				<DockPanel DockPanel.Dock="Top" IsVisible="{Binding ArePressureaNDPadOptionsVisible}">
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="Pressure buttons mode:"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"/>
+					<ComboBox
+						DockPanel.Dock="Right"					
+						VerticalAlignment="Center"
+						SelectedIndex="{Binding PressureExposureMode, FallbackValue=2}">
+						<ComboBoxItem Content="Digital buttons only"/>
+						<ComboBoxItem Content="Pressure axes only"/>
+						<ComboBoxItem Content="Pressure axes + digital buttons (default)"/>
+					</ComboBox>
+				</DockPanel>
+				<!-- DPAD modes -->
+				<DockPanel DockPanel.Dock="Top" IsVisible="{Binding ArePressureaNDPadOptionsVisible}">
+					<TextBlock
+						DockPanel.Dock="Left"
+						Text="Expose D-Pad as:"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"/>
+					<ComboBox
+						DockPanel.Dock="Right"
+						VerticalAlignment="Center"
+						SelectedIndex="{Binding DPadExposureMode, FallbackValue=0}">
+						<ComboBoxItem Content="HAT (Default)"/>
+						<ComboBoxItem Content="Buttons"/>
+					</ComboBox>
+				</DockPanel>
+			</DockPanel>
+		</DataTemplate>
+		
 		<!-- Template: Output Rate Control -->
 		<DataTemplate x:Key="Template_OutputRateControl">
 			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">

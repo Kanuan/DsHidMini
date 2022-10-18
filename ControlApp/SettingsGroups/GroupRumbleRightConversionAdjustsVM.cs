@@ -46,7 +46,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         [Reactive] public byte ForcedRightMotorLightThreshold { get; set; }
         [Reactive] public byte ForcedRightMotorHeavyThreshold { get; set; }
 
-        public GroupRumbleRightConversionAdjustsVM(SettingsContext context) : base(context) { }
+        public GroupRumbleRightConversionAdjustsVM(SettingsContext context, SettingsContainer containter) : base(context, containter) { }
 
         public override void ResetGroupToOriginalDefaults()
         {

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Nefarius.DsHidMini.ControlApp.SettingsContainer.GroupSettings;
+using DynamicData;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -26,6 +26,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public string TabName { get => _tabName; set => SetProperty(ref _tabName, value); }
         public bool IsTabSelected { get => isTabSelected; set => SetProperty(ref isTabSelected, value); }
 
+        [Reactive] public bool AllowEditing { get; set; } = false;
+
         [Reactive] public GroupLEDsCustomsVM GroupLEDsControl { get; set; }
         [Reactive] GroupWirelessSettingsVM GroupWireless { get; set; }
         [Reactive] GroupSticksDeadzoneVM GroupSticksDZ { get; set; }
@@ -34,37 +36,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         [Reactive] GroupRumbleLeftRescaleVM GroupRumbleLeftRescale { get; set; }
         [Reactive] GroupRumbleRightConversionAdjustsVM GroupRumbleRightConversion { get; set; }
 
-        public SettingTabViewModel(string tabName, DeviceModesSettings modeSettings)
+        public SettingTabViewModel(string tabName, SettingsContainer container, bool allowEditing)
         {
-            SettingsContext context = modeSettings.Context;
+            SettingsContext context = container.Context;
             _tabName = tabName;
+            AllowEditing = allowEditing;
 
-            GroupLEDsControl = new GroupLEDsCustomsVM(context);
-            GroupWireless = new GroupWirelessSettingsVM(context);
-            GroupSticksDZ = new GroupSticksDeadzoneVM(context);
-            GroupRumbleGeneral = new GroupRumbleGeneralVM(context);
-            GroupOutRepControl = new GroupOutRepControlVM(context);
-            GroupRumbleLeftRescale = new GroupRumbleLeftRescaleVM(context);
-            GroupRumbleRightConversion = new GroupRumbleRightConversionAdjustsVM(context);
-
-
-
-            _basicSettings = new ObservableCollection<GroupSettingsVM>
-                    {
-                        GroupLEDsControl,
-                        GroupWireless,
-                        GroupSticksDZ,
-                        GroupRumbleGeneral,
-                    };
-
-            _advancedSettings = new ObservableCollection<GroupSettingsVM>
-                    {
-                        GroupOutRepControl,
-                        GroupRumbleLeftRescale,
-                        GroupRumbleRightConversion,
-                    };
-
-            _modeUniqueSettings = new ObservableCollection<GroupSettingsVM>();
+            setNewSettingsContainer(container);
 
             /*
             if (modeSettings.Context == SettingsContext.SDF
@@ -82,6 +60,40 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         */
             _basicSettings[0].PropertyChanged += SettingTabViewModel_PropertyChanged;
         }
+
+        public void setNewSettingsContainer(SettingsContainer container)
+        {
+            BasicSettingsGroupsList = new ObservableCollection<GroupSettingsVM>
+                    {
+                        container.GroupLEDsControl,
+                        container.GroupWireless,
+                        container.GroupSticksDZ,
+                        container.GroupRumbleGeneral,
+                    };
+
+            AdvancedSettingsGroupsList = new ObservableCollection<GroupSettingsVM>
+                    {
+                        container.GroupOutRepControl,
+                        container.GroupRumbleLeftRescale,
+                        container.GroupRumbleRightConversion,
+                    };
+
+            ModeUniqueSettingsGroupsList = new ObservableCollection<GroupSettingsVM>();
+
+            if (container.Context == SettingsContext.SDF
+                || container.Context == SettingsContext.Global)
+                ModeUniqueSettingsGroupsList.Add(container.GroupModeUnique);
+            if (container.Context == SettingsContext.GPJ
+                || container.Context == SettingsContext.Global)
+                ModeUniqueSettingsGroupsList.Add(container.GroupModeUnique);
+            if (container.Context == SettingsContext.DS4W
+                || container.Context == SettingsContext.Global)
+                ModeUniqueSettingsGroupsList.Add(container.GroupModeUnique);
+            if (container.Context == SettingsContext.XInput
+                || container.Context == SettingsContext.Global)
+                ModeUniqueSettingsGroupsList.Add(container.GroupModeUnique);
+        }
+
 
         private void SettingTabViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

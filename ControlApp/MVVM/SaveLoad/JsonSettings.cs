@@ -12,6 +12,11 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
     public class DSHM_Format_ContextSettings
     {
         public DSHM_HidDeviceModes? HIDDeviceMode { get; set; }// = DSHM_HidDeviceModes.DS4Windows;
+        public bool? EnableDS4WLightbarTranslation { get; set; } // = false;
+        public bool? PreventRemappingConflitsInDS4WMode { get; set; } // = true;
+        public bool? PreventRemappingConflitsInSXSMode { get; set; } // = true;
+        public DSHM_PressureModes? PressureExposureMode { get; set; }// = DSHM_PressureModes.Default;
+        public DSHM_DPadExposureModes? DPadExposureMode { get; set; }// = DSHM_DPadExposureModes.Default;
         public bool? DisableWirelessIdleTimeout { get; set; }// = false;
         public double? WirelessIdleTimeoutPeriodMs { get; set; }// = 300000;
 
@@ -21,8 +26,7 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
         public bool? IsOutputRateControlEnabled { get; set; }// = true;
         public byte? OutputRateControlPeriodMs { get; set; }// = 150;
         public bool? IsOutputDeduplicatorEnabled { get; set; }// = false;
-        public DSHM_PressureModes? PressureExposureMode { get; set; }// = DSHM_PressureModes.Default;
-        public DSHM_DPadExposureModes? DPadExposureMode { get; set; }// = DSHM_DPadExposureModes.Default;
+
         public DeadZoneSettings DeadZoneLeft { get; set; } = new();
         public DeadZoneSettings DeadZoneRight { get; set; } = new();
         public AllRumbleSettings RumbleSettings { get; set; } = new();
@@ -36,7 +40,7 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
                 get;
                 set;
             }
-            public double? PolarValue { get; set; }// = 10.0;
+            public byte? PolarValue { get; set; }// = 10.0;
 
         }
 
