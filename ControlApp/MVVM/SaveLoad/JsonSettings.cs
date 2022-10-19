@@ -153,6 +153,8 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
             };
             string jsonString = JsonSerializer.Serialize(dshmFormattedSettings, options);
 
+            
+
             return jsonString;
         }
 

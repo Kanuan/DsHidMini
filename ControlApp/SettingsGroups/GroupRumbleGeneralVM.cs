@@ -1,4 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -82,58 +83,30 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             VariableRightEmulToggleCombo.copyCombo(DEFAULT_VariableRightEmuToggleCombo);
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        
+        
+
+        public override void CopySettingsFromBackingData(SettingsBackingData rumbleGeneralData, bool invertCopyDirection = false)
         {
-            DSHM_Format_ContextSettings.AllRumbleSettings dshmRumbleSettings = dshmContextSettings.RumbleSettings;
+            base.CopySettingsFromBackingData(rumbleGeneralData, invertCopyDirection);
 
-            /* Not necessary anymore I think
-            if(SettingsContainer.GroupModeUnique.PreventRemappingConflictsInSXSMode)
+            var specific = (BackingData_RumbleGeneral)rumbleGeneralData;
+            if(invertCopyDirection)
             {
-                dshmRumbleSettings.SMToBMConversion.Enabled = false;
-                dshmRumbleSettings.DisableBM = false;
-                dshmRumbleSettings.DisableSM = false;
-                return;
+                specific.IsVariableLightRumbleEmulationEnabled = this.IsVariableLightRumbleEmulationEnabled;
+                specific.IsLeftMotorDisabled = this.IsLeftMotorDisabled;
+                specific.IsRightMotorDisabled = this.IsRightMotorDisabled;
+                specific.IsVariableRightEmulToggleComboEnabled = this.IsVariableRightEmulToggleComboEnabled;
+                specific.VariableRightEmulToggleCombo.copyCombo(this.VariableRightEmulToggleCombo);
             }
-            */
-
-            if (!this.IsGroupEnabled)
+            else
             {
-                dshmRumbleSettings.SMToBMConversion.Enabled = null;
-                dshmRumbleSettings.DisableBM = null;
-                dshmRumbleSettings.DisableSM = null;
-                return;
+                this.IsVariableLightRumbleEmulationEnabled = specific.IsVariableLightRumbleEmulationEnabled;
+                this.IsLeftMotorDisabled = specific.IsLeftMotorDisabled;
+                this.IsRightMotorDisabled = specific.IsRightMotorDisabled;
+                this.IsVariableRightEmulToggleComboEnabled = specific.IsVariableRightEmulToggleComboEnabled;
+                this.VariableRightEmulToggleCombo.copyCombo(specific.VariableRightEmulToggleCombo);
             }
-
-            dshmRumbleSettings.SMToBMConversion.Enabled = this.IsVariableLightRumbleEmulationEnabled;
-            dshmRumbleSettings.DisableBM = this.IsLeftMotorDisabled;
-            dshmRumbleSettings.DisableSM = this.IsLeftMotorDisabled;
-        }
-
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
-        {
-            DSHM_Format_ContextSettings.AllRumbleSettings dshmRumbleSettings = dshmContextSettings.RumbleSettings;
-
-            /* Not necessary anymore I think
-            bool tempPreventSXSConflicts =
-                dshmContextSettings.PreventRemappingConflitsInSXSMode == null ?
-                false : dshmContextSettings.PreventRemappingConflitsInSXSMode.GetValueOrDefault();
-            if (tempPreventSXSConflicts) return;
-            */
-
-            if (
-                dshmRumbleSettings.SMToBMConversion.Enabled == null
-                || dshmRumbleSettings.DisableBM == null
-                || dshmRumbleSettings.DisableSM == null
-               )
-            {
-                this.IsGroupEnabled = false;
-                return;
-            }
-            this.IsGroupEnabled = true;
-
-            this.IsVariableLightRumbleEmulationEnabled = dshmRumbleSettings.SMToBMConversion.Enabled.GetValueOrDefault();
-            this.IsLeftMotorDisabled = dshmRumbleSettings.DisableBM.GetValueOrDefault();
-            this.IsLeftMotorDisabled = dshmRumbleSettings.DisableSM.GetValueOrDefault();
         }
 
         public GroupRumbleGeneralVM(SettingsContext context, SettingsContainer containter) : base(context, containter) { }

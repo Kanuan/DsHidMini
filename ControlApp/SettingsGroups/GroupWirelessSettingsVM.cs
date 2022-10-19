@@ -1,4 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI.Fody.Helpers;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
@@ -33,45 +34,37 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public override void ResetGroupToOriginalDefaults()
         {
             IsGroupEnabled = ShouldGroupBeEnabledOnReset();
+
             IsWirelessIdleDisconnectEnabled = DEFAULT_isWirelessIdleDisconnectEnabled;
             WirelessIdleDisconnectTime = DEFAULT_wirelessIdleDisconnectTime;
             IsQuickDisconnectComboEnabled = DEFAULT_isQuickDisconnectComboEnabled;
-
             QuickDisconnectCombo.copyCombo(DEFAULT_disconnectCombo);
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void CopySettingsFromBackingData(SettingsBackingData wirelessData, bool invertCopyDirection = false)
         {
+            base.CopySettingsFromBackingData(wirelessData, invertCopyDirection);
+            var specific = (BackingData_Wireless)wirelessData;
 
-            if (!this.IsGroupEnabled)
+            if (invertCopyDirection)
             {
-                dshmContextSettings.DisableWirelessIdleTimeout = null;
-                dshmContextSettings.WirelessIdleTimeoutPeriodMs = null;
-                //dshmContextSettings.QuickDisconnectCombo = null;
-                return;
+                specific.IsGroupEnabled = this.IsGroupEnabled;
+
+                specific.IsQuickDisconnectComboEnabled = this.IsQuickDisconnectComboEnabled;
+                specific.IsWirelessIdleDisconnectEnabled = this.IsWirelessIdleDisconnectEnabled;
+                specific.QuickDisconnectCombo.copyCombo(this.QuickDisconnectCombo);
+                specific.WirelessIdleDisconnectTime = this.WirelessIdleDisconnectTime;
+            }
+            else
+            {
+                this.IsGroupEnabled = specific.IsGroupEnabled;
+
+                this.IsQuickDisconnectComboEnabled = specific.IsQuickDisconnectComboEnabled;
+                this.IsWirelessIdleDisconnectEnabled = specific.IsWirelessIdleDisconnectEnabled;
+                this.QuickDisconnectCombo.copyCombo(specific.QuickDisconnectCombo);
+                this.WirelessIdleDisconnectTime = specific.WirelessIdleDisconnectTime;
             }
 
-            dshmContextSettings.DisableWirelessIdleTimeout = !this.IsWirelessIdleDisconnectEnabled;
-            dshmContextSettings.WirelessIdleTimeoutPeriodMs = this.WirelessIdleDisconnectTime * 60 * 1000;
-            //dshmContextSettings.QuickDisconnectCombo = dictionary combo pair;
-        }
-
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
-        {
-            if(
-                dshmContextSettings.DisableWirelessIdleTimeout == null
-                // check for combo too
-                || dshmContextSettings.WirelessIdleTimeoutPeriodMs == null)
-            {
-                this.IsGroupEnabled = false;
-                return;
-            }
-            this.IsGroupEnabled = true;
-
-            this.IsWirelessIdleDisconnectEnabled = !dshmContextSettings.DisableWirelessIdleTimeout.GetValueOrDefault();
-            this.WirelessIdleDisconnectTime =
-                (byte)(dshmContextSettings.WirelessIdleTimeoutPeriodMs.GetValueOrDefault() / (60.0 * 1000) );
-            // this.combo...
         }
     }
 

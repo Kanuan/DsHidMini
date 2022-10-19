@@ -1,4 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI.Fody.Helpers;
 using System;
 
@@ -27,34 +28,26 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             IsOutputReportDeduplicatorEnabled = DEFAULT_isOutputReportDeduplicatorEnabled;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void CopySettingsFromBackingData(SettingsBackingData outRepBackingData, bool invertCopyDirection = false)
         {
-            if (!this.IsGroupEnabled)
-            {
-                dshmContextSettings.IsOutputRateControlEnabled = null;
-                dshmContextSettings.OutputRateControlPeriodMs = null;
-                dshmContextSettings.IsOutputDeduplicatorEnabled = null;
-                return;
-            }
-            dshmContextSettings.IsOutputRateControlEnabled = this.IsOutputReportRateControlEnabled;
-            dshmContextSettings.OutputRateControlPeriodMs = this.MaxOutputRate;
-            dshmContextSettings.IsOutputDeduplicatorEnabled = this.IsOutputReportDeduplicatorEnabled;
-        }
+            base.CopySettingsFromBackingData(outRepBackingData, invertCopyDirection);
 
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
-        {
-            if(dshmContextSettings.IsOutputRateControlEnabled == null
-                || dshmContextSettings.OutputRateControlPeriodMs == null
-                || dshmContextSettings.IsOutputDeduplicatorEnabled == null)
-            {
-                this.IsGroupEnabled = false;
-                return;
-            }
-            this.IsGroupEnabled = true;
+            var specific = (BackingData_OutRepControl)outRepBackingData;
 
-            this.IsOutputReportRateControlEnabled = dshmContextSettings.IsOutputRateControlEnabled.GetValueOrDefault();
-            this.MaxOutputRate = dshmContextSettings.OutputRateControlPeriodMs.GetValueOrDefault();
-            this.IsOutputReportDeduplicatorEnabled = dshmContextSettings.IsOutputDeduplicatorEnabled.GetValueOrDefault();
+            if (invertCopyDirection)
+            {
+                specific.IsGroupEnabled = this.IsGroupEnabled;
+                specific.IsOutputReportDeduplicatorEnabled = this.IsOutputReportDeduplicatorEnabled;
+                specific.IsOutputReportRateControlEnabled = this.IsOutputReportRateControlEnabled;
+                specific.MaxOutputRate = this.MaxOutputRate;
+            }
+            else
+            {
+                this.IsGroupEnabled = specific.IsGroupEnabled;
+                this.IsOutputReportDeduplicatorEnabled = specific.IsOutputReportDeduplicatorEnabled;
+                this.IsOutputReportRateControlEnabled = specific.IsOutputReportRateControlEnabled;
+                this.MaxOutputRate = specific.MaxOutputRate;
+            }
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -8,6 +9,12 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     public class GroupRumbleRightConversionAdjustsVM : GroupSettingsVM
     {
         // -------------------------------------------- RIGHT MOTOR CONVERSION GROUP
+
+        public static readonly BackingData_VariablaRightRumbleEmulAdjusts defaultSettings = new()
+        {
+
+        };
+
 
         public const byte DEFAULT_rightRumbleConversionUpperRange = 140;
         public const byte DEFAULT_rightRumbleConversionLowerRange = 1;
@@ -59,59 +66,44 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             ForcedRightMotorHeavyThreshold = DEFAULT_forcedRightMotorHeavyThreshold;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        private void PrepareForLoad()
         {
-            DSHM_Format_ContextSettings.SMToBMConversionSettings dshmSMConversionSettings = dshmContextSettings.RumbleSettings.SMToBMConversion;
-            DSHM_Format_ContextSettings.ForcedSMSettings dshmForcedSMSettings = dshmContextSettings.RumbleSettings.ForcedSM;
+            // Necessary to set these vars to their max/min so their properties setting conditions don't interfere with the loading
+            rightRumbleConversionUpperRange = 255;
+            rightRumbleConversionLowerRange = 1;
+    }
 
-            if (!this.IsGroupEnabled)
-            {
-                dshmSMConversionSettings.RescaleMinValue = null;
-                dshmSMConversionSettings.RescaleMaxValue = null;
-
-                dshmForcedSMSettings = null;
-                return;
-            }
-
-            // Right rumble conversion rescaling adjustment
-            dshmSMConversionSettings.RescaleMinValue = this.RightRumbleConversionLowerRange;
-            dshmSMConversionSettings.RescaleMaxValue = this.RightRumbleConversionUpperRange;
-
-            // Right rumble (light) threshold
-            dshmForcedSMSettings.SMThresholdEnabled = this.IsForcedRightMotorLightThresholdEnabled;
-            dshmForcedSMSettings.SMThresholdValue = this.ForcedRightMotorLightThreshold;
-
-            // Left rumble (Heavy) threshold
-            dshmForcedSMSettings.BMThresholdEnabled = this.IsForcedRightMotorHeavyThreasholdEnabled;
-            dshmForcedSMSettings.BMThresholdValue = this.ForcedRightMotorHeavyThreshold;
-        }
-
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void CopySettingsFromBackingData(SettingsBackingData rightRumbleEmulAdjustsBackingData, bool invertCopyDirection = false)
         {
-            DSHM_Format_ContextSettings.SMToBMConversionSettings dshmSMConversionSettings = dshmContextSettings.RumbleSettings.SMToBMConversion;
-            DSHM_Format_ContextSettings.ForcedSMSettings dshmForcedSMSettings = dshmContextSettings.RumbleSettings.ForcedSM;
+            base.CopySettingsFromBackingData(rightRumbleEmulAdjustsBackingData, invertCopyDirection);
 
-            if (dshmSMConversionSettings.RescaleMinValue == null
-                || dshmSMConversionSettings.RescaleMaxValue == null
-                || dshmForcedSMSettings == null
-                )
+            var specific = (BackingData_VariablaRightRumbleEmulAdjusts)rightRumbleEmulAdjustsBackingData;
+
+            if (invertCopyDirection)
             {
-                this.IsGroupEnabled = false;
-                return;
+                specific.IsGroupEnabled = this.IsGroupEnabled;
+                specific.RightRumbleConversionLowerRange = this.RightRumbleConversionLowerRange;
+                specific.RightRumbleConversionUpperRange = this.RightRumbleConversionUpperRange;
+                // Right rumble (light) threshold
+                specific.IsForcedRightMotorLightThresholdEnabled = this.IsForcedRightMotorLightThresholdEnabled;
+                specific.ForcedRightMotorLightThreshold = this.ForcedRightMotorLightThreshold;
+                // Left rumble (Heavy) threshold
+                specific.IsForcedRightMotorHeavyThreasholdEnabled = this.IsForcedRightMotorHeavyThreasholdEnabled;
+                specific.ForcedRightMotorHeavyThreshold = this.ForcedRightMotorHeavyThreshold;
             }
-
-            // Right rumble conversion rescaling adjustment
-            this.RightRumbleConversionLowerRange = dshmSMConversionSettings.RescaleMinValue.GetValueOrDefault();
-            this.RightRumbleConversionUpperRange = dshmSMConversionSettings.RescaleMaxValue.GetValueOrDefault();
-
-            // Right rumble (light) threshold
-            this.IsForcedRightMotorLightThresholdEnabled = dshmForcedSMSettings.SMThresholdEnabled.GetValueOrDefault();
-            this.ForcedRightMotorLightThreshold = dshmForcedSMSettings.SMThresholdValue.GetValueOrDefault();
-
-
-            // Left rumble (Heavy) threshold
-            this.IsForcedRightMotorHeavyThreasholdEnabled = dshmForcedSMSettings.BMThresholdEnabled.GetValueOrDefault();
-            this.ForcedRightMotorHeavyThreshold = dshmForcedSMSettings.BMThresholdValue.GetValueOrDefault();
+            else
+            {
+                PrepareForLoad();
+                this.IsGroupEnabled = specific.IsGroupEnabled;
+                this.RightRumbleConversionLowerRange = specific.RightRumbleConversionLowerRange;
+                this.RightRumbleConversionUpperRange = specific.RightRumbleConversionUpperRange;
+                // Right rumble (light) threshold
+                this.IsForcedRightMotorLightThresholdEnabled = specific.IsForcedRightMotorLightThresholdEnabled;
+                this.ForcedRightMotorLightThreshold = specific.ForcedRightMotorLightThreshold;
+                // Left rumble (Heavy) threshold
+                this.IsForcedRightMotorHeavyThreasholdEnabled = specific.IsForcedRightMotorHeavyThreasholdEnabled;
+                this.ForcedRightMotorHeavyThreshold = specific.ForcedRightMotorHeavyThreshold;
+            }
         }
     }
 

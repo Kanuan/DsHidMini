@@ -1,4 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.ComponentModel;
@@ -57,11 +58,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public GroupModeUniqueVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
         {
+            /*
             if(context != SettingsContext.General)
             {
                 IsGroupEnabled = true;
                 IsOverrideCheckboxVisible = false;
             }
+            */
 
             arePressureaNDPadOptionsVisible = this
                 .WhenAnyValue(x => x.Context)
@@ -79,6 +82,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override void ResetGroupToOriginalDefaults()
         {
+            IsGroupEnabled = ShouldGroupBeEnabledOnReset();
+
             HIDDeviceMode = DSHM_HidDeviceModes.XInput;
             PressureExposureMode = DEFAULT_pressureExposureMode;
             DPadExposureMode = DEFAULT_padExposureMode;
@@ -87,42 +92,55 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             PreventRemappingConflictsInSXSMode = DEFAULT_areDSHMRumbleSettingsDisabled;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+
+ 
+        public override void CopySettingsFromBackingData(SettingsBackingData modesUniqueData, bool invertCopyDirection = false)
         {
-            dshmContextSettings.HIDDeviceMode =
-                (this.Context == SettingsContext.General)
-                ? this.HIDDeviceMode : null;
+            base.CopySettingsFromBackingData(modesUniqueData, invertCopyDirection);
 
-            dshmContextSettings.PressureExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.Get_DSHM_DsPressureMode_From_ControlApp[this.PressureExposureMode] : null;
+            var specific = (BackingData_ModesUnique)modesUniqueData;
 
-            dshmContextSettings.DPadExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.Get_DSHM_DPadMode_From_ControlApp[this.DPadExposureMode] : null;
-
-        }
-
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
-        {
-            if ((this.Context == SettingsContext.General) && (dshmContextSettings.HIDDeviceMode != null))
-                this.HIDDeviceMode = dshmContextSettings.HIDDeviceMode.GetValueOrDefault();
+            if (invertCopyDirection)
+            {
+                specific.IsGroupEnabled = this.IsGroupEnabled;
+                specific.DPadExposureMode = this.DPadExposureMode;
+                specific.IsDS4LightbarTranslationEnabled = this.IsDS4LightbarTranslationEnabled;
+                specific.IsLEDsAsXInputSlotEnabled = this.IsLEDsAsXInputSlotEnabled;
+                specific.PressureExposureMode = this.PressureExposureMode;
+                specific.PreventRemappingConflictsInSXSMode = this.PreventRemappingConflictsInSXSMode;
+            }
             else
-                this.HIDDeviceMode = DSHM_HidDeviceModes.XInput;
+            {
+                this.IsGroupEnabled = specific.IsGroupEnabled;
+                this.DPadExposureMode = specific.DPadExposureMode;
+                this.IsDS4LightbarTranslationEnabled = specific.IsDS4LightbarTranslationEnabled;
+                this.IsLEDsAsXInputSlotEnabled = specific.IsLEDsAsXInputSlotEnabled;
+                this.PressureExposureMode = specific.PressureExposureMode;
+                this.PreventRemappingConflictsInSXSMode = specific.PreventRemappingConflictsInSXSMode;
+            }
 
-
-            dshmContextSettings.PressureExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.Get_DSHM_DsPressureMode_From_ControlApp[this.PressureExposureMode] : null;
-
-            dshmContextSettings.DPadExposureMode =
-                (this.Context == SettingsContext.SDF
-                || this.Context == SettingsContext.GPJ)
-                ? SaveLoadUtils.Get_DSHM_DPadMode_From_ControlApp[this.DPadExposureMode] : null;
         }
+
+        /*
+ public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+ {
+     if ((this.Context == SettingsContext.General) && (dshmContextSettings.HIDDeviceMode != null))
+         this.HIDDeviceMode = dshmContextSettings.HIDDeviceMode.GetValueOrDefault();
+     else
+         this.HIDDeviceMode = DSHM_HidDeviceModes.XInput;
+
+
+     dshmContextSettings.PressureExposureMode =
+         (this.Context == SettingsContext.SDF
+         || this.Context == SettingsContext.GPJ)
+         ? SaveLoadUtils.Get_DSHM_DsPressureMode_From_ControlApp[this.PressureExposureMode] : null;
+
+     dshmContextSettings.DPadExposureMode =
+         (this.Context == SettingsContext.SDF
+         || this.Context == SettingsContext.GPJ)
+         ? SaveLoadUtils.Get_DSHM_DPadMode_From_ControlApp[this.DPadExposureMode] : null;
+ }
+ */
     }
 
 

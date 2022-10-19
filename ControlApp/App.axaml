@@ -437,53 +437,50 @@
 						Maximum="254"
 						Value="{Binding RightRumbleConversionLowerRange}"/>
 				</DockPanel>
-				<!-- Forced right motor activation / light rumble threshold -->
-				<DockPanel DockPanel.Dock="Top">
-					<CheckBox
-						x:Name="ForcedRMLeftThresholdCheckbox"
-						DockPanel.Dock="Top"
-						Content="Force right motor activation when above left rumble threshold"
-						IsChecked="{Binding IsForcedRightMotorHeavyThreasholdEnabled}"/>
 					<TextBlock
-						DockPanel.Dock="Left"
-						Text="Left rumble threshold:"
+						DockPanel.Dock="Top"
+						Text="Force activate right motor when above..."
 						TextWrapping="Wrap"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"/>
-					<Slider
-						IsEnabled="{Binding IsChecked, ElementName=ForcedRMLeftThresholdCheckbox}"
-						DockPanel.Dock="Right"
-						IsSnapToTickEnabled="True"
-						TickFrequency="1"
-						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
-						ToolTip.Placement="Top"
-						Minimum="1"
-						Maximum="255"
-						Value="{Binding ForcedRightMotorHeavyThreshold}"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top">
+					<!-- Forced right motor activation / light rumble threshold -->
+					<DockPanel DockPanel.Dock="Top">
+						<CheckBox
+							x:Name="ForcedRMLeftThresholdCheckbox"
+							DockPanel.Dock="Left"
+							Content="Left rumble threshold:"
+							IsChecked="{Binding IsForcedRightMotorHeavyThreasholdEnabled}"/>
+						<Slider
+							IsEnabled="{Binding IsChecked, ElementName=ForcedRMLeftThresholdCheckbox}"
+							DockPanel.Dock="Right"
+							IsSnapToTickEnabled="True"
+							TickFrequency="1"
+							ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
+							ToolTip.Placement="Top"
+							Minimum="1"
+							Maximum="255"
+							Value="{Binding ForcedRightMotorHeavyThreshold}"/>
+					</DockPanel>
 					<!-- Forced right motor activation / heavy rumble threshold -->
-					<CheckBox
-						x:Name="ForcedRMRightThresholdCheckbox"
-						DockPanel.Dock="Top"
-						Content="Force right motor activation when above right rumble threshold"
-						IsChecked="{Binding IsForcedRightMotorLightThresholdEnabled}"/>
-					<TextBlock
-						DockPanel.Dock="Left"
-						Text="Right rumble threshold:"
-						TextWrapping="Wrap"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-					<Slider
-						IsEnabled="{Binding IsChecked, ElementName=ForcedRMRightThresholdCheckbox}"
-						DockPanel.Dock="Right"
-						IsSnapToTickEnabled="True"
-						TickFrequency="1"
-						ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
-						ToolTip.Placement="Top"
-						Minimum="1"
-						Maximum="255"
-						Value="{Binding ForcedRightMotorLightThreshold}"/>
+					<DockPanel DockPanel.Dock="Top">
+						<CheckBox
+							x:Name="ForcedRMRightThresholdCheckbox"
+							DockPanel.Dock="Left"
+							Content="Right rumble threshold:"
+							IsChecked="{Binding IsForcedRightMotorLightThresholdEnabled}"/>
+						<Slider
+							IsEnabled="{Binding IsChecked, ElementName=ForcedRMRightThresholdCheckbox}"
+							DockPanel.Dock="Right"
+							IsSnapToTickEnabled="True"
+							TickFrequency="1"
+							ToolTip.Tip="{Binding Value, RelativeSource={RelativeSource Self}}"
+							ToolTip.Placement="Right"
+							Minimum="1"
+							Maximum="255"
+							Value="{Binding ForcedRightMotorLightThreshold}"/>
+					</DockPanel>
+				<DockPanel DockPanel.Dock="Top">
+					
 				</DockPanel>
 			</DockPanel>
 		</DataTemplate>

@@ -1,4 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -50,34 +51,35 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             LeftMotorStrRescalingLowerRange = DEFAULT_leftMotorStrRescalingLowerRange;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        private void PrepareForLoad()
         {
-            DSHM_Format_ContextSettings.BMStrRescaleSettings dshmLeftRumbleRescaleSettings = dshmContextSettings.RumbleSettings.BMStrRescale;
-
-            if (!this.IsGroupEnabled)
-            {
-                dshmLeftRumbleRescaleSettings = null;
-                return;
-            }
-            dshmLeftRumbleRescaleSettings.Enabled = this.IsLeftMotorStrRescalingEnabled;
-            dshmLeftRumbleRescaleSettings.MinValue = this.LeftMotorStrRescalingLowerRange;
-            dshmLeftRumbleRescaleSettings.MaxValue = this.LeftMotorStrRescalingUpperRange;
+            // Necessary to set these vars to their max/min so their properties setting conditions don't interfere with the loading
+            leftMotorStrRescalingUpperRange = 255;
+            leftMotorStrRescalingLowerRange = 1;
         }
 
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void CopySettingsFromBackingData(SettingsBackingData leftRumbleRescaleBackingData, bool invertCopyDirection = false)
         {
-            DSHM_Format_ContextSettings.BMStrRescaleSettings dshmLeftRumbleRescaleSettings = dshmContextSettings.RumbleSettings.BMStrRescale;
+            base.CopySettingsFromBackingData(leftRumbleRescaleBackingData, invertCopyDirection);
 
-            if (dshmLeftRumbleRescaleSettings == null)
+            var specific = (BackingData_LeftRumbleRescale)leftRumbleRescaleBackingData;
+
+            if(invertCopyDirection)
             {
-                this.IsGroupEnabled = false;
-                return;
+                specific.IsGroupEnabled = this.IsGroupEnabled;
+                specific.IsLeftMotorStrRescalingEnabled = this.IsLeftMotorStrRescalingEnabled;
+                specific.LeftMotorStrRescalingLowerRange = this.LeftMotorStrRescalingLowerRange;
+                specific.LeftMotorStrRescalingUpperRange = this.LeftMotorStrRescalingUpperRange;
             }
-            this.IsGroupEnabled = true;
+            else
+            {
+                PrepareForLoad();
+                this.IsGroupEnabled = specific.IsGroupEnabled;
+                this.IsLeftMotorStrRescalingEnabled = specific.IsLeftMotorStrRescalingEnabled;
+                this.LeftMotorStrRescalingLowerRange = specific.LeftMotorStrRescalingLowerRange;
+                this.LeftMotorStrRescalingUpperRange = specific.LeftMotorStrRescalingUpperRange;
+            }
 
-            this.IsLeftMotorStrRescalingEnabled = dshmLeftRumbleRescaleSettings.Enabled.GetValueOrDefault();
-            this.LeftMotorStrRescalingLowerRange = dshmLeftRumbleRescaleSettings.MinValue.GetValueOrDefault();
-            this.LeftMotorStrRescalingUpperRange = dshmLeftRumbleRescaleSettings.MaxValue.GetValueOrDefault();
 
         }
     }

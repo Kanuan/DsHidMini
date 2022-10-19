@@ -1,4 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Reactive.Linq;
@@ -15,6 +16,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.SticksDeadzone;
 
+        /*
         public override bool IsOverrideCheckboxVisible
         {
             get
@@ -25,6 +27,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             set => base.IsOverrideCheckboxVisible = value;
         }
+        */
 
         public override bool IsGroupLocked
         {
@@ -57,8 +60,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public GroupSticksDeadzoneVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
         {
-
-
             AdjustSettingsBasedOnContext();
             leftStickDeadZoneInpercent = this
                 .WhenAnyValue(x => x.LeftStickDeadZone)
@@ -75,7 +76,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public override void ChangeContext(SettingsContext context)
         {
             base.ChangeContext(context);
-            this.RaisePropertyChanged(nameof(IsOverrideCheckboxVisible));
+            //this.RaisePropertyChanged(nameof(IsOverrideCheckboxVisible));
             this.RaisePropertyChanged(nameof(IsGroupLocked));
             AdjustSettingsBasedOnContext();
         }
@@ -101,67 +102,33 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             RightStickDeadZone = DEFAULT_rightStickDeadzone;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+
+
+
+        public override void CopySettingsFromBackingData(SettingsBackingData data, bool invertCopyDirection = false)
         {
-            DSHM_Format_ContextSettings.DeadZoneSettings dshmLeftDZSettings = dshmContextSettings.DeadZoneLeft;
-            DSHM_Format_ContextSettings.DeadZoneSettings dshmRightDZSettings = dshmContextSettings.DeadZoneRight;
+            base.CopySettingsFromBackingData(data, invertCopyDirection);
+            var specific = (BackingData_SticksDZ)data;
 
-            if (this.Context == SettingsContext.DS4W
-                || SettingsContainer.GroupModeUnique.PreventRemappingConflictsInSXSMode)
+            if(invertCopyDirection)
             {
-                dshmLeftDZSettings.Apply = dshmRightDZSettings.Apply = false;
-                return;
-            }
+                specific.IsGroupEnabled = this.IsGroupEnabled;
 
-            if (!this.IsGroupEnabled)
+                specific.ApplyRightStickDeadZone = this.ApplyRightStickDeadZone;
+                specific.ApplyLeftStickDeadZone = this.ApplyLeftStickDeadZone;
+                specific.LeftStickDeadZone = this.LeftStickDeadZone;
+                specific.RightStickDeadZone = this.RightStickDeadZone;
+            }
+            else
             {
-                dshmLeftDZSettings = null;
-                dshmRightDZSettings = null;
-                return;
+                this.IsGroupEnabled = specific.IsGroupEnabled;
+
+                this.ApplyRightStickDeadZone = specific.ApplyRightStickDeadZone;
+                this.ApplyLeftStickDeadZone = specific.ApplyLeftStickDeadZone;
+                this.LeftStickDeadZone = specific.LeftStickDeadZone;
+                this.RightStickDeadZone = specific.RightStickDeadZone;
             }
-
-            dshmLeftDZSettings.Apply = this.ApplyLeftStickDeadZone;
-            dshmLeftDZSettings.PolarValue = this.LeftStickDeadZone;
-
-            dshmRightDZSettings.Apply = this.ApplyRightStickDeadZone;
-            dshmRightDZSettings.PolarValue = this.RightStickDeadZone;
-        }
-
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
-        {
-            DSHM_Format_ContextSettings.DeadZoneSettings dshmLeftDZSettings = dshmContextSettings.DeadZoneLeft;
-            DSHM_Format_ContextSettings.DeadZoneSettings dshmRightDZSettings = dshmContextSettings.DeadZoneRight;
-
-            // Checks if the "prevent conflicts" properties exist
-            // They will only exist if the settings were saved in their respective HID Device Mode
-            // If they exist and are true then we can skip the rest of the loading because this group will be disabled
-            bool preventDS4WConflicts = dshmContextSettings.PreventRemappingConflitsInDS4WMode == null ? true : dshmContextSettings.PreventRemappingConflitsInSXSMode.GetValueOrDefault();
-            bool preventSXSConflicts = dshmContextSettings.PreventRemappingConflitsInSXSMode == null ? false : dshmContextSettings.PreventRemappingConflitsInSXSMode.GetValueOrDefault();
-            if (preventDS4WConflicts
-                || preventSXSConflicts)
-            {
-                return;
-            }
-
-
-            if (dshmLeftDZSettings == null
-                || dshmRightDZSettings == null)
-            {
-                this.IsGroupEnabled = false;
-                return;
-            }
-
-            // left
-            this.ApplyLeftStickDeadZone = dshmLeftDZSettings.Apply.GetValueOrDefault();
-            this.LeftStickDeadZone = dshmLeftDZSettings.PolarValue.GetValueOrDefault();
-
-            // Right
-            this.ApplyRightStickDeadZone = dshmRightDZSettings.Apply.GetValueOrDefault();
-            this.RightStickDeadZone = dshmRightDZSettings.PolarValue.GetValueOrDefault();
-
 
         }
     }
-
-
 }

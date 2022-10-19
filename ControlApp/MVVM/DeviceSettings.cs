@@ -8,6 +8,10 @@ using System.ComponentModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.IO;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -30,19 +34,33 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public static string SaveToJsonTest(SettingsContainer container)
         {
-            var dshmSettings = new DSHM_Format_Settings();
-            var dshmContextSettings = dshmSettings.General;
+            var backingDataContainer = new BackingDataContainer();
+            //var dshmContextSettings = dshmSettings.General;
 
-                container.GroupModeUnique.SaveToDSHMSettings(dshmContextSettings);
-                container.GroupLEDsControl.SaveToDSHMSettings(dshmContextSettings);
-                container.GroupWireless.SaveToDSHMSettings(dshmContextSettings);
-                container.GroupSticksDZ.SaveToDSHMSettings(dshmContextSettings);
-                container.GroupRumbleGeneral.SaveToDSHMSettings(dshmContextSettings);
-                container.GroupOutRepControl.SaveToDSHMSettings(dshmContextSettings);
-                container.GroupRumbleLeftRescale.SaveToDSHMSettings(dshmContextSettings);
-                container.GroupRumbleRightConversion.SaveToDSHMSettings(dshmContextSettings);
+                container.GroupModeUnique.CopySettingsFromBackingData(backingDataContainer.modesUniqueData,true);
+                container.GroupLEDsControl.CopySettingsFromBackingData(backingDataContainer.ledsData,true);
+                container.GroupWireless.CopySettingsFromBackingData(backingDataContainer.wirelessData, true);
+                container.GroupRumbleGeneral.CopySettingsFromBackingData(backingDataContainer.rumbleGeneralData, true);
+                container.GroupSticksDZ.CopySettingsFromBackingData(backingDataContainer.sticksDZData, true);
+                container.GroupOutRepControl.CopySettingsFromBackingData(backingDataContainer.outRepData, true);
+                container.GroupRumbleLeftRescale.CopySettingsFromBackingData(backingDataContainer.leftRumbleRescaleData, true);
+                container.GroupRumbleRightConversion.CopySettingsFromBackingData(backingDataContainer.rightVariableEmulData, true);
 
-            return SaveLoadJson.SaveToDSHMFormattedJson(dshmSettings);
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+                Converters =
+                {
+                    new JsonStringEnumConverter()
+                }
+            };
+            string jsonString = JsonSerializer.Serialize(backingDataContainer, options);
+
+            System.IO.File.WriteAllText(@"D:\ControlAppTests.json", jsonString);
+
+            return jsonString;
         }
 
     }

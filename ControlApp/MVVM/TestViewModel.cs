@@ -29,7 +29,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             JsonSaveTest = DeviceSettingsManager.SaveToJsonTest(DevicesCustomsExample);
         }
 
-        SettingsContainer ProfileExample = new(SettingsContext.General);
+        SettingsContainer ProfileExample = new(SettingsContext.DS4W);
         SettingsContainer DevicesCustomsExample = new(SettingsContext.SDF);
 
         

@@ -1,6 +1,9 @@
 ﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System.Text.Json.Serialization;
+using System.Windows;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
@@ -45,52 +48,81 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             CurrentLEDCustoms = LEDsCustoms[0];
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void CopySettingsFromBackingData(SettingsBackingData ledsData, bool invertCopyDirection = false)
         {
-            DSHM_Format_ContextSettings.AllLEDSettings dshm_AllLEDsSettings = dshmContextSettings.LEDSettings;
-            if (!this.IsGroupEnabled)
+            base.CopySettingsFromBackingData(ledsData, invertCopyDirection);
+            var specific = (BackingData_LEDs)ledsData;
+
+            if(invertCopyDirection)
             {
-                dshm_AllLEDsSettings = null;
-                return;
+                specific.IsGroupEnabled = this.IsGroupEnabled;
+                specific.LEDMode = this.LEDMode;
+                for (int i = 0; i < LEDsCustoms.Length; i++)
+                {
+                    specific.LEDsCustoms[i].CopyCustoms(this.LEDsCustoms[i]);
+                }
+            }
+            else
+            {
+                this.IsGroupEnabled = specific.IsGroupEnabled;
+                this.LEDMode = specific.LEDMode;
+                for (int i = 0; i < LEDsCustoms.Length; i++)
+                {
+                    this.LEDsCustoms[i].CopyCustoms(specific.LEDsCustoms[i]);
+                }
+                this.CurrentLEDCustoms = this.LEDsCustoms[0];
             }
 
-            dshm_AllLEDsSettings.Mode = SaveLoadUtils.Get_DSHM_LEDModes_From_ControlApp[this.LEDMode];
+        }
 
-            var dshm_singleLED = new DSHM_Format_ContextSettings.SingleLEDCustoms[]
-            { dshm_AllLEDsSettings.Player1, dshm_AllLEDsSettings.Player2,dshm_AllLEDsSettings.Player3,dshm_AllLEDsSettings.Player4, };
+        public class LEDCustoms
+        {
+            private byte DEFAULT_duration = 0xFF;
+            private byte DEFAULT_intervalDuration = 0xFF;
+            private byte DEFAULT_intervalPortionON = 0xFF;
+            private byte DEFAULT_intervalPortionOFF = 0x00;
 
-            for (int i = 0; i < 4; i++)
+            [Reactive] public bool IsLEDEnabled { get; set; }
+
+            [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+            public int LEDIndex { get; }
+            [Reactive] public byte Duration { get; set; }
+            [Reactive] public byte IntervalDuration { get; set; }
+            [Reactive] public byte IntervalPortionON { get; set; }
+            public byte IntervalPortionOFF
             {
-                switch (this.LEDMode)
-                {
-                    case ControlApp_LEDsModes.CustomPattern:
-                        dshm_singleLED[i].Enabled = this.LEDsCustoms[i].IsLEDEnabled ? (byte)0x10 : (byte)0x00;
-                        dshm_singleLED[i].Duration = this.LEDsCustoms[i].Duration;
-                        dshm_singleLED[i].IntervalDuration = this.LEDsCustoms[i].IntervalDuration;
-                        dshm_singleLED[i].IntervalPortionOn = this.LEDsCustoms[i].IntervalPortionON;
-                        dshm_singleLED[i].IntervalPortionOff = this.LEDsCustoms[i].IntervalPortionOFF;
-                        break;
-                    case ControlApp_LEDsModes.CustomStatic:
-                        dshm_singleLED[i].Enabled = this.LEDsCustoms[i].IsLEDEnabled ? (byte)0x10 : (byte)0x00;
-                        dshm_singleLED[i].Duration = null;
-                        dshm_singleLED[i].IntervalDuration = null;
-                        dshm_singleLED[i].IntervalPortionOn = null;
-                        dshm_singleLED[i].IntervalPortionOff = null;
-                        break;
-                    case ControlApp_LEDsModes.BatteryIndicatorPlayerIndex:
-                    case ControlApp_LEDsModes.BatteryIndicatorBarGraph:
-                    default:
-                        dshm_singleLED[i] = null;
-                        break;
-                }
+                get => (byte)(256 - IntervalPortionON);
+            }
+            public LEDCustoms(int ledIndex)
+            {
+                this.LEDIndex = ledIndex;
+                Reset();
+            }
+
+            internal void Reset()
+            {
+                IsLEDEnabled = LEDIndex == 0 ? true : false;
+                Duration = DEFAULT_duration;
+                IntervalDuration = DEFAULT_intervalDuration;
+                IntervalPortionON = DEFAULT_intervalPortionON;
+                //IntervalPortionOFF = DEFAULT_intervalPortionOFF;
+            }
+
+            public void CopyCustoms(LEDCustoms copySource)
+            {
+                this.IsLEDEnabled = copySource.IsLEDEnabled;
+                this.Duration = copySource.Duration;
+                this.IntervalDuration = copySource.IntervalDuration;
+                this.IntervalPortionON = copySource.IntervalPortionON;
             }
         }
 
+        /*
         public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
             DSHM_Format_ContextSettings.AllLEDSettings dshm_AllLEDsSettings = dshmContextSettings.LEDSettings;
 
-            if(dshm_AllLEDsSettings.Mode == null)
+            if (dshm_AllLEDsSettings.Mode == null)
             {
                 this.IsGroupEnabled = false;
                 return;
@@ -106,7 +138,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             {
                 if (this.LEDMode == ControlApp_LEDsModes.CustomPattern)
                 {
-                    this.LEDsCustoms[i].IsLEDEnabled = dshm_singleLED[i].Enabled.GetValueOrDefault() == 0x10 ? true : false ;
+                    this.LEDsCustoms[i].IsLEDEnabled = dshm_singleLED[i].Enabled.GetValueOrDefault() == 0x10 ? true : false;
                     this.LEDsCustoms[i].Duration = dshm_singleLED[i].Duration.GetValueOrDefault();
                     this.LEDsCustoms[i].IntervalDuration = dshm_singleLED[i].IntervalDuration.GetValueOrDefault();
                     this.LEDsCustoms[i].IntervalPortionON = dshm_singleLED[i].IntervalPortionOn.GetValueOrDefault();
@@ -121,38 +153,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
             if (IsItActuallyStaticMode) this.LEDMode = ControlApp_LEDsModes.CustomStatic;
         }
-
-        public class LEDCustoms
-        {
-            private byte DEFAULT_duration = 0xFF;
-            private byte DEFAULT_intervalDuration = 0xFF;
-            private byte DEFAULT_intervalPortionON = 0xFF;
-            private byte DEFAULT_intervalPortionOFF = 0x00;
-
-            [Reactive] public bool IsLEDEnabled { get; set; }
-
-            [Reactive] public int LEDIndex { get; set; }
-            [Reactive] public byte Duration { get; set; }
-            [Reactive] public byte IntervalDuration { get; set; }
-            [Reactive] public byte IntervalPortionON { get; set; }
-            [Reactive] public byte IntervalPortionOFF { get; set; }
-            public LEDCustoms(int ledIndex)
-            {
-                this.LEDIndex = ledIndex;
-                Reset();
-            }
-
-            internal void Reset()
-            {
-                IsLEDEnabled = LEDIndex == 0 ? true : false;
-                Duration = DEFAULT_duration;
-                IntervalDuration = DEFAULT_intervalDuration;
-                IntervalPortionON = DEFAULT_intervalPortionON;
-                IntervalPortionOFF = DEFAULT_intervalPortionOFF;
-            }
-        }
-
-
+        */
     }
 
 
