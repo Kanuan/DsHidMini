@@ -161,6 +161,17 @@
 					</ItemsControl.ItemTemplate>
 			</ItemsControl>
 
+			<DockPanel DockPanel.Dock="Top" LastChildFill="True">
+				<Button
+					DockPanel.Dock="Left"
+					Content="Apply changes"
+					Command="{Binding SaveChangesCommand}"/>
+				<Button
+					DockPanel.Dock="Left"
+					Command="{Binding CancelChangesCommand}"
+					Content="Cancel"/>
+			</DockPanel>
+
 			<!-- Mode unique settings -->
 			<ContentControl DockPanel.Dock="Top"  Margin="0,2,0,0" Background="LightGray" MaxHeight="200">
 				<ScrollViewer DockPanel.Dock="Top">
@@ -181,7 +192,7 @@
 					HorizontalAlignment="Center"/>
 			</Border>
 
-			<TabControl DockPanel.Dock="Bottom" Background="LightGray" >
+			<TabControl DockPanel.Dock="Top" Background="LightGray" >
 				<!-- Basic options -->
 				<TabItem>
 					<TabItem.Header>
@@ -213,6 +224,7 @@
 					</DockPanel>
 				</TabItem>
 			</TabControl>
+
 
 		</DockPanel>
 

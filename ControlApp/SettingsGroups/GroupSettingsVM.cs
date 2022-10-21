@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -94,9 +94,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         [Reactive] public virtual bool IsGroupLocked { get; set; } = false;
 
-        [Reactive] public SettingsContainer SettingsContainer { get; set; }
+        [Reactive] public VMGroupsContainer SettingsContainer { get; set; }
 
-        [Reactive] public SettingsContext Context { get; internal set; }
+        [Reactive] public SettingsContext Context { get; internal set; } = SettingsContext.XInput;
 
         [Reactive] public virtual bool IsOverrideCheckboxVisible { get; set; } = false;
 
@@ -161,29 +161,22 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public abstract void ResetGroupToOriginalDefaults();
 
-        public virtual void CopySettingsFromBackingData(SettingsBackingData data, bool invertCopyDirection = false)
-        {
-            if (invertCopyDirection)
-                this.Context = data.Context;
-            else
-                data.Context = this.Context;
-        }
-
         public bool ShouldGroupBeEnabledOnReset()
         {
             return true;
             //return (Context == SettingsContext.General || Context == SettingsContext.Global);
         }
 
-        public GroupSettingsVM(SettingsContext context, SettingsContainer containter)
-        {
-            SettingsContainer = containter;
-            //IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
-            if (DictGroupHeader.TryGetValue(Group, out string groupHeader)) Header = groupHeader;
-            Context = context;
-            //IsOverrideCheckboxVisible = (Context == SettingsContext.General || Context == SettingsContext.Global) ? false : true;
-            ResetGroupToOriginalDefaults();
+        public abstract void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource);
+        public abstract void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource);
 
+        public GroupSettingsVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter)
+        {
+            SettingsContainer = vmGroupsContainter;
+            if (DictGroupHeader.TryGetValue(Group, out string groupHeader)) Header = groupHeader;
+            LoadSettingsFromBackingDataContainer(backingDataContainer);
+            //IsOverrideCheckboxVisible = (Settings.Context == SettingsContext.General || Settings.Context == SettingsContext.Global) ? false : true;
+            //IsOverrideCheckboxVisible = (Context == SettingsContext.General || Context == SettingsContext.Global) ? false : true;
         }
     }
 

@@ -16,12 +16,13 @@ using DynamicData;
 using ReactiveUI.Fody.Helpers;
 using ReactiveUI;
 using System.Reactive;
+using Nefarius.DsHidMini.ControlApp.UserData;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     internal class TestViewModel : ReactiveObject
     {
-        [Reactive] public DeviceSettingsManager DeviceSettings { get; set; } = new();
+        [Reactive] public ControllersUserData UserDataManager { get; set; } = new();
 
         [Reactive] public string JsonSaveTest { get; set; }
         public void SaveSettingsToJson()
@@ -29,18 +30,22 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             JsonSaveTest = DeviceSettingsManager.SaveToJsonTest(DevicesCustomsExample);
         }
 
-        SettingsContainer ProfileExample = new(SettingsContext.DS4W);
-        SettingsContainer DevicesCustomsExample = new(SettingsContext.SDF);
-
         
+
+        DeviceSpecificData deviceDatas;
+        [Reactive] private VMGroupsContainer DevicesCustomsExample { get; set; }
 
         public TestViewModel()
         {
+            //VMGroupsContainer ProfileExample = new(SettingsContext.DS4W);
+            //var profileTab = new SettingTabViewModel("Profile settings", ProfileExample, false);
 
+            string controllerMacTest = "123";
 
-            var profileTab = new SettingTabViewModel("Profile settings", ProfileExample, false);
+            deviceDatas = UserDataManager.GetDeviceSpecificData(controllerMacTest);
+            DevicesCustomsExample = new(deviceDatas.DatasContainter);
+
             var customsTab = new SettingTabViewModel("Device settings", DevicesCustomsExample, true);
-
 
             /// Creating Tabs
             /// _settingsTabs = new ObservableCollection<SettingTabViewModel>();
@@ -48,12 +53,15 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             _settingsTabs = new ObservableCollection<SettingTabViewModel>
             {
                 customsTab,
-                profileTab,
+                //profileTab,
             };
 
             OnTabSelected(SettingsTabs[0]);
             ButtonpressedCommand = new RelayCommand(SaveSettingsToJson);
             TabSelectedCommand = new RelayCommand<SettingTabViewModel>(OnTabSelected);
+            SaveChangesCommand = new RelayCommand(OnSaveButtonPressed);
+            CancelChangesCommand = new RelayCommand(OnCancelButtonPressed);
+            
         }
 
 
@@ -74,10 +82,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => hidDeviceModesList;
         }
 
-        public SettingsContext CurrentHIDMode
+        public SettingsContext? CurrentHIDMode
         {
             get => DevicesCustomsExample.Context;
-            set => DevicesCustomsExample.ChangeContextOfAllGroups(value);
+            set => DevicesCustomsExample.ChangeContextOfAllGroups(value.GetValueOrDefault());
         }
 
         public ObservableCollection<SettingTabViewModel> SettingsTabs
@@ -107,6 +115,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public IRelayCommand ButtonpressedCommand { get; }
         public IRelayCommand<SettingTabViewModel> TabSelectedCommand { get; }
 
+        public IRelayCommand SaveChangesCommand { get; }
+        public IRelayCommand CancelChangesCommand { get; }
+
         private void OnTabSelected(SettingTabViewModel? obj)
         {
             CurrentTab = obj;
@@ -114,6 +125,17 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             {
                 tab.IsTabSelected = (tab == CurrentTab) ? true : false;
             }
+        }
+
+        private void OnSaveButtonPressed()
+        {
+            DevicesCustomsExample.SaveAllChangesToBackingData(deviceDatas.DatasContainter);
+            UserDataManager.SaveDeviceSpecificDataToDisk(deviceDatas);
+        }
+
+        private void OnCancelButtonPressed()
+        {
+            DevicesCustomsExample.LoadDatasToAllGroups(deviceDatas.DatasContainter);
         }
 
     }

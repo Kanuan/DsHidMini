@@ -1,4 +1,4 @@
-﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+﻿using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -9,26 +9,11 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     public class GroupSticksDeadzoneVM : GroupSettingsVM
     {
         // -------------------------------------------- STICKS DEADZONE GROUP
-        public const bool DEFAULT_applyLeftStickDeadzone = true;
-        public const bool DEFAULT_applyRightStickDeadzone = true;
-        public const int DEFAULT_leftStickDeadzone = 0;
-        public const int DEFAULT_rightStickDeadzone = 0;
+        private BackingData_SticksDZ _tempBackingData = new();
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.SticksDeadzone;
 
         /*
-        public override bool IsOverrideCheckboxVisible
-        {
-            get
-            {
-                if (IsGroupLocked) return false;
-                return base.IsOverrideCheckboxVisible;
-            }
-
-            set => base.IsOverrideCheckboxVisible = value;
-        }
-        */
-
         public override bool IsGroupLocked
         {
             get
@@ -44,21 +29,59 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 this.RaisePropertyChanged(nameof(IsGroupLocked));
             }
         }
+        */
 
-        [Reactive] public bool IsGroupEnabled { get; set; }
-        [Reactive] public bool ApplyLeftStickDeadZone { get; set; }
-        [Reactive] public bool ApplyRightStickDeadZone { get; set; }
-        [Reactive] public byte LeftStickDeadZone { get; set; }
-        [Reactive] public byte RightStickDeadZone { get; set; }
+        public bool IsGroupEnabled
+        {
+            get => _tempBackingData.IsGroupEnabled; set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+            }
+        }
+
+        public bool ApplyLeftStickDeadZone
+        {
+            get => _tempBackingData.ApplyLeftStickDeadZone; set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.ApplyLeftStickDeadZone, value);
+            }
+        }
+
+        public bool ApplyRightStickDeadZone
+        {
+            get => _tempBackingData.ApplyRightStickDeadZone; set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.ApplyRightStickDeadZone, value);
+            }
+        }
+
+        public int LeftStickDeadZone
+        {
+            get => _tempBackingData.LeftStickDeadZone; set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.LeftStickDeadZone, value);
+            }
+        }
+
+        public int RightStickDeadZone
+        {
+            get => _tempBackingData.RightStickDeadZone; set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.RightStickDeadZone, value);
+            }
+        }
+
 
         readonly ObservableAsPropertyHelper<int> leftStickDeadZoneInpercent;
         public int LeftStickDeadZoneInPercent => leftStickDeadZoneInpercent.Value;
 
         readonly ObservableAsPropertyHelper<int> rightStickDeadZoneInpercent;
+
+
         public int RightStickDeadZoneInPercent => rightStickDeadZoneInpercent.Value;
 
 
-        public GroupSticksDeadzoneVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
+        public GroupSticksDeadzoneVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter)
         {
             AdjustSettingsBasedOnContext();
             leftStickDeadZoneInpercent = this
@@ -94,41 +117,28 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override void ResetGroupToOriginalDefaults()
         {
-            IsGroupEnabled = ShouldGroupBeEnabledOnReset();
-
-            ApplyRightStickDeadZone = DEFAULT_applyRightStickDeadzone;
-            ApplyLeftStickDeadZone = DEFAULT_applyLeftStickDeadzone;
-            LeftStickDeadZone = DEFAULT_leftStickDeadzone;
-            RightStickDeadZone = DEFAULT_rightStickDeadzone;
+            _tempBackingData.ResetToDefault();
+            this.RaisePropertyChanged(string.Empty);
         }
 
-
-
-
-        public override void CopySettingsFromBackingData(SettingsBackingData data, bool invertCopyDirection = false)
+        public override void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource)
         {
-            base.CopySettingsFromBackingData(data, invertCopyDirection);
-            var specific = (BackingData_SticksDZ)data;
+            SaveSettingsToBackingData(dataContainerSource.sticksDZData);
+        }
+        public void SaveSettingsToBackingData(BackingData_SticksDZ dataSource)
+        {
+            BackingData_SticksDZ.CopySettings(dataSource, _tempBackingData);
+        }
 
-            if(invertCopyDirection)
-            {
-                specific.IsGroupEnabled = this.IsGroupEnabled;
+        public override void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource)
+        {
+            LoadSettingsFromBackingData(dataContainerSource.sticksDZData);
+        }
 
-                specific.ApplyRightStickDeadZone = this.ApplyRightStickDeadZone;
-                specific.ApplyLeftStickDeadZone = this.ApplyLeftStickDeadZone;
-                specific.LeftStickDeadZone = this.LeftStickDeadZone;
-                specific.RightStickDeadZone = this.RightStickDeadZone;
-            }
-            else
-            {
-                this.IsGroupEnabled = specific.IsGroupEnabled;
-
-                this.ApplyRightStickDeadZone = specific.ApplyRightStickDeadZone;
-                this.ApplyLeftStickDeadZone = specific.ApplyLeftStickDeadZone;
-                this.LeftStickDeadZone = specific.LeftStickDeadZone;
-                this.RightStickDeadZone = specific.RightStickDeadZone;
-            }
-
+        public void LoadSettingsFromBackingData(BackingData_SticksDZ dataTarget)
+        {
+            BackingData_SticksDZ.CopySettings(_tempBackingData, dataTarget);
+            this.RaisePropertyChanged(string.Empty);
         }
     }
 }

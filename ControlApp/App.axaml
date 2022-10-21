@@ -67,10 +67,10 @@
 									<Label Content="2" Grid.Column="1"/>
 									<Label Content="3" Grid.Column="2"/>
 									<Label Content="4" Grid.Column="3"/>
-									<CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding LEDsCustoms[0].IsLEDEnabled}"/>
-									<CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding LEDsCustoms[1].IsLEDEnabled}"/>
-									<CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding LEDsCustoms[2].IsLEDEnabled}"/>
-									<CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding LEDsCustoms[3].IsLEDEnabled}"/>
+									<CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AllLEDsCustoms[0].IsLEDEnabled}"/>
+									<CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding AllLEDsCustoms[1].IsLEDEnabled}"/>
+									<CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding AllLEDsCustoms[2].IsLEDEnabled}"/>
+									<CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding AllLEDsCustoms[3].IsLEDEnabled}"/>
 								</Grid>
 							</ContentControl>
 							<!-- Index 3: LEDs custom advanced -->

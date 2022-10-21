@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Nefarius.DsHidMini.ControlApp.JsonSettings;
+using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -27,24 +27,15 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         }
 
-        public void ResetSettingsToDefault(SettingsContainer modeContextSettings)
+        public void ResetSettingsToDefault(VMGroupsContainer modeContextSettings)
         {
 
         }
 
-        public static string SaveToJsonTest(SettingsContainer container)
+        public static string SaveToJsonTest(VMGroupsContainer container)
         {
             var backingDataContainer = new BackingDataContainer();
             //var dshmContextSettings = dshmSettings.General;
-
-                container.GroupModeUnique.CopySettingsFromBackingData(backingDataContainer.modesUniqueData,true);
-                container.GroupLEDsControl.CopySettingsFromBackingData(backingDataContainer.ledsData,true);
-                container.GroupWireless.CopySettingsFromBackingData(backingDataContainer.wirelessData, true);
-                container.GroupRumbleGeneral.CopySettingsFromBackingData(backingDataContainer.rumbleGeneralData, true);
-                container.GroupSticksDZ.CopySettingsFromBackingData(backingDataContainer.sticksDZData, true);
-                container.GroupOutRepControl.CopySettingsFromBackingData(backingDataContainer.outRepData, true);
-                container.GroupRumbleLeftRescale.CopySettingsFromBackingData(backingDataContainer.leftRumbleRescaleData, true);
-                container.GroupRumbleRightConversion.CopySettingsFromBackingData(backingDataContainer.rightVariableEmulData, true);
 
             var options = new JsonSerializerOptions
             {
@@ -60,12 +51,17 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             System.IO.File.WriteAllText(@"D:\ControlAppTests.json", jsonString);
 
+            var test = new ControllersUserData();
+
+            string profileJson = JsonSerializer.Serialize(ProfileData.DefaultProfile, options);
+            System.IO.File.WriteAllText(@"D:\DefaultProfileTest.json", profileJson);
+
             return jsonString;
         }
 
     }
 
-        public class SettingsContainer
+        public class VMGroupsContainer
     {
 
         internal List<GroupSettingsVM> GroupSettingsList = new();
@@ -81,18 +77,20 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         [Reactive] public GroupRumbleLeftRescaleVM GroupRumbleLeftRescale { get; set; }
         [Reactive] public GroupRumbleRightConversionAdjustsVM GroupRumbleRightConversion { get; set; }
 
-        public SettingsContainer(SettingsContext settingsContext)
+        public VMGroupsContainer(BackingDataContainer dataContainer)
         {
-            Context = settingsContext;
+            Context = dataContainer.modesUniqueData.SettingsContext;
 
-            GroupSettingsList.Add(GroupModeUnique = new(Context,this));
-            GroupSettingsList.Add(GroupLEDsControl = new(Context, this));
-            GroupSettingsList.Add(GroupWireless = new(Context, this));
-            GroupSettingsList.Add(GroupSticksDZ = new(Context, this));
-            GroupSettingsList.Add(GroupRumbleGeneral = new(Context, this));
-            GroupSettingsList.Add(GroupOutRepControl = new(Context, this));
-            GroupSettingsList.Add(GroupRumbleLeftRescale = new(Context, this));
-            GroupSettingsList.Add(GroupRumbleRightConversion = new(Context, this));
+            GroupSettingsList.Add(GroupModeUnique = new(dataContainer,this));
+            GroupSettingsList.Add(GroupLEDsControl = new(dataContainer, this));
+            GroupSettingsList.Add(GroupWireless = new(dataContainer, this));
+            GroupSettingsList.Add(GroupSticksDZ = new(dataContainer, this));
+            GroupSettingsList.Add(GroupRumbleGeneral = new(dataContainer, this));
+            GroupSettingsList.Add(GroupOutRepControl = new(dataContainer, this));
+            GroupSettingsList.Add(GroupRumbleLeftRescale = new(dataContainer, this));
+            GroupSettingsList.Add(GroupRumbleRightConversion = new(dataContainer, this));
+
+            ChangeContextOfAllGroups(Context);
 
             GroupModeUnique.PropertyChanged += GroupModeUnique_PropertyChanged;
         }
@@ -105,6 +103,24 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 group.ChangeContext(context);
             }
         }
+
+        public void SaveAllChangesToBackingData(BackingDataContainer dataContainer)
+        {
+            foreach (GroupSettingsVM group in GroupSettingsList)
+            {
+                group.SaveSettingsToBackingDataContainer(dataContainer);
+            }
+        }
+
+        public void LoadDatasToAllGroups(BackingDataContainer dataContainer)
+        {
+            foreach (GroupSettingsVM group in GroupSettingsList)
+            {
+                group.LoadSettingsFromBackingDataContainer(dataContainer);
+            }
+        }
+
+
 
         private void GroupModeUnique_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {

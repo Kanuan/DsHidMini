@@ -1,4 +1,4 @@
-﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+﻿using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -9,30 +9,41 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class GroupModeUniqueVM : GroupSettingsVM
     {
-        public const ControlApp_DsPressureMode DEFAULT_pressureExposureMode = ControlApp_DsPressureMode.Default;
-        public const ControlApp_DPADModes DEFAULT_padExposureMode = ControlApp_DPADModes.HAT;
-        public const bool DEFAULT_isLEDsAsXInputSlotEnabled = false;
-        public const bool DEFAULT_isDS4LightbarTranslationEnabled = false;
-        public const bool DEFAULT_areDSHMRumbleSettingsDisabled = true;
-        private bool DEFAULT_areRumbleSettingsDisabledAndLockedInSXSMode = true;
+        private BackingData_ModesUnique _tempBackingData = new();
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.Unique_All;
 
-        [Reactive] public bool IsGroupEnabled { get; set; }
+        public bool IsGroupEnabled
+        {
+            get => _tempBackingData.IsGroupEnabled;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+            }
+        }
         // General
-        [Reactive] public DSHM_HidDeviceModes HIDDeviceMode{ get; set; }
+        // public DSHM_HidDeviceModes HIDDeviceMode { get => _tempBackingData.; set => this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value); }
 
         // SDF and GPJ
         readonly ObservableAsPropertyHelper<bool> arePressureaNDPadOptionsVisible;
         public bool ArePressureaNDPadOptionsVisible => arePressureaNDPadOptionsVisible.Value;
-        /*
-        public bool ArePressureaNDPadOptionsVisible
+
+        public ControlApp_DsPressureMode PressureExposureMode
         {
-            get => ((Context == SettingsContext.SDF) || (Context == SettingsContext.GPJ)) ? true : false;
+            get => _tempBackingData.PressureExposureMode;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.PressureExposureMode, value);
+            }
         }
-        */
-        [Reactive] public ControlApp_DsPressureMode PressureExposureMode { get; set; }
-        [Reactive] public ControlApp_DPADModes DPadExposureMode { get; set; }
+        public ControlApp_DPADModes DPadExposureMode
+        {
+            get => _tempBackingData.DPadExposureMode;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.DPadExposureMode, value);
+            }
+        }
 
         // SXS 
         public bool AreSXSRelatedOptionsVisible
@@ -41,106 +52,78 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         }
         public bool PreventRemappingConflictsInSXSMode
         {
-            get
+            get => _tempBackingData.PreventRemappingConflictsInSXSMode;
+            set
             {
-                if(Context == SettingsContext.SXS) return DEFAULT_areRumbleSettingsDisabledAndLockedInSXSMode;
-                return false;
+                this.RaiseAndSetIfChanged(ref _tempBackingData.PreventRemappingConflictsInSXSMode, value);
             }
-
-            set => DEFAULT_areRumbleSettingsDisabledAndLockedInSXSMode = value;
         }
 
         // XInput
-        [Reactive] public bool IsLEDsAsXInputSlotEnabled { get; set; }
+        public bool IsLEDsAsXInputSlotEnabled
+        {
+            get => _tempBackingData.IsLEDsAsXInputSlotEnabled;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsLEDsAsXInputSlotEnabled, value);
+            }
+        }
 
         // DS4Windows
-        [Reactive] public bool IsDS4LightbarTranslationEnabled { get; set; }
-
-        public GroupModeUniqueVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
+        public bool IsDS4LightbarTranslationEnabled
         {
-            /*
-            if(context != SettingsContext.General)
+            get => _tempBackingData.IsDS4LightbarTranslationEnabled;
+            set
             {
-                IsGroupEnabled = true;
-                IsOverrideCheckboxVisible = false;
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsDS4LightbarTranslationEnabled, value);
             }
-            */
+        }
 
+        public GroupModeUniqueVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter)
+        {
             arePressureaNDPadOptionsVisible = this
                 .WhenAnyValue(x => x.Context)
                 .Select(ArePressureaNDPadOptionsVisible => (( Context == SettingsContext.SDF ) || (Context == SettingsContext.GPJ)) ? true : false)
                 .ToProperty(this, x => x.ArePressureaNDPadOptionsVisible);
-
-
-    }
+        }
 
         public override void ChangeContext(SettingsContext context)
         {
             base.ChangeContext(context);
+            _tempBackingData.SettingsContext = context;
 
         }
 
         public override void ResetGroupToOriginalDefaults()
         {
-            IsGroupEnabled = ShouldGroupBeEnabledOnReset();
-
-            HIDDeviceMode = DSHM_HidDeviceModes.XInput;
-            PressureExposureMode = DEFAULT_pressureExposureMode;
-            DPadExposureMode = DEFAULT_padExposureMode;
-            IsLEDsAsXInputSlotEnabled = DEFAULT_isLEDsAsXInputSlotEnabled;
-            IsDS4LightbarTranslationEnabled = DEFAULT_isDS4LightbarTranslationEnabled;
-            PreventRemappingConflictsInSXSMode = DEFAULT_areDSHMRumbleSettingsDisabled;
+            _tempBackingData.ResetToDefault();
+            this.RaisePropertyChanged(string.Empty);
         }
 
-
- 
-        public override void CopySettingsFromBackingData(SettingsBackingData modesUniqueData, bool invertCopyDirection = false)
+        public override void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource)
         {
-            base.CopySettingsFromBackingData(modesUniqueData, invertCopyDirection);
-
-            var specific = (BackingData_ModesUnique)modesUniqueData;
-
-            if (invertCopyDirection)
-            {
-                specific.IsGroupEnabled = this.IsGroupEnabled;
-                specific.DPadExposureMode = this.DPadExposureMode;
-                specific.IsDS4LightbarTranslationEnabled = this.IsDS4LightbarTranslationEnabled;
-                specific.IsLEDsAsXInputSlotEnabled = this.IsLEDsAsXInputSlotEnabled;
-                specific.PressureExposureMode = this.PressureExposureMode;
-                specific.PreventRemappingConflictsInSXSMode = this.PreventRemappingConflictsInSXSMode;
-            }
-            else
-            {
-                this.IsGroupEnabled = specific.IsGroupEnabled;
-                this.DPadExposureMode = specific.DPadExposureMode;
-                this.IsDS4LightbarTranslationEnabled = specific.IsDS4LightbarTranslationEnabled;
-                this.IsLEDsAsXInputSlotEnabled = specific.IsLEDsAsXInputSlotEnabled;
-                this.PressureExposureMode = specific.PressureExposureMode;
-                this.PreventRemappingConflictsInSXSMode = specific.PreventRemappingConflictsInSXSMode;
-            }
-
+            LoadSettingsFromBackingData(dataContainerSource.modesUniqueData);
         }
 
-        /*
- public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
- {
-     if ((this.Context == SettingsContext.General) && (dshmContextSettings.HIDDeviceMode != null))
-         this.HIDDeviceMode = dshmContextSettings.HIDDeviceMode.GetValueOrDefault();
-     else
-         this.HIDDeviceMode = DSHM_HidDeviceModes.XInput;
+        public void LoadSettingsFromBackingData(BackingData_ModesUnique dataTarget)
+        {
+            BackingData_ModesUnique.CopySettings(_tempBackingData, dataTarget);
+            this.RaisePropertyChanged(string.Empty);
+        }
+
+        public override void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource)
+        {
+            SaveSettingsToBackingData(dataContainerSource.modesUniqueData);
+        }
+
+        public void SaveSettingsToBackingData(BackingData_ModesUnique dataSource)
+        {
+            BackingData_ModesUnique.CopySettings(dataSource, _tempBackingData);
+        }
 
 
-     dshmContextSettings.PressureExposureMode =
-         (this.Context == SettingsContext.SDF
-         || this.Context == SettingsContext.GPJ)
-         ? SaveLoadUtils.Get_DSHM_DsPressureMode_From_ControlApp[this.PressureExposureMode] : null;
 
-     dshmContextSettings.DPadExposureMode =
-         (this.Context == SettingsContext.SDF
-         || this.Context == SettingsContext.GPJ)
-         ? SaveLoadUtils.Get_DSHM_DPadMode_From_ControlApp[this.DPadExposureMode] : null;
- }
- */
+
     }
 
 

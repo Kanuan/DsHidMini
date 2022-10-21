@@ -1,70 +1,71 @@
-﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+﻿using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class GroupWirelessSettingsVM : GroupSettingsVM
     {
-        // -------------------------------------------- WIRELESS SETTINGS GROUP
-        public bool DEFAULT_isWirelessIdleDisconnectEnabled = true;
-        public byte DEFAULT_wirelessIdleDisconnectTime = 5;
-        public bool DEFAULT_isQuickDisconnectComboEnabled = true;
-        public static readonly ButtonsCombo DEFAULT_disconnectCombo = new()
-        {
-            Button1 = ControlApp_ComboButtons.PS,
-            Button2 = ControlApp_ComboButtons.R1,
-            Button3 = ControlApp_ComboButtons.L1,
-        };
-        public const byte DEFAULT_disconnectComboHoldTime = 3;
-
+        private BackingData_Wireless _tempBackingData = new();
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.WirelessSettings;
-        [Reactive] public bool IsGroupEnabled { get; set; }
-        [Reactive] public bool IsWirelessIdleDisconnectEnabled { get; set; }
-        [Reactive] public byte WirelessIdleDisconnectTime { get; set; }
-        [Reactive] public bool IsQuickDisconnectComboEnabled { get; set; }
-        [Reactive] public ButtonsCombo QuickDisconnectCombo { get; set; } = new();
+        public bool IsGroupEnabled
+        {
+            get => _tempBackingData.IsGroupEnabled;
+            set => this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+        }
+        public bool IsWirelessIdleDisconnectEnabled
+        {
+            get => _tempBackingData.IsWirelessIdleDisconnectEnabled;
+            set => this.RaiseAndSetIfChanged(ref _tempBackingData.IsWirelessIdleDisconnectEnabled, value);
+        }
+        public byte WirelessIdleDisconnectTime
+        {
+            get => _tempBackingData.WirelessIdleDisconnectTime;
+            set => this.RaiseAndSetIfChanged(ref _tempBackingData.WirelessIdleDisconnectTime, value);
+        }
+        public bool IsQuickDisconnectComboEnabled
+        {
+            get => _tempBackingData.IsQuickDisconnectComboEnabled;
+            set => this.RaiseAndSetIfChanged(ref _tempBackingData.IsQuickDisconnectComboEnabled, value);
+        }
+        public ButtonsCombo QuickDisconnectCombo
+        {
+            get => _tempBackingData.QuickDisconnectCombo;
+            set => this.RaiseAndSetIfChanged(ref _tempBackingData.QuickDisconnectCombo, value);
+        }
 
-        public GroupWirelessSettingsVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
+        public GroupWirelessSettingsVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter)
         {
 
         }
 
         public override void ResetGroupToOriginalDefaults()
         {
-            IsGroupEnabled = ShouldGroupBeEnabledOnReset();
-
-            IsWirelessIdleDisconnectEnabled = DEFAULT_isWirelessIdleDisconnectEnabled;
-            WirelessIdleDisconnectTime = DEFAULT_wirelessIdleDisconnectTime;
-            IsQuickDisconnectComboEnabled = DEFAULT_isQuickDisconnectComboEnabled;
-            QuickDisconnectCombo.copyCombo(DEFAULT_disconnectCombo);
+            _tempBackingData.ResetToDefault();
+            this.RaisePropertyChanged(string.Empty);
         }
 
-        public override void CopySettingsFromBackingData(SettingsBackingData wirelessData, bool invertCopyDirection = false)
+        public override void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource)
         {
-            base.CopySettingsFromBackingData(wirelessData, invertCopyDirection);
-            var specific = (BackingData_Wireless)wirelessData;
+            SaveSettingsToBackingData(dataContainerSource.wirelessData);
+        }
 
-            if (invertCopyDirection)
-            {
-                specific.IsGroupEnabled = this.IsGroupEnabled;
+        public void SaveSettingsToBackingData(BackingData_Wireless dataSource)
+        {
+            BackingData_Wireless.CopySettings(dataSource, _tempBackingData);
+        }
 
-                specific.IsQuickDisconnectComboEnabled = this.IsQuickDisconnectComboEnabled;
-                specific.IsWirelessIdleDisconnectEnabled = this.IsWirelessIdleDisconnectEnabled;
-                specific.QuickDisconnectCombo.copyCombo(this.QuickDisconnectCombo);
-                specific.WirelessIdleDisconnectTime = this.WirelessIdleDisconnectTime;
-            }
-            else
-            {
-                this.IsGroupEnabled = specific.IsGroupEnabled;
+        public override void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource)
+        {
+            LoadSettingsFromBackingData(dataContainerSource.wirelessData);
+        }
 
-                this.IsQuickDisconnectComboEnabled = specific.IsQuickDisconnectComboEnabled;
-                this.IsWirelessIdleDisconnectEnabled = specific.IsWirelessIdleDisconnectEnabled;
-                this.QuickDisconnectCombo.copyCombo(specific.QuickDisconnectCombo);
-                this.WirelessIdleDisconnectTime = specific.WirelessIdleDisconnectTime;
-            }
-
+        public void LoadSettingsFromBackingData(BackingData_Wireless dataTarget)
+        {
+            BackingData_Wireless.CopySettings(_tempBackingData, dataTarget);
+            this.RaisePropertyChanged(string.Empty);
         }
     }
 

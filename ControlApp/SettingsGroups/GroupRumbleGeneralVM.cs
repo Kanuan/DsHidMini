@@ -1,4 +1,4 @@
-﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+﻿using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -8,108 +8,97 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class GroupRumbleGeneralVM : GroupSettingsVM
     {
-        // -------------------------------------------- DEFAULT GENERAL RUMBLE SETTINGS 
-        public const bool DEFAULT_isVariableLightRumbleEmulationEnabled = false;
-        public const bool DEFAULT_isLeftMotorDisabled = false;
-        public const bool DEFAULT_isRightMotorDisabled = false;
-        public const bool DEFAULT_isVariableRightEmulToggleComboEnabled = false;
-
-        // --------------------------------------------
-
-        private bool isVariableLightRumbleEmulationEnabled;
-        private bool isLeftMotorDisabled;
-        private bool isRightMotorDisabled;
-
-        public static readonly ButtonsCombo DEFAULT_VariableRightEmuToggleCombo = new()
-        {
-            Button1 = ControlApp_ComboButtons.PS,
-            Button2 = ControlApp_ComboButtons.SELECT,
-            Button3 = ControlApp_ComboButtons.None,
-        };
-
-
-
+        private BackingData_RumbleGeneral _tempBackingData = new();
+       
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleGeneral;
-        [Reactive] public bool IsGroupEnabled { get; set; }
+        public bool IsGroupEnabled
+        {
+            get => _tempBackingData.IsGroupEnabled; set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+            }
+        }
         public bool IsVariableLightRumbleEmulationEnabled
         {
-            get => isVariableLightRumbleEmulationEnabled;
-
+            get => _tempBackingData.IsVariableLightRumbleEmulationEnabled;
             set
             {
                 if (value)
                 {
                     IsLeftMotorDisabled = IsRightMotorDisabled = false;
                 }
-                this.RaiseAndSetIfChanged(ref isVariableLightRumbleEmulationEnabled, value);
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsVariableLightRumbleEmulationEnabled, value);
             }
         }
 
-        [Reactive] public bool IsVariableRightEmulToggleComboEnabled { get; set; }
+        public bool IsVariableRightEmulToggleComboEnabled
+        {
+            get => _tempBackingData.IsVariableRightEmulToggleComboEnabled;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsVariableRightEmulToggleComboEnabled, value);
 
-        [Reactive] public ButtonsCombo VariableRightEmulToggleCombo { get; set; } = new();
+            }
+        }
 
-
+        public ButtonsCombo VariableRightEmulToggleCombo
+        {
+            get => _tempBackingData.VariableRightEmulToggleCombo;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.VariableRightEmulToggleCombo, value);
+            }
+        }
 
         public bool IsLeftMotorDisabled
         {
-            get => isLeftMotorDisabled;
+            get => _tempBackingData.IsLeftMotorDisabled;
 
             set
             {
                 if (value) IsVariableLightRumbleEmulationEnabled = false;
-                this.RaiseAndSetIfChanged(ref isLeftMotorDisabled, value);
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsLeftMotorDisabled, value);
             }
         }
         public bool IsRightMotorDisabled
         {
-            get => isRightMotorDisabled;
+            get => _tempBackingData.IsRightMotorDisabled;
 
             set
             {
                 if (value) IsVariableLightRumbleEmulationEnabled = false;
-                this.RaiseAndSetIfChanged(ref isRightMotorDisabled, value);
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsRightMotorDisabled, value);
             }
         }
 
         public override void ResetGroupToOriginalDefaults()
         {
-            IsGroupEnabled = ShouldGroupBeEnabledOnReset();
-
-            IsVariableLightRumbleEmulationEnabled = DEFAULT_isVariableLightRumbleEmulationEnabled;
-            IsLeftMotorDisabled = DEFAULT_isLeftMotorDisabled;
-            IsRightMotorDisabled = DEFAULT_isRightMotorDisabled;
-            IsVariableRightEmulToggleComboEnabled = DEFAULT_isVariableRightEmulToggleComboEnabled;
-            VariableRightEmulToggleCombo.copyCombo(DEFAULT_VariableRightEmuToggleCombo);
+            _tempBackingData.ResetToDefault();
+            this.RaisePropertyChanged(string.Empty);
         }
 
-        
-        
-
-        public override void CopySettingsFromBackingData(SettingsBackingData rumbleGeneralData, bool invertCopyDirection = false)
+        public override void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource)
         {
-            base.CopySettingsFromBackingData(rumbleGeneralData, invertCopyDirection);
-
-            var specific = (BackingData_RumbleGeneral)rumbleGeneralData;
-            if(invertCopyDirection)
-            {
-                specific.IsVariableLightRumbleEmulationEnabled = this.IsVariableLightRumbleEmulationEnabled;
-                specific.IsLeftMotorDisabled = this.IsLeftMotorDisabled;
-                specific.IsRightMotorDisabled = this.IsRightMotorDisabled;
-                specific.IsVariableRightEmulToggleComboEnabled = this.IsVariableRightEmulToggleComboEnabled;
-                specific.VariableRightEmulToggleCombo.copyCombo(this.VariableRightEmulToggleCombo);
-            }
-            else
-            {
-                this.IsVariableLightRumbleEmulationEnabled = specific.IsVariableLightRumbleEmulationEnabled;
-                this.IsLeftMotorDisabled = specific.IsLeftMotorDisabled;
-                this.IsRightMotorDisabled = specific.IsRightMotorDisabled;
-                this.IsVariableRightEmulToggleComboEnabled = specific.IsVariableRightEmulToggleComboEnabled;
-                this.VariableRightEmulToggleCombo.copyCombo(specific.VariableRightEmulToggleCombo);
-            }
+            SaveSettingsToBackingData(dataContainerSource.rumbleGeneralData);
         }
 
-        public GroupRumbleGeneralVM(SettingsContext context, SettingsContainer containter) : base(context, containter) { }
+        public void SaveSettingsToBackingData(BackingData_RumbleGeneral dataSource)
+        {
+            BackingData_RumbleGeneral.CopySettings(dataSource, _tempBackingData);
+        }
+
+        public override void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource)
+        {
+            LoadSettingsFromBackingData(dataContainerSource.rumbleGeneralData);
+        }
+
+        public void LoadSettingsFromBackingData(BackingData_RumbleGeneral dataTarget)
+        {
+            BackingData_RumbleGeneral.CopySettings(_tempBackingData, dataTarget);
+            this.RaisePropertyChanged(string.Empty);
+        }
+
+        public GroupRumbleGeneralVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter) { }
     }
 
 

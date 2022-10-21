@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Nefarius.DsHidMini.ControlApp.MVVM;
 
-namespace Nefarius.DsHidMini.ControlApp.JsonSettings
+namespace Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json
 {
     public enum DSHM_HidDeviceModes
     {
@@ -70,6 +70,16 @@ namespace Nefarius.DsHidMini.ControlApp.JsonSettings
 
     public class SaveLoadUtils
     {
+        public static Dictionary<SettingsContext, DSHM_HidDeviceModes> Get_DSHM_HIDDeviceMode_From_ControlApp = new()
+        {
+            {SettingsContext.Global , DSHM_HidDeviceModes.XInput},
+            {SettingsContext.General , DSHM_HidDeviceModes.XInput},
+            {SettingsContext.SDF , DSHM_HidDeviceModes.SDF},
+            {SettingsContext.GPJ , DSHM_HidDeviceModes.GPJ},
+            {SettingsContext.SXS , DSHM_HidDeviceModes.SXS},
+            {SettingsContext.DS4W , DSHM_HidDeviceModes.DS4Windows},
+            {SettingsContext.XInput , DSHM_HidDeviceModes.XInput},
+        };
 
         //---------------------------------------------------- LEDsModes
 

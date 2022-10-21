@@ -1,5 +1,6 @@
-﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+﻿using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
+using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Text.Json.Serialization;
@@ -9,151 +10,137 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class GroupLEDsCustomsVM : GroupSettingsVM
     {
-        public const ControlApp_LEDsModes DEFAULT_ledMode = ControlApp_LEDsModes.BatteryIndicatorPlayerIndex;
+        private BackingData_LEDs _tempBackingData = new();
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.LEDsControl;
-        [Reactive] public bool IsGroupEnabled { get; set; }
-        [Reactive] public ControlApp_LEDsModes LEDMode { get; set; }
-        [Reactive]
-        public LEDCustoms[] LEDsCustoms { get; set; } =
+        public bool IsGroupEnabled { get => _tempBackingData.IsGroupEnabled; set => this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value); }
+        public ControlApp_LEDsModes LEDMode { get => _tempBackingData.LEDMode; set => this.RaiseAndSetIfChanged(ref _tempBackingData.LEDMode, value); }
+        public LEDsCustoms.singleLEDCustoms[] AllLEDsCustoms
+        {
+            get => _tempBackingData.LEDsCustoms.LED_x_Customs;
+            set
             {
-            new LEDCustoms(0), new LEDCustoms(1), new LEDCustoms(2), new LEDCustoms(3),
-            };
-        [Reactive] public LEDCustoms CurrentLEDCustoms { get; set; }
+                this.RaiseAndSetIfChanged(ref _tempBackingData.LEDsCustoms.LED_x_Customs, value);
+            }
+        }
+
+        [Reactive] public LEDsCustoms.singleLEDCustoms CurrentLEDCustoms { get; set; }
         public int CurrentLEDCustomsIndex
         {
             get => CurrentLEDCustoms.LEDIndex;
             set
             {
-                CurrentLEDCustoms = LEDsCustoms[value];
+                CurrentLEDCustoms = AllLEDsCustoms[value];
                 this.RaisePropertyChanged("CurrentLEDCustomsIndex");
             }
-
         }
 
-        public GroupLEDsCustomsVM(SettingsContext context, SettingsContainer containter) : base(context, containter)
+        public GroupLEDsCustomsVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter)
         {
-
         }
 
         public override void ResetGroupToOriginalDefaults()
         {
-            IsGroupEnabled = ShouldGroupBeEnabledOnReset();
-
-            LEDMode = DEFAULT_ledMode;
-            foreach (LEDCustoms led in LEDsCustoms)
-            {
-                led.Reset();
-            }
-            CurrentLEDCustoms = LEDsCustoms[0];
+            _tempBackingData.ResetToDefault();
+            CurrentLEDCustomsIndex = 0;
+            this.RaisePropertyChanged(string.Empty);
         }
 
-        public override void CopySettingsFromBackingData(SettingsBackingData ledsData, bool invertCopyDirection = false)
+        public override void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource)
         {
-            base.CopySettingsFromBackingData(ledsData, invertCopyDirection);
-            var specific = (BackingData_LEDs)ledsData;
+            SaveSettingsToBackingData(dataContainerSource.ledsData);
+        }
 
-            if(invertCopyDirection)
+        public void SaveSettingsToBackingData(BackingData_LEDs dataSource)
+        {
+            BackingData_LEDs.CopySettings(dataSource, _tempBackingData);
+        }
+
+        public override void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource)
+        {
+            LoadSettingsFromBackingData(dataContainerSource.ledsData);
+        }
+
+        public void LoadSettingsFromBackingData(BackingData_LEDs dataTarget)
+        {
+            BackingData_LEDs.CopySettings(_tempBackingData, dataTarget);
+            CurrentLEDCustomsIndex = 0;
+            this.RaisePropertyChanged(string.Empty);
+        }
+
+        public class LEDsCustoms
+        {
+            public singleLEDCustoms[] LED_x_Customs = new singleLEDCustoms[4];
+
+            public LEDsCustoms()
             {
-                specific.IsGroupEnabled = this.IsGroupEnabled;
-                specific.LEDMode = this.LEDMode;
-                for (int i = 0; i < LEDsCustoms.Length; i++)
+                for(int i = 0; i < LED_x_Customs.Length; i++)
                 {
-                    specific.LEDsCustoms[i].CopyCustoms(this.LEDsCustoms[i]);
+                    LED_x_Customs[i] = new(i);
                 }
             }
-            else
+
+            public void CopyLEDsCustoms(LEDsCustoms customsToCopy)
             {
-                this.IsGroupEnabled = specific.IsGroupEnabled;
-                this.LEDMode = specific.LEDMode;
-                for (int i = 0; i < LEDsCustoms.Length; i++)
+                for (int i = 0; i < LED_x_Customs.Length; i++)
                 {
-                    this.LEDsCustoms[i].CopyCustoms(specific.LEDsCustoms[i]);
+                    LED_x_Customs[i].CopyCustoms(customsToCopy.LED_x_Customs[i]);
                 }
-                this.CurrentLEDCustoms = this.LEDsCustoms[0];
             }
 
-        }
-
-        public class LEDCustoms
-        {
-            private byte DEFAULT_duration = 0xFF;
-            private byte DEFAULT_intervalDuration = 0xFF;
-            private byte DEFAULT_intervalPortionON = 0xFF;
-            private byte DEFAULT_intervalPortionOFF = 0x00;
-
-            [Reactive] public bool IsLEDEnabled { get; set; }
-
-            [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-            public int LEDIndex { get; }
-            [Reactive] public byte Duration { get; set; }
-            [Reactive] public byte IntervalDuration { get; set; }
-            [Reactive] public byte IntervalPortionON { get; set; }
-            public byte IntervalPortionOFF
+            public void ResetLEDsCustoms()
             {
-                get => (byte)(256 - IntervalPortionON);
-            }
-            public LEDCustoms(int ledIndex)
-            {
-                this.LEDIndex = ledIndex;
-                Reset();
-            }
-
-            internal void Reset()
-            {
-                IsLEDEnabled = LEDIndex == 0 ? true : false;
-                Duration = DEFAULT_duration;
-                IntervalDuration = DEFAULT_intervalDuration;
-                IntervalPortionON = DEFAULT_intervalPortionON;
-                //IntervalPortionOFF = DEFAULT_intervalPortionOFF;
-            }
-
-            public void CopyCustoms(LEDCustoms copySource)
-            {
-                this.IsLEDEnabled = copySource.IsLEDEnabled;
-                this.Duration = copySource.Duration;
-                this.IntervalDuration = copySource.IntervalDuration;
-                this.IntervalPortionON = copySource.IntervalPortionON;
-            }
-        }
-
-        /*
-        public override void LoadFromDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
-        {
-            DSHM_Format_ContextSettings.AllLEDSettings dshm_AllLEDsSettings = dshmContextSettings.LEDSettings;
-
-            if (dshm_AllLEDsSettings.Mode == null)
-            {
-                this.IsGroupEnabled = false;
-                return;
-            }
-            this.IsGroupEnabled = true;
-
-            this.LEDMode = SaveLoadUtils.Get_ControlApp_LEDModes_From_DSHM[dshm_AllLEDsSettings.Mode.GetValueOrDefault()];
-            var IsItActuallyStaticMode = true;
-            var dshm_singleLED = new DSHM_Format_ContextSettings.SingleLEDCustoms[]
-            { dshm_AllLEDsSettings.Player1, dshm_AllLEDsSettings.Player2,dshm_AllLEDsSettings.Player3,dshm_AllLEDsSettings.Player4, };
-
-            for (int i = 0; i < 4; i++)
-            {
-                if (this.LEDMode == ControlApp_LEDsModes.CustomPattern)
+                for (int i = 0; i < LED_x_Customs.Length; i++)
                 {
-                    this.LEDsCustoms[i].IsLEDEnabled = dshm_singleLED[i].Enabled.GetValueOrDefault() == 0x10 ? true : false;
-                    this.LEDsCustoms[i].Duration = dshm_singleLED[i].Duration.GetValueOrDefault();
-                    this.LEDsCustoms[i].IntervalDuration = dshm_singleLED[i].IntervalDuration.GetValueOrDefault();
-                    this.LEDsCustoms[i].IntervalPortionON = dshm_singleLED[i].IntervalPortionOn.GetValueOrDefault();
-                    this.LEDsCustoms[i].IntervalPortionOFF = dshm_singleLED[i].IntervalPortionOff.GetValueOrDefault();
+                    LED_x_Customs[i].Reset();
+                }
+            }
+
+
+
+            public class singleLEDCustoms
+            {
+                private byte DEFAULT_duration = 0xFF;
+                private byte DEFAULT_intervalDuration = 0xFF;
+                private byte DEFAULT_intervalPortionON = 0xFF;
+                private byte DEFAULT_intervalPortionOFF = 0x00;
+
+                [Reactive] public bool IsLEDEnabled { get; set; }
+
+                [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+                public int LEDIndex { get; }
+                [Reactive] public byte Duration { get; set; }
+                [Reactive] public byte IntervalDuration { get; set; }
+                [Reactive] public byte IntervalPortionON { get; set; }
+                public byte IntervalPortionOFF
+                {
+                    get => (byte)(256 - IntervalPortionON);
+                }
+                public singleLEDCustoms(int ledIndex)
+                {
+                    this.LEDIndex = ledIndex;
+                    Reset();
                 }
 
-                // Attempts to check differentiate between custom and static mode
-                if (dshm_singleLED[i].Duration != 255) IsItActuallyStaticMode = false;
-                if (dshm_singleLED[i].IntervalDuration != 255) IsItActuallyStaticMode = false;
-                if (dshm_singleLED[i].IntervalPortionOn != 255) IsItActuallyStaticMode = false;
-                if (dshm_singleLED[i].IntervalPortionOff != 0) IsItActuallyStaticMode = false;
+                internal void Reset()
+                {
+                    IsLEDEnabled = LEDIndex == 0 ? true : false;
+                    Duration = DEFAULT_duration;
+                    IntervalDuration = DEFAULT_intervalDuration;
+                    IntervalPortionON = DEFAULT_intervalPortionON;
+                    //IntervalPortionOFF = DEFAULT_intervalPortionOFF;
+                }
+
+                public void CopyCustoms(singleLEDCustoms copySource)
+                {
+                    this.IsLEDEnabled = copySource.IsLEDEnabled;
+                    this.Duration = copySource.Duration;
+                    this.IntervalDuration = copySource.IntervalDuration;
+                    this.IntervalPortionON = copySource.IntervalPortionON;
+                }
             }
-            if (IsItActuallyStaticMode) this.LEDMode = ControlApp_LEDsModes.CustomStatic;
         }
-        */
+
     }
 
 

@@ -1,5 +1,6 @@
-﻿using Nefarius.DsHidMini.ControlApp.JsonSettings;
+﻿using Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json;
 using Nefarius.DsHidMini.ControlApp.UserData;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 
@@ -7,47 +8,70 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class GroupOutRepControlVM : GroupSettingsVM
     {
-        // --------------------------------------------  OUTPUT REPORT CONTROL GROUP
-        public const bool DEFAULT_isOutputReportRateControlEnabled = true;
-        public const byte DEFAULT_maxOutputRate = 150;
-        public const bool DEFAULT_isOutputReportDeduplicatorEnabled = false;
+        private BackingData_OutRepControl _tempBackingData = new();
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.OutputReportControl;
-        [Reactive] public bool IsGroupEnabled { get; set; }
-        [Reactive] public bool IsOutputReportRateControlEnabled { get; set; }
-        [Reactive] public byte MaxOutputRate { get; set; }
-        [Reactive] public bool IsOutputReportDeduplicatorEnabled { get; set; }
+        public bool IsGroupEnabled
+        {
+            get => _tempBackingData.IsGroupEnabled;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+            }
+        }
 
-        public GroupOutRepControlVM(SettingsContext context, SettingsContainer containter) : base(context, containter) { }
+        public bool IsOutputReportRateControlEnabled
+        {
+            get => _tempBackingData.IsOutputReportRateControlEnabled;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsOutputReportRateControlEnabled, value);
+            }
+        }
+        public int MaxOutputRate
+        {
+            get => _tempBackingData.MaxOutputRate;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.MaxOutputRate, value);
+            }
+        }
+
+        public bool IsOutputReportDeduplicatorEnabled
+        {
+            get => _tempBackingData.IsOutputReportDeduplicatorEnabled;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tempBackingData.IsOutputReportDeduplicatorEnabled, value);
+            }
+        }
+
+        public GroupOutRepControlVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter) { }
 
         public override void ResetGroupToOriginalDefaults()
         {
-            IsGroupEnabled = ShouldGroupBeEnabledOnReset();
-
-            IsOutputReportRateControlEnabled = DEFAULT_isOutputReportRateControlEnabled;
-            MaxOutputRate = DEFAULT_maxOutputRate;
-            IsOutputReportDeduplicatorEnabled = DEFAULT_isOutputReportDeduplicatorEnabled;
+            _tempBackingData.ResetToDefault();
+            this.RaisePropertyChanged(string.Empty);
         }
 
-        public override void CopySettingsFromBackingData(SettingsBackingData outRepBackingData, bool invertCopyDirection = false)
+        public override void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource)
         {
-            base.CopySettingsFromBackingData(outRepBackingData, invertCopyDirection);
+            SaveSettingsToBackingData(dataContainerSource.outRepData);
+        }
 
-            var specific = (BackingData_OutRepControl)outRepBackingData;
+        public void SaveSettingsToBackingData(BackingData_OutRepControl dataSource)
+        {
+            BackingData_OutRepControl.CopySettings(dataSource, _tempBackingData);
+        }
 
-            if (invertCopyDirection)
-            {
-                specific.IsGroupEnabled = this.IsGroupEnabled;
-                specific.IsOutputReportDeduplicatorEnabled = this.IsOutputReportDeduplicatorEnabled;
-                specific.IsOutputReportRateControlEnabled = this.IsOutputReportRateControlEnabled;
-                specific.MaxOutputRate = this.MaxOutputRate;
-            }
-            else
-            {
-                this.IsGroupEnabled = specific.IsGroupEnabled;
-                this.IsOutputReportDeduplicatorEnabled = specific.IsOutputReportDeduplicatorEnabled;
-                this.IsOutputReportRateControlEnabled = specific.IsOutputReportRateControlEnabled;
-                this.MaxOutputRate = specific.MaxOutputRate;
-            }
+        public override void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource)
+        {
+            LoadSettingsFromBackingData(dataContainerSource.outRepData);
+        }
+
+        public void LoadSettingsFromBackingData(BackingData_OutRepControl dataTarget)
+        {
+            BackingData_OutRepControl.CopySettings(_tempBackingData, dataTarget);
+            this.RaisePropertyChanged(string.Empty);
         }
     }
 
