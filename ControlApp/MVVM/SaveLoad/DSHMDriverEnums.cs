@@ -104,14 +104,14 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json
         {
             { ControlApp_DPADModes.Default, DSHM_DPadExposureModes.Default },
             { ControlApp_DPADModes.HAT, DSHM_DPadExposureModes.HAT },
-            { ControlApp_DPADModes.IndividualButtons, DSHM_DPadExposureModes.IndividualButtons },
+            { ControlApp_DPADModes.Buttons, DSHM_DPadExposureModes.IndividualButtons },
         };
 
         public static Dictionary<DSHM_DPadExposureModes, ControlApp_DPADModes> Get_ControlApp_DPadMode_From_DSHM = new()
         {
             { DSHM_DPadExposureModes.Default, ControlApp_DPADModes.Default },
             { DSHM_DPadExposureModes.HAT, ControlApp_DPADModes.HAT },
-            { DSHM_DPadExposureModes.IndividualButtons, ControlApp_DPADModes.IndividualButtons },
+            { DSHM_DPadExposureModes.IndividualButtons, ControlApp_DPADModes.Buttons },
         };
 
         //---------------------------------------------------- PressureModes

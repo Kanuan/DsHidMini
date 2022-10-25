@@ -15,7 +15,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsGroupEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+                _tempBackingData.IsGroupEnabled = value;
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
@@ -24,7 +25,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsOutputReportRateControlEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsOutputReportRateControlEnabled, value);
+                _tempBackingData.IsOutputReportRateControlEnabled = value;
+                this.RaisePropertyChanged(nameof(IsOutputReportRateControlEnabled));
             }
         }
         public int MaxOutputRate
@@ -32,7 +34,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.MaxOutputRate;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.MaxOutputRate, value);
+                _tempBackingData.MaxOutputRate = value;
+                this.RaisePropertyChanged(nameof(MaxOutputRate));
             }
         }
 
@@ -41,7 +44,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsOutputReportDeduplicatorEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsOutputReportDeduplicatorEnabled, value);
+                _tempBackingData.IsOutputReportDeduplicatorEnabled = value;
+                this.RaisePropertyChanged(nameof(IsOutputReportDeduplicatorEnabled));
             }
         }
 

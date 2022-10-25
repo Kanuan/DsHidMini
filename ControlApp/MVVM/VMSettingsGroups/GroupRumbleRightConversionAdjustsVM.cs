@@ -19,7 +19,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsGroupEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+                _tempBackingData.IsGroupEnabled = value;
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
         public int RightRumbleConversionUpperRange
@@ -27,8 +28,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.RightRumbleConversionUpperRange;
             set
             {
-                int tempInt = (value < _tempBackingData.RightRumbleConversionLowerRange) ? _tempBackingData.RightRumbleConversionLowerRange + 1 : value;
-                this.RaiseAndSetIfChanged(ref _tempBackingData.RightRumbleConversionUpperRange, tempInt);
+                _tempBackingData.RightRumbleConversionUpperRange = value;
+                this.RaisePropertyChanged(nameof(RightRumbleConversionUpperRange));
 
             }
         }
@@ -37,8 +38,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.RightRumbleConversionLowerRange;
             set
             {
-                int tempInt = (value > _tempBackingData.RightRumbleConversionUpperRange) ? (byte)(_tempBackingData.RightRumbleConversionUpperRange - 1) : value;
-                this.RaiseAndSetIfChanged(ref _tempBackingData.RightRumbleConversionLowerRange, tempInt);
+                _tempBackingData.RightRumbleConversionLowerRange = value;
+                this.RaisePropertyChanged(nameof(RightRumbleConversionLowerRange));
             }
         }
         public bool IsForcedRightMotorLightThresholdEnabled
@@ -46,7 +47,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsForcedRightMotorLightThresholdEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsForcedRightMotorLightThresholdEnabled, value);
+                _tempBackingData.IsForcedRightMotorLightThresholdEnabled = value;
+                this.RaisePropertyChanged(nameof(IsForcedRightMotorLightThresholdEnabled));
             }
         }
         public bool IsForcedRightMotorHeavyThreasholdEnabled
@@ -54,7 +56,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsForcedRightMotorHeavyThreasholdEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsForcedRightMotorHeavyThreasholdEnabled, value);
+                _tempBackingData.IsForcedRightMotorHeavyThreasholdEnabled = value;
+                this.RaisePropertyChanged(nameof(IsForcedRightMotorHeavyThreasholdEnabled));
             }
         }
         public int ForcedRightMotorLightThreshold
@@ -62,7 +65,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.ForcedRightMotorLightThreshold;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.ForcedRightMotorLightThreshold, value);
+                _tempBackingData.ForcedRightMotorLightThreshold = value;
+                this.RaisePropertyChanged(nameof(ForcedRightMotorLightThreshold));
             }
         }
         public int ForcedRightMotorHeavyThreshold
@@ -70,7 +74,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.ForcedRightMotorHeavyThreshold;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.ForcedRightMotorHeavyThreshold, value);
+                _tempBackingData.ForcedRightMotorHeavyThreshold = value;
+                this.RaisePropertyChanged(nameof(ForcedRightMotorHeavyThreshold));
             }
         }
 

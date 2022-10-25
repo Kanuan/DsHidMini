@@ -13,47 +13,66 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 		<super:BooleanToReverseConverter x:Key="BooleanToReverseConverterKey"/>
-		<DataTemplate x:Key="ctrlBtns">
-			<Viewbox>
-				<TextBlock Margin="5,10,5,10"
-                    DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Text="{Binding Path=Content}" TextAlignment="Center"/>
-			</Viewbox>
-		</DataTemplate>
-
-
 
 		<!-- Settings groups templates -->
 		<DataTemplate x:Key="ModeSetting" DataType="{x:Type local:GroupSettingsVM}">
-			<Border Background="White" Margin="0,0,0,0">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="30"/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition MinHeight="35"/>
-						<RowDefinition MinHeight="50"/>
-					</Grid.RowDefinitions>
+				<DockPanel Background="White">
 					<!-- Outer settings container with override button -->
-					<Border Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
-					<Label Content="{Binding Header}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
-					<CheckBox x:Name="CheckBox_Override" IsChecked="{Binding IsGroupEnabled}" IsVisible="{Binding IsOverrideCheckboxVisible}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center"/>
+					<Border DockPanel.Dock="Top" BorderBrush="Black" Background="LightGray" BorderThickness="1" MinHeight="30">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="6*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Label
+								Content="{Binding Header}"
+								Grid.Column="1"
+								VerticalContentAlignment="Center"
+								HorizontalAlignment="Center"/>
+							<CheckBox
+								x:Name="CheckBox_Override"
+								IsChecked="{Binding IsGroupEnabled}"
+								IsVisible="{Binding IsOverrideCheckboxVisible}"
+								HorizontalAlignment="Left"
+								Margin="6,0,0,0"
+								VerticalAlignment="Center"/>
+							<Button
+								Grid.Column="2"
+								Content="..."
+								IsVisible="{Binding !IsGroupLocked}"
+								HorizontalAlignment="Right"
+								Background="Gray">
+								<Button.Flyout>
+									<MenuFlyout>
+										<MenuItem
+											Header="Reset to defaults"
+											Command="{Binding ResetGroupToDefaultsCommand}"/>
+									</MenuFlyout>
+								</Button.Flyout>
+							</Button>
+						</Grid>
+					</Border>
 					<!-- Internal settings group specific containter -->
-					<ContentControl HorizontalAlignment="Stretch" Margin="10,0,10,0" Background="White" IsVisible="{Binding IsChecked, ElementName=CheckBox_Override}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  ZIndex="1" Content="{Binding Group}">
+					<ContentControl
+						DockPanel.Dock="Top"
+						HorizontalAlignment="Stretch"
+						Margin="0,0,0,0"
+						MinHeight="50"
+						Background="White"
+						IsVisible="{Binding !IsGroupLocked}"
+						Content="{Binding Group}">
+						<!-- Delete later if useless: ElementName=CheckBox_Override -->
 						<ContentControl.ContentTemplate>
 							<local:TemplateSelector/>
 						</ContentControl.ContentTemplate>
 					</ContentControl>
-					<!-- Warning when override is disabled -->
-					<Border Background="Gray" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-						<TextBlock  Text="Using current profile settings. Mark the checkbox to override." FontSize="10" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-					</Border>
 					<!-- Warning when settings are locked for specific mode -->
 					<Border
+						DockPanel.Dock="Top"
 						Background="Black"
-						ZIndex="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-						IsVisible="{Binding IsGroupLocked, FallbackValue=false}">
+						IsVisible="{Binding IsGroupLocked, FallbackValue=false}"
+						MinHeight="50">
 						<TextBlock
 						Text="This settings group can't be edited for this mode"
 						FontSize="10"
@@ -64,8 +83,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"/>
 					</Border>
-				</Grid>
-			</Border>
+				</DockPanel>
 		</DataTemplate>
 
 		<!-- ModeUniqueSettings -->
@@ -85,7 +103,7 @@
 
 	<!-- View area -->
 
-	<DockPanel LastChildFill="False">
+	<DockPanel LastChildFill="False" VerticalAlignment="Stretch">
 
 
 
@@ -109,6 +127,7 @@
 				Content="Save test"
 				Command="{Binding ButtonpressedCommand}"
 				/>
+
 		</DockPanel>
 
 		<!-- LED Group Settings  -->
@@ -117,9 +136,40 @@
 		
 				<!-- Right side -->
 
-		<DockPanel DockPanel.Dock="Right" Margin="10" Width="500" >
+		<DockPanel DockPanel.Dock="Right" Margin="10" Width="500" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
 
 			<!-- TO Name it -->
+			<DockPanel DockPanel.Dock="Top">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="True">
+					<Label
+						DockPanel.Dock="Left"
+						Content="Load settings from..."
+						VerticalContentAlignment="Center"
+						/>
+					<ComboBox
+						DockPanel.Dock="Left"
+						x:Name="SettingsModeSelection_ComboBox"
+						VerticalAlignment="Center"
+						Items="{Binding SettingsModesList}"
+						SelectedItem="{Binding CurrentDeviceSettingsMode}"
+						/>
+					<Label
+						IsVisible="{Binding IsDeviceInProfileSettingsMode}"
+						DockPanel.Dock="Left"
+						Content="->"
+						VerticalContentAlignment="Center"
+						/>
+					<ComboBox
+						DockPanel.Dock="Left"
+						IsVisible="{Binding IsDeviceInProfileSettingsMode}"
+						x:Name="ProfileSelection_ComboBox"
+						VerticalAlignment="Center"
+						Items="{Binding ListOfProfiles}"
+						SelectedItem="{Binding CurrentlySelectedProfile}"
+						/>
+				</DockPanel>
+			</DockPanel>
+
 			<DockPanel DockPanel.Dock="Top" >
 				<DockPanel DockPanel.Dock="Top" LastChildFill="True">
 					<Label
@@ -137,31 +187,28 @@
 				</DockPanel>
 				
 			</DockPanel>
-			
-			
-			
-				<!-- Upper tab control -->
 
-			<ItemsControl x:Name="TabList"
-			  Items="{Binding SettingsTabs}"
-						  DockPanel.Dock="Top">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel Orientation="Horizontal"></StackPanel>
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<ToggleButton
-								Command="{Binding ElementName=TabList, Path=DataContext.TabSelectedCommand}"
-								CommandParameter="{Binding}"
-								Content="{Binding TabName}"
-								IsChecked="{Binding IsTabSelected}"/>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-			</ItemsControl>
+			<!-- Mode unique settings -->
+			<ContentControl DockPanel.Dock="Top"  Margin="0,2,0,0" Background="LightGray" MaxHeight="200">
+				<ScrollViewer DockPanel.Dock="Top">
+					<ItemsControl Items="{Binding CurrentTab.ModeUniqueSettingsGroupsList}" ItemTemplate="{StaticResource ModeSetting}" />
+				</ScrollViewer>
+			</ContentControl>
 
-			<DockPanel DockPanel.Dock="Top" LastChildFill="True">
+			<!-- Mode Settings groups -->
+			<Border
+				DockPanel.Dock="Top"
+				MinHeight="35"
+				BorderBrush="Black"
+				BorderThickness="1">
+				<Label
+					Content="General settings"
+					VerticalContentAlignment="Center"
+					HorizontalAlignment="Center"/>
+			</Border>
+
+			<!-- Apply and cancel buttons -->
+			<DockPanel DockPanel.Dock="Bottom">
 				<Button
 					DockPanel.Dock="Left"
 					Content="Apply changes"
@@ -171,28 +218,8 @@
 					Command="{Binding CancelChangesCommand}"
 					Content="Cancel"/>
 			</DockPanel>
-
-			<!-- Mode unique settings -->
-			<ContentControl DockPanel.Dock="Top"  Margin="0,2,0,0" Background="LightGray" MaxHeight="200">
-				<ScrollViewer DockPanel.Dock="Top">
-					<ItemsControl Items="{Binding CurrentTab.ModeUniqueSettingsGroupsList}" ItemTemplate="{StaticResource ModeSetting}" />
-				</ScrollViewer>
-			</ContentControl>
-
-
-			<!-- Mode Settings groups -->
-			<Border
-				DockPanel.Dock="Top"
-				MinHeight="35"
-				BorderBrush="Black"
-				BorderThickness="1">
-				<Label	
-					Content="General settings"
-					VerticalContentAlignment="Center"
-					HorizontalAlignment="Center"/>
-			</Border>
-
-			<TabControl DockPanel.Dock="Top" Background="LightGray" >
+			
+			<TabControl DockPanel.Dock="Top" Background="LightGray" IsVisible="True">
 				<!-- Basic options -->
 				<TabItem>
 					<TabItem.Header>
@@ -225,11 +252,8 @@
 				</TabItem>
 			</TabControl>
 
-
+			
 		</DockPanel>
-
-
-
 
 	</DockPanel>
 </UserControl>

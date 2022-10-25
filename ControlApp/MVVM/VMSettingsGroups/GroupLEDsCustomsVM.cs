@@ -13,8 +13,35 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private BackingData_LEDs _tempBackingData = new();
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.LEDsControl;
-        public bool IsGroupEnabled { get => _tempBackingData.IsGroupEnabled; set => this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value); }
-        public ControlApp_LEDsModes LEDMode { get => _tempBackingData.LEDMode; set => this.RaiseAndSetIfChanged(ref _tempBackingData.LEDMode, value); }
+        public bool IsGroupEnabled
+        {
+            get => _tempBackingData.IsGroupEnabled;
+            set
+            {
+                _tempBackingData.IsGroupEnabled = value;
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
+            }
+        }
+        public ControlApp_LEDsModes LEDMode
+        {
+            get => _tempBackingData.LEDMode;
+            set
+            {
+                _tempBackingData.LEDMode = value;
+                this.RaisePropertyChanged(nameof(LEDMode));
+            }
+        }
+
+        public bool[] LEDsStates
+        {
+            get => _tempBackingData.LEDsCustoms.LEDsStates;
+            set
+            {
+                _tempBackingData.LEDsCustoms.LEDsStates = value;
+                this.RaisePropertyChanged(nameof(LEDsStates));
+            }
+        }
+
         public LEDsCustoms.singleLEDCustoms[] AllLEDsCustoms
         {
             get => _tempBackingData.LEDsCustoms.LED_x_Customs;
@@ -31,7 +58,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set
             {
                 CurrentLEDCustoms = AllLEDsCustoms[value];
-                this.RaisePropertyChanged("CurrentLEDCustomsIndex");
+                this.RaisePropertyChanged(nameof(CurrentLEDCustomsIndex));
             }
         }
 
@@ -70,6 +97,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public class LEDsCustoms
         {
+            public bool[] LEDsStates = new bool[] { true, false, false, false };
+
             public singleLEDCustoms[] LED_x_Customs = new singleLEDCustoms[4];
 
             public LEDsCustoms()
@@ -84,6 +113,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             {
                 for (int i = 0; i < LED_x_Customs.Length; i++)
                 {
+                    LEDsStates[i] = customsToCopy.LEDsStates[i];
                     LED_x_Customs[i].CopyCustoms(customsToCopy.LED_x_Customs[i]);
                 }
             }
@@ -92,6 +122,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             {
                 for (int i = 0; i < LED_x_Customs.Length; i++)
                 {
+                    LEDsStates[i] = i == 0 ? true : false;
                     LED_x_Customs[i].Reset();
                 }
             }
@@ -103,9 +134,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 private byte DEFAULT_duration = 0xFF;
                 private byte DEFAULT_intervalDuration = 0xFF;
                 private byte DEFAULT_intervalPortionON = 0xFF;
-                private byte DEFAULT_intervalPortionOFF = 0x00;
+                //private byte DEFAULT_intervalPortionOFF = 0x00;
 
-                [Reactive] public bool IsLEDEnabled { get; set; }
+                [Reactive] public bool IsLEDEffectEnabled { get; set; }
 
                 [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
                 public int LEDIndex { get; }
@@ -124,7 +155,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
                 internal void Reset()
                 {
-                    IsLEDEnabled = LEDIndex == 0 ? true : false;
+                    IsLEDEffectEnabled = false;
                     Duration = DEFAULT_duration;
                     IntervalDuration = DEFAULT_intervalDuration;
                     IntervalPortionON = DEFAULT_intervalPortionON;
@@ -133,7 +164,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
                 public void CopyCustoms(singleLEDCustoms copySource)
                 {
-                    this.IsLEDEnabled = copySource.IsLEDEnabled;
+                    this.IsLEDEffectEnabled = copySource.IsLEDEffectEnabled;
                     this.Duration = copySource.Duration;
                     this.IntervalDuration = copySource.IntervalDuration;
                     this.IntervalPortionON = copySource.IntervalPortionON;

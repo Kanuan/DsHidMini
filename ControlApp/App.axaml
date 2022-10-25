@@ -14,9 +14,9 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 		
-		<!-- LED Group  DataContext="{Binding $parent[Grid].DataContext}" Settings  -->
+		<!-- LED Group  DataContext="{Binding $parent[DockPanel].DataContext}" Settings  -->
 		<DataTemplate x:Key="Template_LEDsSettings" DataType="{x:Type devmvvm:GroupLEDsCustomsVM}">
-			<ContentControl DataContext="{Binding $parent[Grid].DataContext}">
+			<ContentControl DataContext="{Binding $parent[DockPanel].DataContext}">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition/>
@@ -67,10 +67,10 @@
 									<Label Content="2" Grid.Column="1"/>
 									<Label Content="3" Grid.Column="2"/>
 									<Label Content="4" Grid.Column="3"/>
-									<CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AllLEDsCustoms[0].IsLEDEnabled}"/>
-									<CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding AllLEDsCustoms[1].IsLEDEnabled}"/>
-									<CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding AllLEDsCustoms[2].IsLEDEnabled}"/>
-									<CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding AllLEDsCustoms[3].IsLEDEnabled}"/>
+									<CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding LEDsStates[0]}"/>
+									<CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding LEDsStates[1]}"/>
+									<CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding LEDsStates[2]}"/>
+									<CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding LEDsStates[3]}"/>
 								</Grid>
 							</ContentControl>
 							<!-- Index 3: LEDs custom advanced -->
@@ -85,80 +85,86 @@
 									<TabItem Header="4"/>
 								</TabStrip>
 								<!-- LED fine tuning -->
-								<Grid>
-									<Grid.RowDefinitions>
-										<RowDefinition/>
-										<RowDefinition/>
-										<RowDefinition/>
-										<RowDefinition/>
-										<RowDefinition/>
-									</Grid.RowDefinitions>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition/>
-										<ColumnDefinition/>
-									</Grid.ColumnDefinitions>
-									<CheckBox
-										Grid.Row="0"
-										Grid.ColumnSpan="2"
-										Content="Enable LED"
-										IsChecked="{Binding CurrentLEDCustoms.IsLEDEnabled}"/>
-									<TextBlock
-										Grid.Row="1" Grid.Column="0"
-										Text="Duration:"
-										TextWrapping="Wrap"
-										HorizontalAlignment="Left"
-										VerticalAlignment="Center"/>
-									<NumericUpDown
-										Grid.Row="1" Grid.Column="1"
-										Minimum="0"
-										Maximum="255"
-										ClipValueToMinMax="True"
-										VerticalAlignment="Center"
-										Value="{Binding CurrentLEDCustoms.Duration}"
+								<ContentControl Content="{Binding CurrentLEDCustoms}">
+									<ContentControl.ContentTemplate>
+										<DataTemplate>
+											<Grid>
+												<Grid.RowDefinitions>
+													<RowDefinition/>
+													<RowDefinition/>
+													<RowDefinition/>
+													<RowDefinition/>
+													<RowDefinition/>
+												</Grid.RowDefinitions>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition/>
+													<ColumnDefinition/>
+												</Grid.ColumnDefinitions>
+												<CheckBox
+													Grid.Row="0"
+													Grid.ColumnSpan="2"
+													Content="Enable LED"
+													IsChecked="{Binding IsLEDEffectEnabled}"/>
+												<TextBlock
+													Grid.Row="1" Grid.Column="0"
+													Text="Duration:"
+													TextWrapping="Wrap"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Center"/>
+												<NumericUpDown
+													Grid.Row="1" Grid.Column="1"
+													Minimum="0"
+													Maximum="255"
+													ClipValueToMinMax="True"
+													VerticalAlignment="Center"
+													Value="{Binding Duration}"
 								/>
-									<TextBlock
-										Grid.Row="2" Grid.Column="0"
-										Text="Interval duration:"
-										TextWrapping="Wrap"
-										HorizontalAlignment="Left"
-										VerticalAlignment="Center"/>
-									<NumericUpDown
-										Grid.Row="2" Grid.Column="1"
-										Minimum="0"
-										Maximum="255"
-										ClipValueToMinMax="True"
-										VerticalAlignment="Center"
-										Value="{Binding CurrentLEDCustoms.IntervalDuration}"
+												<TextBlock
+													Grid.Row="2" Grid.Column="0"
+													Text="Interval duration:"
+													TextWrapping="Wrap"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Center"/>
+												<NumericUpDown
+													Grid.Row="2" Grid.Column="1"
+													Minimum="0"
+													Maximum="255"
+													ClipValueToMinMax="True"
+													VerticalAlignment="Center"
+													Value="{Binding IntervalDuration}"
 								/>
-									<TextBlock
-										Grid.Row="3" Grid.Column="0"
-										Text="Interval ON portion:"
-										TextWrapping="Wrap"
-										HorizontalAlignment="Left"
-										VerticalAlignment="Center"/>
-									<NumericUpDown
-										Grid.Row="3" Grid.Column="1"
-										Minimum="0"
-										Maximum="255"
-										ClipValueToMinMax="True"
-										VerticalAlignment="Center"
-										Value="{Binding CurrentLEDCustoms.IntervalPortionON}"
+												<TextBlock
+													Grid.Row="3" Grid.Column="0"
+													Text="Interval ON portion:"
+													TextWrapping="Wrap"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Center"/>
+												<NumericUpDown
+													Grid.Row="3" Grid.Column="1"
+													Minimum="0"
+													Maximum="255"
+													ClipValueToMinMax="True"
+													VerticalAlignment="Center"
+													Value="{Binding IntervalPortionON}"
 								/>
-									<TextBlock
-										Grid.Row="4" Grid.Column="0"
-										Text="Interval OFF portion:"
-										TextWrapping="Wrap"
-										HorizontalAlignment="Left"
-										VerticalAlignment="Center"/>
-									<NumericUpDown
-										Grid.Row="4" Grid.Column="1"
-										Minimum="0"
-										Maximum="255"
-										ClipValueToMinMax="True"
-										VerticalAlignment="Center"
-										Value="{Binding CurrentLEDCustoms.IntervalPortionOFF}"
+												<TextBlock
+													Grid.Row="4" Grid.Column="0"
+													Text="Interval OFF portion:"
+													TextWrapping="Wrap"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Center"/>
+												<NumericUpDown
+													Grid.Row="4" Grid.Column="1"
+													Minimum="0"
+													Maximum="255"
+													ClipValueToMinMax="True"
+													VerticalAlignment="Center"
+													Value="{Binding IntervalPortionOFF}"
 								/>
-								</Grid>
+											</Grid>
+										</DataTemplate>
+									</ContentControl.ContentTemplate>
+								</ContentControl>
 							</StackPanel>
 						</TabItem>
 					</TabControl>
@@ -170,7 +176,7 @@
 		
 		<!-- Basic wireless settings -->
 		<DataTemplate x:Key="Template_WirelessSettings">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+			<DockPanel DataContext="{Binding $parent[DockPanel].DataContext}">
 				<!-- Idle disconnect -->
 				<CheckBox
 					x:Name="IdleDisconnectEnableCheckbox"
@@ -200,7 +206,10 @@
 					Content="Enable quick disconnect combo"
 					IsChecked="{Binding IsQuickDisconnectComboEnabled}"/>
 				<!-- Quick disconnect combo selection -->
-				<DockPanel DockPanel.Dock="Top">
+				<DockPanel
+					DockPanel.Dock="Top"
+					>
+					<!-- DataContext="{Binding QuickDisconnectCombo}" -->
 					<Label
 					DockPanel.Dock="Left"
 					Content="Quick disconnect combo (3s):"
@@ -210,21 +219,21 @@
 						Width="80"
 						DockPanel.Dock="Left"
 						Items="{Binding controlApp_ComboButtons}"
-						SelectedItem="{Binding QuickDisconnectCombo.Button1}"
+						SelectedItem="{Binding QuickDisconnectComboButton1}"
 						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 					<ComboBox
 						Width="80"
 						DockPanel.Dock="Left"
 						Items="{Binding controlApp_ComboButtons}"
-						SelectedItem="{Binding QuickDisconnectCombo.Button2}"
+						SelectedItem="{Binding QuickDisconnectComboButton2}"
 						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 					<ComboBox
 						Width="80"
 						DockPanel.Dock="Left"
 						Items="{Binding controlApp_ComboButtons}"
-						SelectedItem="{Binding QuickDisconnectCombo.Button3}"
+						SelectedItem="{Binding QuickDisconnectComboButton3}"
 						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 				</DockPanel>
@@ -249,7 +258,7 @@
 
 		<!-- Template: sticks deadzone -->
 		<DataTemplate x:Key="Template_SticksDeadZone">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+			<DockPanel DataContext="{Binding $parent[DockPanel].DataContext}">
 				<!-- Left stick DZ -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -301,7 +310,7 @@
 
 		<!-- Rumble template -->
 		<DataTemplate x:Key="Template_RumbleBasicFunctions">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+			<DockPanel DataContext="{Binding $parent[DockPanel].DataContext}">
 				<!-- Variable light rumble emulationg enabler -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -313,7 +322,10 @@
 					DockPanel.Dock="Top"
 					Content="Toggle variable right rumble emulation via combo"
 					IsChecked="{Binding IsVariableRightEmulToggleComboEnabled}"/>
-				<DockPanel DockPanel.Dock="Top">
+				<DockPanel
+					DockPanel.Dock="Top"
+					>
+					<!-- DataContext="{Binding VariableRightEmulToggleCombo}" -->
 					<Label
 					DockPanel.Dock="Left"
 					Content="Toogle combo (3s):"
@@ -323,21 +335,21 @@
 						Width="80"
 						DockPanel.Dock="Left"
 						Items="{Binding controlApp_ComboButtons}"
-						SelectedItem="{Binding VariableRightEmulToggleCombo.Button1}"
+						SelectedItem="{Binding VarRightEmul_ToggleComboButton1}"
 						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 					<ComboBox
 						Width="80"
 						DockPanel.Dock="Left"
 						Items="{Binding controlApp_ComboButtons}"
-						SelectedItem="{Binding VariableRightEmulToggleCombo.Button2}"
+						SelectedItem="{Binding VarRightEmul_ToggleComboButton2}"
 						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 					<ComboBox
 						Width="80"
 						DockPanel.Dock="Left"
 						Items="{Binding controlApp_ComboButtons}"
-						SelectedItem="{Binding VariableRightEmulToggleCombo.Button3}"
+						SelectedItem="{Binding VarRightEmul_ToggleComboButton3}"
 						IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 				</DockPanel>
@@ -355,7 +367,7 @@
 
 		<!-- Template: rumble heavy strength rescale -->
 		<DataTemplate x:Key="Template_RumbleHeavyStrRescale">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+			<DockPanel DataContext="{Binding $parent[DockPanel].DataContext}">
 				<!-- Left motor str rescaling checkbox -->
 				<CheckBox
 					DockPanel.Dock="Top"
@@ -400,7 +412,7 @@
 
 		<!-- Template: variable light rumble emulation tuning -->
 		<DataTemplate x:Key="Template_RumbleVariableLightEmuTuning">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+			<DockPanel DataContext="{Binding $parent[DockPanel].DataContext}">
 				<!-- Conversion upper range -->
 				<DockPanel DockPanel.Dock="Top">
 					<TextBlock
@@ -485,46 +497,10 @@
 			</DockPanel>
 		</DataTemplate>
 
-		<!-- Template: Pressure buttons and DPAD (SDF/GPJ) -->
-		<DataTemplate x:Key="Template_SDF_GPJ_PressureButtons">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
-				<!-- Max output rate adjuster -->
-				<DockPanel DockPanel.Dock="Top">
-					<TextBlock
-						DockPanel.Dock="Left"
-						Text="Pressure buttons mode:"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-					<ComboBox
-						DockPanel.Dock="Right"					
-						VerticalAlignment="Center"
-						SelectedIndex="{Binding PressureExposureMode, FallbackValue=2}">
-						<ComboBoxItem Content="Digital buttons only"/>
-						<ComboBoxItem Content="Pressure axes only"/>
-						<ComboBoxItem Content="Pressure axes + digital buttons (default)"/>
-					</ComboBox>
-				</DockPanel>
-				<!-- DPAD modes -->
-				<DockPanel DockPanel.Dock="Top">
-					<TextBlock
-						DockPanel.Dock="Left"
-						Text="Expose D-Pad as:"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-					<ComboBox
-						DockPanel.Dock="Right"
-						VerticalAlignment="Center"
-						SelectedIndex="{Binding DPadExposureMode, FallbackValue=0}">
-						<ComboBoxItem Content="HAT (Default)"/>
-						<ComboBoxItem Content="Buttons"/>
-					</ComboBox>
-				</DockPanel>
-			</DockPanel>
-		</DataTemplate>
 
 				<!-- Template: Mode_Unique_All -->
 		<DataTemplate x:Key="Template_Unique_All">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+			<DockPanel DataContext="{Binding $parent[DockPanel].DataContext}">
 				<!-- Pressure buttons mode -->
 				<DockPanel DockPanel.Dock="Top" IsVisible="{Binding ArePressureaNDPadOptionsVisible}">
 					<TextBlock
@@ -535,11 +511,8 @@
 					<ComboBox
 						DockPanel.Dock="Right"					
 						VerticalAlignment="Center"
-						SelectedIndex="{Binding PressureExposureMode, FallbackValue=2}">
-						<ComboBoxItem Content="Digital buttons only"/>
-						<ComboBoxItem Content="Pressure axes only"/>
-						<ComboBoxItem Content="Pressure axes + digital buttons (default)"/>
-					</ComboBox>
+						SelectedItem="{Binding PressureExposureMode, FallbackValue=2}"
+						Items="{Binding ListOfPressureModes}"/>
 				</DockPanel>
 				<!-- DPAD modes -->
 				<DockPanel DockPanel.Dock="Top" IsVisible="{Binding ArePressureaNDPadOptionsVisible}">
@@ -551,17 +524,15 @@
 					<ComboBox
 						DockPanel.Dock="Right"
 						VerticalAlignment="Center"
-						SelectedIndex="{Binding DPadExposureMode, FallbackValue=0}">
-						<ComboBoxItem Content="HAT (Default)"/>
-						<ComboBoxItem Content="Buttons"/>
-					</ComboBox>
+						SelectedItem="{Binding DPadExposureMode, FallbackValue=0}"
+						Items="{Binding ListOfDPadModes}"/>
 				</DockPanel>
 			</DockPanel>
 		</DataTemplate>
 		
 		<!-- Template: Output Rate Control -->
 		<DataTemplate x:Key="Template_OutputRateControl">
-			<DockPanel DataContext="{Binding $parent[Grid].DataContext}">
+			<DockPanel DataContext="{Binding $parent[DockPanel].DataContext}">
 				<!-- Output rate enabler -->
 				<CheckBox
 					DockPanel.Dock="Top"

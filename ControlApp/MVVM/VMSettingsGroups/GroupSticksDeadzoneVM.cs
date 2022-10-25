@@ -13,14 +13,16 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.SticksDeadzone;
 
+        public ObservableAsPropertyHelper<bool> isGroupLockedToPreventDS4WConflicts;
+        
         /*
         public override bool IsGroupLocked
         {
             get
-            {
-                if (SettingsContainer.GroupModeUnique.PreventRemappingConflictsInSXSMode
-                    || Context == SettingsContext.DS4W)
+            {        
+                if (isGroupLockedToPreventDS4WConflicts.Value)
                     return true;
+
                 return base.IsGroupLocked;
             }
             set
@@ -33,51 +35,58 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public bool IsGroupEnabled
         {
-            get => _tempBackingData.IsGroupEnabled; set
+            get => _tempBackingData.IsGroupEnabled;
+            set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+                _tempBackingData.IsGroupEnabled = value;
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
         public bool ApplyLeftStickDeadZone
         {
-            get => _tempBackingData.ApplyLeftStickDeadZone; set
+            get => _tempBackingData.ApplyLeftStickDeadZone;
+            set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.ApplyLeftStickDeadZone, value);
+                _tempBackingData.ApplyLeftStickDeadZone = value;
+                this.RaisePropertyChanged(nameof(ApplyLeftStickDeadZone));
             }
         }
 
         public bool ApplyRightStickDeadZone
         {
-            get => _tempBackingData.ApplyRightStickDeadZone; set
+            get => _tempBackingData.ApplyRightStickDeadZone;
+            set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.ApplyRightStickDeadZone, value);
+                _tempBackingData.ApplyRightStickDeadZone = value;
+                this.RaisePropertyChanged(nameof(ApplyRightStickDeadZone));
             }
         }
 
         public int LeftStickDeadZone
         {
-            get => _tempBackingData.LeftStickDeadZone; set
+            get => _tempBackingData.LeftStickDeadZone;
+            set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.LeftStickDeadZone, value);
+                _tempBackingData.LeftStickDeadZone = value;
+                this.RaisePropertyChanged(nameof(LeftStickDeadZone));
             }
         }
 
         public int RightStickDeadZone
         {
-            get => _tempBackingData.RightStickDeadZone; set
+            get => _tempBackingData.RightStickDeadZone;
+            set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.RightStickDeadZone, value);
+                _tempBackingData.RightStickDeadZone = value;
+                this.RaisePropertyChanged(nameof(RightStickDeadZone));
             }
         }
-
 
         readonly ObservableAsPropertyHelper<int> leftStickDeadZoneInpercent;
         public int LeftStickDeadZoneInPercent => leftStickDeadZoneInpercent.Value;
 
         readonly ObservableAsPropertyHelper<int> rightStickDeadZoneInpercent;
-
-
         public int RightStickDeadZoneInPercent => rightStickDeadZoneInpercent.Value;
 
 

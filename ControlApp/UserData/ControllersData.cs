@@ -47,44 +47,50 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public DeviceSpecificData NewControllersDefault { get; set; } = new("0123456789"); //"Global"
 
         public List<ProfileData> Profiles { get; set; } = new();
+        public Dictionary<Guid, ProfileData> ProfilesPerGuid { get; set; } = new();
 
         public List<DeviceSpecificData> Devices { get; set; } = new();
 
         public ControllersUserData()
         {
-            Profiles = LoadProfilesFromDisk();
+            Profiles = CreateListOfProfilesOnDisk();
+            UpdateDictionaryOfLoadedProfilesPerGuid();
 
-            ProfileData overwriteTest = new ProfileData()
-            {
-                ProfileName = "Overwrite Test",
-                DiskFileName = "Profile3.json",
-            };
-
-            CheckAndFixRepeatedProfileFilePath(overwriteTest);
-
-            Profiles.Add(overwriteTest);
-
-            SaveAllProfilesToDisk(Profiles);
-
-            int x = 10;
+            Devices = LoadDevicesFromDisk();
 
             /*
-            var options = new JsonSerializerOptions
+            ProfileData profileTest = new()
             {
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-
-                Converters =
-                {
-                    new JsonStringEnumConverter()
-                }
+                ProfileName = "Test",
+                DiskFileName = "Test.json",
             };
-            string jsonString = JsonSerializer.Serialize(ProfileData.DefaultProfile, options);
+            CheckAndFixRepeatedProfileFilePath(profileTest);
+            Profiles.Add(profileTest);
             */
-            //System.IO.File.WriteAllText(@"D:\DefaultProfileTest.json", jsonString);
+
+            SaveAllProfilesToDisk(Profiles);
         }
 
-        public List<ProfileData> LoadProfilesFromDisk()
+        private List<DeviceSpecificData> LoadDevicesFromDisk()
+        {
+
+            var devicesOnDisk = new List<DeviceSpecificData>();
+
+            string[] devicesPaths = Directory.GetFiles($@"{DevicesFolderFullPath}", "*.json");
+            foreach (string devPath in devicesPaths)
+            {
+                var dirName = new DirectoryInfo(devPath).Name;
+                var jsonText = System.IO.File.ReadAllText(devPath);
+
+                var data = JsonSerializer.Deserialize<DeviceSpecificData>(jsonText, ControlAppJsonSerializerOptions);
+                //data.DiskFileName = dirName;
+                devicesOnDisk.Add(data);
+            }
+
+            return devicesOnDisk;
+        }
+
+        public List<ProfileData> CreateListOfProfilesOnDisk()
         {
             var profilesOnDisk = new List<ProfileData>();
 
@@ -94,12 +100,34 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
                 var dirName = new DirectoryInfo(profilePath).Name;
                 var jsonText = System.IO.File.ReadAllText(profilePath);
 
+                JsonSerializerOptions ControlAppJsonSerializerOptions = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                    IncludeFields = true,
+
+                    Converters =
+                    {
+                        new JsonStringEnumConverter()
+                    }
+                };
+
                 ProfileData data = JsonSerializer.Deserialize<ProfileData>(jsonText, ControlAppJsonSerializerOptions);
                 data.DiskFileName = dirName;
                 profilesOnDisk.Add(data);
             }
 
             return profilesOnDisk;
+        }
+
+        public void UpdateDictionaryOfLoadedProfilesPerGuid()
+        {
+            var profilesPerGuid = new Dictionary<Guid, ProfileData>();
+            foreach (ProfileData prof in Profiles)
+            {
+                profilesPerGuid.Add(prof.ProfileGuid, prof);
+            }
+            ProfilesPerGuid = profilesPerGuid;
         }
 
         public void SaveAllProfilesToDisk(List<ProfileData> profiles)
@@ -118,16 +146,13 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
                 existingProfilePaths.Add(profile.DiskFileName);
             }
 
-            for (int i = 2; true; i++)
+            string newNameForProfile = newProfile.DiskFileName;
+            for(int i = 1; existingProfilePaths.Contains(newNameForProfile); i++)
             {
-                if (existingProfilePaths.Contains(newProfile.DiskFileName))
-                {
-                    newProfile.DiskFileName = newProfile.DiskFileName.Replace($"New{i - 1}_", "");
-                    newProfile.DiskFileName = $"New{i}_{newProfile.DiskFileName}";
-                    continue;
-                }
-                break;
+                newNameForProfile = $"New{i}_{newProfile.DiskFileName}";
             }
+
+            newProfile.DiskFileName = newNameForProfile;
         }
 
         public void SaveProfileToDisk(ProfileData profile)
@@ -152,7 +177,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public void TestFunctionSaveToDSHM(BackingDataContainer dataContainer)
         {
             var dshm_data = new TestNewSaveFormat();
-            dshm_data.Global.FillModesContextSettings();
             dataContainer.ConvertAllToDSHM(dshm_data.Global);
             string profileJson = JsonSerializer.Serialize(dshm_data, ControlAppJsonSerializerOptions);
             System.IO.File.WriteAllText($@"C:\ProgramData\DsHidMini\DsHidMini.json", profileJson);
@@ -169,6 +193,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
                 }
             }
             var newDevice = new DeviceSpecificData(deviceMac);
+            newDevice.DeviceMac = deviceMac;
             Devices.Add(newDevice);
             return newDevice;
         }
@@ -198,7 +223,8 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public string DiskFileName { get; set; }
 
-        public BackingDataContainer DataContainer { private get; set; } = new(true);
+
+        public BackingDataContainer DataContainer { get; set; } = new();
 
         public ProfileData()
         {
@@ -208,12 +234,14 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             */
         }
 
+
+
         public static readonly ProfileData DefaultProfile = new()
         {
             ProfileName = "DSHM XInput",
             DiskFileName = "Default_DSHM_XInput",
             ProfileGuid = new Guid(DefaultGuid),
-            DataContainer = new(true),
+            DataContainer = new(),
         };
 
         public override string ToString()
@@ -233,16 +261,15 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
     {
         public string DeviceMac { get; set; } = "0000000000";
         public string DeviceCustomName { get; set; } = "DualShock 3";
-        public Guid SelectedProfile { get; set; }
-        public bool DoNotUseprofile { get; set; } = false;
+        public Guid GuidOfProfileToUse { get; set; } = new Guid();
+        public SettingsModes SettingsMode { get; set; } = SettingsModes.Global;
 
         public BackingDataContainer DatasContainter { get; set; } = new();
 
-        public DeviceSpecificData(string devMac)
-        {
-            DeviceMac = devMac;
-            DatasContainter.resetDatasToDefault();
-        }
+        public DeviceSpecificData(string deviceMac)
+        {    
+            DeviceMac = deviceMac;
+        }      
 
         public void SaveToDSHM(DSHM_Format_ContextSettings dshmContextData)
         {

@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
+    public enum SettingsModes
+    {
+        Global,
+        Profile,
+        Custom,
+    }
     public enum SettingsContext
     {
         Global,
@@ -130,7 +136,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         Default,
         HAT,
-        IndividualButtons,
-        DsDPadExposureModeBoth,
+        Buttons,
     }
 }

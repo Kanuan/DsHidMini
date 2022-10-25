@@ -17,7 +17,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsGroupEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+                _tempBackingData.IsGroupEnabled = value;
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
 
@@ -26,7 +27,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsLeftMotorStrRescalingEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsLeftMotorStrRescalingEnabled, value);
+                _tempBackingData.IsLeftMotorStrRescalingEnabled = value;
+                this.RaisePropertyChanged(nameof(IsLeftMotorStrRescalingEnabled));
             }
         }
         public int LeftMotorStrRescalingUpperRange
@@ -34,8 +36,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.LeftMotorStrRescalingUpperRange;
             set
             {
-                int tempInt = (value < _tempBackingData.LeftMotorStrRescalingLowerRange) ? _tempBackingData.LeftMotorStrRescalingLowerRange + 1 : value;
-                this.RaiseAndSetIfChanged(ref _tempBackingData.LeftMotorStrRescalingUpperRange, tempInt);
+                _tempBackingData.LeftMotorStrRescalingUpperRange = value;
+                this.RaisePropertyChanged(nameof(LeftMotorStrRescalingUpperRange));
             }
         }
         public int LeftMotorStrRescalingLowerRange
@@ -43,8 +45,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.LeftMotorStrRescalingLowerRange;
             set
             {
-                int tempInt = (value > _tempBackingData.LeftMotorStrRescalingUpperRange) ? _tempBackingData.LeftMotorStrRescalingUpperRange - 1 : value;
-                this.RaiseAndSetIfChanged(ref _tempBackingData.LeftMotorStrRescalingLowerRange, tempInt);
+                _tempBackingData.LeftMotorStrRescalingLowerRange = value;
+                this.RaisePropertyChanged(nameof(LeftMotorStrRescalingLowerRange));
             }
         }
 

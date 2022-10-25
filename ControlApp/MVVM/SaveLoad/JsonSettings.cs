@@ -35,17 +35,17 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_JsonData_Json
         public DSHM_Format_ContextSettings DS4Windows { get; set; }
         public DSHM_Format_ContextSettings XInput { get; set; }
 
-        public void FillModesContextSettings()
+        public DSHM_Format_ContextSettings(bool CreateModesSubContextSettings = true)
         {
-            SDF = new();
-            GPJ = new();
-            SXS = new();
-            DS4Windows = new();
-            XInput = new();
+            if (CreateModesSubContextSettings)
+            {
+                SDF = new(false);
+                GPJ = new(false);
+                SXS = new(false);
+                DS4Windows = new(false);
+                XInput = new(false);
+            }
         }
-
-
-
 
         public class DeadZoneSettings
         {

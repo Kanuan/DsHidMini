@@ -2,13 +2,33 @@
 using Nefarius.DsHidMini.ControlApp.UserData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Sockets;
 using System.Reactive.Linq;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
+
     public class GroupModeUniqueVM : GroupSettingsVM
     {
+        public static readonly List<ControlApp_DsPressureMode> listOfPressureModes = new()
+        {
+            ControlApp_DsPressureMode.Digital,
+            ControlApp_DsPressureMode.Analogue,
+            ControlApp_DsPressureMode.Default,
+        };
+
+        public static readonly List<ControlApp_DPADModes> listOfDPadModes = new()
+        {
+            ControlApp_DPADModes.HAT,
+            ControlApp_DPADModes.Buttons,
+        };
+
+        public static List<ControlApp_DsPressureMode> ListOfPressureModes { get => listOfPressureModes; }
+        public static List<ControlApp_DPADModes> ListOfDPadModes { get => listOfDPadModes; }
+
         private BackingData_ModesUnique _tempBackingData = new();
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.Unique_All;
@@ -18,7 +38,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsGroupEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value);
+                _tempBackingData.IsGroupEnabled = value;
+                this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
         // General
@@ -33,7 +54,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.PressureExposureMode;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.PressureExposureMode, value);
+                _tempBackingData.PressureExposureMode = value;
+                this.RaisePropertyChanged(nameof(PressureExposureMode));
             }
         }
         public ControlApp_DPADModes DPadExposureMode
@@ -41,7 +63,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.DPadExposureMode;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.DPadExposureMode, value);
+                _tempBackingData.DPadExposureMode = value;
+                this.RaisePropertyChanged(nameof(DPadExposureMode));
             }
         }
 
@@ -55,7 +78,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.PreventRemappingConflictsInSXSMode;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.PreventRemappingConflictsInSXSMode, value);
+                _tempBackingData.PreventRemappingConflictsInSXSMode = value;
+                this.RaisePropertyChanged(nameof(PreventRemappingConflictsInSXSMode));
             }
         }
 
@@ -65,7 +89,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsLEDsAsXInputSlotEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsLEDsAsXInputSlotEnabled, value);
+                _tempBackingData.IsLEDsAsXInputSlotEnabled = value;
+                this.RaisePropertyChanged(nameof(IsLEDsAsXInputSlotEnabled));
             }
         }
 
@@ -75,7 +100,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             get => _tempBackingData.IsDS4LightbarTranslationEnabled;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tempBackingData.IsDS4LightbarTranslationEnabled, value);
+                _tempBackingData.IsDS4LightbarTranslationEnabled = value;
+                this.RaisePropertyChanged(nameof(IsDS4LightbarTranslationEnabled));
             }
         }
 
@@ -83,7 +109,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             arePressureaNDPadOptionsVisible = this
                 .WhenAnyValue(x => x.Context)
-                .Select(ArePressureaNDPadOptionsVisible => (( Context == SettingsContext.SDF ) || (Context == SettingsContext.GPJ)) ? true : false)
+                .Select(whatever => ( Context == SettingsContext.SDF ) || (Context == SettingsContext.GPJ))
                 .ToProperty(this, x => x.ArePressureaNDPadOptionsVisible);
         }
 
@@ -120,11 +146,5 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             BackingData_ModesUnique.CopySettings(dataSource, _tempBackingData);
         }
-
-
-
-
     }
-
-
 }

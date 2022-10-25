@@ -1,72 +1,119 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Net.NetworkInformation;
-using System.Threading;
-using FontAwesome5;
-using Nefarius.DsHidMini.ControlApp.Drivers;
-using Nefarius.DsHidMini.ControlApp.Util;
-using Nefarius.DsHidMini.ControlApp.Util.Web;
-using Nefarius.Utilities.DeviceManagement.PnP;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ControlApp.UI.Devices;
-using System.Collections.ObjectModel;
-using DynamicData;
-using ReactiveUI.Fody.Helpers;
-using ReactiveUI;
-using System.Reactive;
+﻿using CommunityToolkit.Mvvm.Input;
 using Nefarius.DsHidMini.ControlApp.UserData;
+using Newtonsoft.Json.Linq;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     internal class TestViewModel : ReactiveObject
     {
+        private DeviceSpecificData deviceUserData;
+        private ObservableCollection<SettingTabViewModel> _settingsTabs;
+        private SettingTabViewModel _currentTab;
         [Reactive] public ControllersUserData UserDataManager { get; set; } = new();
-
+        [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
+        [Reactive] private SettingTabViewModel DeviceCustomSettingsTab { get; set; } = new SettingTabViewModel("Custom", null, true);
+        [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
         [Reactive] public string JsonSaveTest { get; set; }
-        public void SaveSettingsToJson()
-        {
-            JsonSaveTest = DeviceSettingsManager.SaveToJsonTest(DevicesCustomsExample);
-        }
 
-        
 
-        DeviceSpecificData deviceDatas;
-        [Reactive] private VMGroupsContainer DevicesCustomsExample { get; set; }
 
         public TestViewModel()
         {
-            //VMGroupsContainer ProfileExample = new(SettingsContext.DS4W);
-            //var profileTab = new SettingTabViewModel("Profile settings", ProfileExample, false);
-
             string controllerMacTest = "123";
+            deviceUserData = UserDataManager.GetDeviceSpecificData(controllerMacTest);
 
-            deviceDatas = UserDataManager.GetDeviceSpecificData(controllerMacTest);
-            DevicesCustomsExample = new(deviceDatas.DatasContainter);
+            DeviceCustomsVM = new(deviceUserData.DatasContainter);
+            DeviceCustomSettingsTab.setNewSettingsVMGroupsContainer(DeviceCustomsVM);
 
-            var customsTab = new SettingTabViewModel("Device settings", DevicesCustomsExample, true);
-
-            /// Creating Tabs
-            /// _settingsTabs = new ObservableCollection<SettingTabViewModel>();
-            /// 
-            _settingsTabs = new ObservableCollection<SettingTabViewModel>
+            if (UserDataManager.ProfilesPerGuid.ContainsKey(deviceUserData.GuidOfProfileToUse))
             {
-                customsTab,
-                //profileTab,
-            };
+                var DeviceProfileVM = UserDataManager.ProfilesPerGuid[deviceUserData.GuidOfProfileToUse].GetProfileVMGroupsContainer();
+                DeviceProfileSettingsTab.setNewSettingsVMGroupsContainer(DeviceProfileVM);
+            }
 
-            OnTabSelected(SettingsTabs[0]);
+            UpdateSettingsEditor();
+
+            //OnTabSelected(SettingsTabs[0]);
             ButtonpressedCommand = new RelayCommand(SaveSettingsToJson);
             TabSelectedCommand = new RelayCommand<SettingTabViewModel>(OnTabSelected);
             SaveChangesCommand = new RelayCommand(OnSaveButtonPressed);
             CancelChangesCommand = new RelayCommand(OnCancelButtonPressed);
-            
+
+            // This is a ReactiveUI helper that checks if current SettingsMode is "Profile" when changing SettingsMode
+            isDeviceInProfileSettingsMode = this
+                .WhenAnyValue(x => x.CurrentDeviceSettingsMode)
+                .Select(whatever => CurrentDeviceSettingsMode == SettingsModes.Profile)
+                .ToProperty(this, x => x.IsDeviceInProfileSettingsMode);
         }
 
+        public void UpdateSettingsEditor()
+        {
+            switch (deviceUserData.SettingsMode)
+            {
+                case SettingsModes.Profile:
+                    CurrentTab = DeviceProfileSettingsTab;
+                    break;
+                case SettingsModes.Custom:
+                default:
+                    CurrentTab = DeviceCustomSettingsTab;
+                    break;
+            }
+        }
 
-        private ObservableCollection<SettingTabViewModel> _settingsTabs;
-        private SettingTabViewModel _currentTab;
+        public void ChangeProfileForDevice(ProfileData profile)
+        {
+            deviceUserData.GuidOfProfileToUse = profile.ProfileGuid;
+            DeviceProfileSettingsTab.setNewSettingsVMGroupsContainer(profile.GetProfileVMGroupsContainer());
+        }
+
+        public void SaveSettingsToJson()
+        {
+            JsonSaveTest = DeviceSettingsManager.SaveToJsonTest(deviceUserData.DatasContainter);
+        }
+
+        /// <summary>
+        /// This should update on its own when changing SettingsMode.
+        /// Initialized in the base constructor
+        /// </summary>
+        readonly ObservableAsPropertyHelper<bool> isDeviceInProfileSettingsMode;
+        public bool IsDeviceInProfileSettingsMode { get => isDeviceInProfileSettingsMode.Value; }
+
+
+
+        public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
+        {
+            SettingsModes.Global,
+            SettingsModes.Profile,
+            SettingsModes.Custom,
+        };
+        public List<SettingsModes> SettingsModesList => settingsModesList;
+        public SettingsModes CurrentDeviceSettingsMode
+        {
+            get => deviceUserData.SettingsMode;
+            set
+            {
+                deviceUserData.SettingsMode = value;
+                UpdateSettingsEditor();
+                this.RaisePropertyChanged(nameof(CurrentDeviceSettingsMode));
+            }
+        }
+
+        public ProfileData? CurrentlySelectedProfile
+        {
+            get => UserDataManager.ProfilesPerGuid.ContainsKey(deviceUserData.GuidOfProfileToUse)
+                ? UserDataManager.ProfilesPerGuid[deviceUserData.GuidOfProfileToUse] : null;
+            set
+            {
+                ChangeProfileForDevice(value);
+            }
+        }
+
+        
 
         public readonly List<SettingsContext> hidDeviceModesList = new List<SettingsContext>
         {
@@ -76,47 +123,41 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             SettingsContext.DS4W,
             SettingsContext.XInput,
         };
-
-        public List<SettingsContext> HIDDeviceModesList
-        {
-            get => hidDeviceModesList;
-        }
-
         public SettingsContext? CurrentHIDMode
         {
-            get => DevicesCustomsExample.Context;
-            set => DevicesCustomsExample.ChangeContextOfAllGroups(value.GetValueOrDefault());
+            get => DeviceCustomsVM.Context;
+            set => DeviceCustomsVM.ChangeContextOfAllGroups(value.GetValueOrDefault());
         }
+        public List<SettingsContext> HIDDeviceModesList => hidDeviceModesList;
+
+
+
+        public List<ProfileData> ListOfProfiles => UserDataManager.Profiles;
+
+
 
         public ObservableCollection<SettingTabViewModel> SettingsTabs
         {
-            get
-            {
-                return _settingsTabs;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _settingsTabs, value);
-            }
+            get => _settingsTabs;
+            set => this.RaiseAndSetIfChanged(ref _settingsTabs, value);
         }
 
         public SettingTabViewModel CurrentTab
         {
-            get
-            {
-                return _currentTab;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _currentTab, value);
-            }
+            get => _currentTab;
+            set => this.RaiseAndSetIfChanged(ref _currentTab, value);
         }
+
+        
+        // ---------------------------------------- IRelayCommand
 
         public IRelayCommand ButtonpressedCommand { get; }
         public IRelayCommand<SettingTabViewModel> TabSelectedCommand { get; }
 
         public IRelayCommand SaveChangesCommand { get; }
         public IRelayCommand CancelChangesCommand { get; }
+
+        // ---------------------------------------- Commands
 
         private void OnTabSelected(SettingTabViewModel? obj)
         {
@@ -129,13 +170,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         private void OnSaveButtonPressed()
         {
-            DevicesCustomsExample.SaveAllChangesToBackingData(deviceDatas.DatasContainter);
-            UserDataManager.SaveDeviceSpecificDataToDisk(deviceDatas);
+            DeviceCustomsVM.SaveAllChangesToBackingData(deviceUserData.DatasContainter);
+            UserDataManager.SaveDeviceSpecificDataToDisk(deviceUserData);
         }
 
         private void OnCancelButtonPressed()
         {
-            DevicesCustomsExample.LoadDatasToAllGroups(deviceDatas.DatasContainter);
+            DeviceCustomsVM.LoadDatasToAllGroups(deviceUserData.DatasContainter);
         }
 
     }
