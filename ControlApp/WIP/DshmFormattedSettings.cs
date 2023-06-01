@@ -126,31 +126,15 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
         }
     }
 
-    public class DSHM_Format_Settings
-    {
-        public DSHM_HidDeviceModes HidDeviceMode { get; set; }// = DSHM_HidDeviceModes.DS4Windows;
-        public bool DisableAutoPairing { get; set; }// = false;
-        public DSHM_Format_ContextSettings General { get; set; } = new();
-        //public DSHM_Format_ContextSettings SDF { get; set; } = new();
-        //public DSHM_Format_ContextSettings GPJ { get; set; } = new();
-        //public DSHM_Format_ContextSettings SXS { get; set; } = new();
-        //public DSHM_Format_ContextSettings DS4Windows { get; set; } = new();
-        //public DSHM_Format_ContextSettings XInput { get; set; } = new();
-    }
-
+    /// <summary>
+    /// WIP: JSON-serializalying an object from this class results and saved to disk results in a file in the appropriate format to be loaded by DsHidMini v3 driver
+    /// </summary>
     public class TestNewSaveFormat
     {
         public DSHM_Format_ContextSettings Global { get; set; } = new();
 
-        /*
-        public List<TestSingleSettingsContainer> Profiles { get; set; } = new();
-        public List<TestSingleSettingsContainer> Devices { get; set; } = new();
-        */
-
-        public TestNewSaveFormat()
-        {
-
-        }
     }
+
+
 }
 
