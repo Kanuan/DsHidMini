@@ -127,7 +127,7 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
     }
 
     /// <summary>
-    /// WIP: JSON-serializalying an object from this class results and saved to disk results in a file in the appropriate format to be loaded by DsHidMini v3 driver
+    /// WIP: Json-serializalying an object from this class and saving it to disk results in a file with the appropriate contents to be loaded by the DsHidMini v3 driver
     /// </summary>
     public class TestNewSaveFormat
     {
