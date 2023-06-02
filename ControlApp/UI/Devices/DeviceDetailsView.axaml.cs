@@ -9,6 +9,8 @@ namespace ControlApp.UI.Devices
         public DeviceDetailsView()
         {
             InitializeComponent();
+            Nefarius.DsHidMini.ControlApp.MVVM.TestViewModel testViewModel = new();
+            this.DataContext = testViewModel;
         }
 
         private void InitializeComponent()
