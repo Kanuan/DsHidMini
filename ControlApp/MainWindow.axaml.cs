@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
+using ReactiveUI;
 
 namespace ControlApp
 {
@@ -6,6 +8,7 @@ namespace ControlApp
     {
         public MainWindow()
         {
+            RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
             InitializeComponent();
         }
     }
