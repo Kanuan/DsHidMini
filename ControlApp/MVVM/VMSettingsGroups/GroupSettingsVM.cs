@@ -131,5 +131,39 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     }
 
+    public class TemplateSelector : IDataTemplate
+    {
+        public IControl Build(object param)
+        {
+            string templateName = SettingsGroupToTemplateDict[(SettingsModeGroups)param];
+            var resultingCtrl = ((IDataTemplate)Avalonia.Application.Current.Resources[templateName]).Build(0);
+            // resultingCtrl.DataContext = param.
+            return resultingCtrl;
+        }
 
+        public bool Match(object data)
+        {
+            // Check if we can accept the provided data
+            return data is SettingsModeGroups;
+        }
+
+        private static Dictionary<SettingsModeGroups, string> SettingsGroupToTemplateDict = new()
+        {
+            { SettingsModeGroups.LEDsControl, "Template_LEDsSettings" },
+            { SettingsModeGroups.WirelessSettings, "Template_WirelessSettings" },
+            { SettingsModeGroups.SticksDeadzone, "Template_SticksDeadZone" },
+            { SettingsModeGroups.RumbleGeneral, "Template_RumbleBasicFunctions" },
+            { SettingsModeGroups.OutputReportControl, "Template_OutputRateControl" },
+            { SettingsModeGroups.RumbleLeftStrRescale, "Template_RumbleHeavyStrRescale" },
+            { SettingsModeGroups.RumbleRightConversion, "Template_RumbleVariableLightEmuTuning" },
+            { SettingsModeGroups.Unique_All, "Template_Unique_All" },
+            { SettingsModeGroups.Unique_Global, "Template_ToDo" },
+            { SettingsModeGroups.Unique_General, "Template_ToDo" },
+            { SettingsModeGroups.Unique_SDF, "Template_SDF_GPJ_PressureButtons" },
+            { SettingsModeGroups.Unique_GPJ, "Template_SDF_GPJ_PressureButtons" },
+            { SettingsModeGroups.Unique_SXS, "Template_ToDo" },
+            { SettingsModeGroups.Unique_DS4W, "Template_ToDo" },
+            { SettingsModeGroups.Unique_XInput, "Template_ToDo" },
+        };
+    }
 }
