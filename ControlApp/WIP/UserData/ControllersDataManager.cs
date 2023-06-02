@@ -12,6 +12,51 @@ namespace Nefarius.DsHidMini.ControlApp.WIP.UserData
 {
     internal class ControllersDataManager
     {
+        public class ProfileData
+        {
+            private VMGroupsContainer vmGroupsContainer;
+
+            [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+            private const string DefaultGuid = "00000000000000000000000000000000";
+            public string ProfileName { get; set; }
+            public Guid ProfileGuid { get; set; } = Guid.NewGuid();
+
+            [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+            public string DiskFileName { get; set; }
+
+
+            public BackingDataContainer DataContainer { get; set; } = new();
+
+            public ProfileData()
+            {
+                /*
+                ProfileGuid = Guid.NewGuid();
+                DataContainer = BackingDataContainer.GetDefaultDatas();
+                */
+            }
+
+
+
+            public static readonly ProfileData DefaultProfile = new()
+            {
+                ProfileName = "DSHM XInput",
+                DiskFileName = "Default_DSHM_XInput",
+                ProfileGuid = new Guid(DefaultGuid),
+                DataContainer = new(),
+            };
+
+            public override string ToString()
+            {
+                return ProfileName;
+            }
+
+            public VMGroupsContainer GetProfileVMGroupsContainer()
+            {
+                if (vmGroupsContainer == null)
+                    vmGroupsContainer = new VMGroupsContainer(DataContainer);
+                return vmGroupsContainer;
+            }
+        }
         public class DeviceSpecificData
         {
             public string DeviceMac { get; set; } = "0000000000";
