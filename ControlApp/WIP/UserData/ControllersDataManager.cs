@@ -96,8 +96,8 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             }
         };
 
-        private const string DISK = @"D:\";
-        private const string CONTROL_APP_FOLDER_PATH_IN_DISK = @"ControlApp\";
+        private const string DISK = @"C:\";
+        private const string CONTROL_APP_FOLDER_PATH_IN_DISK = @"ProgramData\DsHidMini\ControlApp\";
         private const string PROFILE_FOLDER_NAME = @"Profiles\";
         private const string DEVICES_FOLDER_NAME = @"Devices\";
 
