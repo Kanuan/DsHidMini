@@ -29,6 +29,15 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public VMGroupsContainer(BackingDataContainer dataContainer)
         {
             Context = dataContainer.modesUniqueData.SettingsContext;
+
+            GroupSettingsList.Add(GroupModeUnique = new(dataContainer, this));
+            GroupSettingsList.Add(GroupLEDsControl = new(dataContainer, this));
+            GroupSettingsList.Add(GroupWireless = new(dataContainer, this));
+            GroupSettingsList.Add(GroupSticksDZ = new(dataContainer, this));
+            GroupSettingsList.Add(GroupRumbleGeneral = new(dataContainer, this));
+            GroupSettingsList.Add(GroupOutRepControl = new(dataContainer, this));
+            GroupSettingsList.Add(GroupRumbleLeftRescale = new(dataContainer, this));
+            GroupSettingsList.Add(GroupRumbleRightConversion = new(dataContainer, this));
         }
 
     }
