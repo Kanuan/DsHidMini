@@ -1,6 +1,5 @@
 ﻿using Nefarius.DsHidMini.ControlApp.DSHM_Settings;
 using Nefarius.DsHidMini.ControlApp.MVVM;
-using Nefarius.DsHidMini.ControlApp.UserData;
 using System;
 using System.Collections.Generic;
 using System.IO;
