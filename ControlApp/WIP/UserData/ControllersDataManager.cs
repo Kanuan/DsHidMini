@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Nefarius.DsHidMini.ControlApp.WIP.UserData
+namespace Nefarius.DsHidMini.ControlApp.UserData
 {
     internal class ControllersDataManager
     {
