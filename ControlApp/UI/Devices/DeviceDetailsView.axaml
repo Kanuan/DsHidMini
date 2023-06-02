@@ -6,5 +6,12 @@
 			 xmlns:super="clr-namespace:Nefarius.DsHidMini.ControlApp.Util.WPF"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
              x:Class="ControlApp.UI.Devices.DeviceDetailsView">
-  Welcome to Avalonia!
+	Welcome to Avalonia!
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/UI/GroupSettingsTemplates.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
 </UserControl>
