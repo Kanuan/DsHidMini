@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:local="using:Nefarius.DsHidMini.ControlApp.MVVM"
 			 xmlns:super="clr-namespace:Nefarius.DsHidMini.ControlApp.Util.WPF"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
              x:Class="ControlApp.UI.Devices.DeviceDetailsView">
   Welcome to Avalonia!
 </UserControl>
