@@ -103,7 +103,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
 
 
-        // Some GroupSettings, like SticksDeadzone, require overriding this since they change behavior depending on the context
+        // Some GroupSettings, like SticksDeadzone, require overriding this since they have logic that depends on the context
         public virtual void ChangeContext(SettingsContext context)
         {
             Context = context;
