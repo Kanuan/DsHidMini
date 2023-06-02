@@ -25,7 +25,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     }
 
-        public abstract class GroupSettingsVM : ReactiveObject
+    public abstract class GroupSettingsVM : ReactiveObject
     {
         /// Replace with LexLoc
         private static Dictionary<SettingsModeGroups, string> DictGroupHeader = new()
