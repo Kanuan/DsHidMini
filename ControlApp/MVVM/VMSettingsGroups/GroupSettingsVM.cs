@@ -39,7 +39,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             GroupSettingsList.Add(GroupRumbleLeftRescale = new(dataContainer, this));
             GroupSettingsList.Add(GroupRumbleRightConversion = new(dataContainer, this));
         }
-
     }
 
     public abstract class GroupSettingsVM : ReactiveObject
