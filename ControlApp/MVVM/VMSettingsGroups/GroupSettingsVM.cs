@@ -157,8 +157,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public IControl Build(object param)
         {
             string templateName = SettingsGroupToTemplateDict[(SettingsModeGroups)param];
-            var resultingCtrl = ((IDataTemplate)Avalonia.Application.Current.Resources[templateName]).Build(0);
-            // resultingCtrl.DataContext = param.
+
+            Avalonia.Application.Current.Resources.TryGetResource(templateName, out var tempResource);
+            var resultingCtrl = ((IDataTemplate)tempResource).Build(0);
+
             return resultingCtrl;
         }
 
