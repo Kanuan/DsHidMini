@@ -48,17 +48,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // SDF and GPJ
         readonly ObservableAsPropertyHelper<bool> arePressureaNDPadOptionsVisible;
         public bool ArePressureaNDPadOptionsVisible => arePressureaNDPadOptionsVisible.Value;
-        /*
-
-        readonly ObservableAsPropertyHelper<bool> areSXSRelatedOptionsVisible;
-        public bool AreSXSRelatedOptionsVisible => areSXSRelatedOptionsVisible.Value;
-
-        readonly ObservableAsPropertyHelper<bool> arePressureaNDPadOptionsVisible;
-        public bool ArePressureaNDPadOptionsVisible => arePressureaNDPadOptionsVisible.Value;
-
-        readonly ObservableAsPropertyHelper<bool> arePressureaNDPadOptionsVisible;
-        public bool ArePressureaNDPadOptionsVisible => arePressureaNDPadOptionsVisible.Value;
-        */
 
         public ControlApp_DsPressureMode PressureExposureMode
         {
