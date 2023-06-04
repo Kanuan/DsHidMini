@@ -49,6 +49,22 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
+        public void UpdateLockStateOfGroups()
+        {
+            foreach (GroupSettingsVM group in GroupSettingsList)
+            {
+                group.IsGroupLocked = false;
+            }
+
+            if (Context == SettingsContext.DS4W)
+            {
+                GroupSticksDZ.IsGroupLocked = true;
+                GroupLEDsControl.IsGroupLocked = GroupModeUnique.IsDS4LightbarTranslationEnabled;
+            }
+
+
+        }
+
         public void SaveAllChangesToBackingData(BackingDataContainer dataContainer)
         {
             foreach (GroupSettingsVM group in GroupSettingsList)
