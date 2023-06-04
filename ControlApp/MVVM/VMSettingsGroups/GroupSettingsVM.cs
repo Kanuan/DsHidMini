@@ -38,6 +38,12 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             GroupSettingsList.Add(GroupOutRepControl = new(dataContainer, this));
             GroupSettingsList.Add(GroupRumbleLeftRescale = new(dataContainer, this));
             GroupSettingsList.Add(GroupRumbleRightConversion = new(dataContainer, this));
+
+            this.WhenAnyValue(x => x.Context)
+            .Subscribe(x => UpdateLockStateOfGroups());
+            this.WhenAnyValue(x => x.GroupModeUnique, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
+            .Subscribe(x => UpdateLockStateOfGroups());
+
         }
 
         public void ChangeContextOfAllGroups(SettingsContext context)
@@ -64,6 +70,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
 
         }
+
+
 
         public void SaveAllChangesToBackingData(BackingDataContainer dataContainer)
         {
