@@ -98,9 +98,11 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         private const string DISK = @"C:\";
         private const string CONTROL_APP_FOLDER_PATH_IN_DISK = @"ProgramData\DsHidMini\ControlApp\";
+        private const string DSHM_FOLDER_PATH_IN_DISK = @"ProgramData\DsHidMini\";
         private const string PROFILE_FOLDER_NAME = @"Profiles\";
         private const string DEVICES_FOLDER_NAME = @"Devices\";
 
+        public string DshmFolderFullPath { get; } = $@"{DISK}{DSHM_FOLDER_PATH_IN_DISK}";
         public string ProfilesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{PROFILE_FOLDER_NAME}";
         public string DevicesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{DEVICES_FOLDER_NAME}";
 
@@ -140,17 +142,19 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
             var devicesOnDisk = new List<DeviceSpecificData>();
 
-            string[] devicesPaths = Directory.GetFiles($@"{DevicesFolderFullPath}", "*.json");
-            foreach (string devPath in devicesPaths)
+            if(Directory.Exists(DevicesFolderFullPath))
             {
-                var dirName = new DirectoryInfo(devPath).Name;
-                var jsonText = System.IO.File.ReadAllText(devPath);
+                string[] devicesPaths = Directory.GetFiles($@"{DevicesFolderFullPath}", "*.json");
+                foreach (string devPath in devicesPaths)
+                {
+                    var dirName = new DirectoryInfo(devPath).Name;
+                    var jsonText = System.IO.File.ReadAllText(devPath);
 
-                var data = JsonSerializer.Deserialize<DeviceSpecificData>(jsonText, ControlAppJsonSerializerOptions);
-                //data.DiskFileName = dirName;
-                devicesOnDisk.Add(data);
+                    var data = JsonSerializer.Deserialize<DeviceSpecificData>(jsonText, ControlAppJsonSerializerOptions);
+                    //data.DiskFileName = dirName;
+                    devicesOnDisk.Add(data);
+                }
             }
-
             return devicesOnDisk;
         }
 
@@ -158,28 +162,31 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             var profilesOnDisk = new List<ProfileData>();
 
-            string[] profilesPaths = Directory.GetFiles($@"{ProfilesFolderFullPath}", "*.json");
-            foreach (string profilePath in profilesPaths)
+            if(Directory.Exists(ProfilesFolderFullPath))
             {
-                var dirName = new DirectoryInfo(profilePath).Name;
-                var jsonText = System.IO.File.ReadAllText(profilePath);
-
-                JsonSerializerOptions ControlAppJsonSerializerOptions = new JsonSerializerOptions
+                string[] profilesPaths = Directory.GetFiles($@"{ProfilesFolderFullPath}", "*.json");
+                foreach (string profilePath in profilesPaths)
                 {
-                    WriteIndented = true,
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    IncludeFields = true,
+                    var dirName = new DirectoryInfo(profilePath).Name;
+                    var jsonText = System.IO.File.ReadAllText(profilePath);
 
-                    Converters =
+                    JsonSerializerOptions ControlAppJsonSerializerOptions = new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                        IncludeFields = true,
+
+                        Converters =
                     {
                         new JsonStringEnumConverter()
                     }
-                };
+                    };
 
-                ProfileData data = JsonSerializer.Deserialize<ProfileData>(jsonText, ControlAppJsonSerializerOptions);
-                data.DiskFileName = dirName;
-                profilesOnDisk.Add(data);
-            }
+                    ProfileData data = JsonSerializer.Deserialize<ProfileData>(jsonText, ControlAppJsonSerializerOptions);
+                    data.DiskFileName = dirName;
+                    profilesOnDisk.Add(data);
+                }
+            }          
 
             return profilesOnDisk;
         }
@@ -227,12 +234,16 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
             // Save profile to disk
             string profileJson = JsonSerializer.Serialize(profile, ControlAppJsonSerializerOptions);
+
+            System.IO.Directory.CreateDirectory(ProfilesFolderFullPath);
             System.IO.File.WriteAllText($@"{ProfilesFolderFullPath}{profile.DiskFileName}", profileJson);
         }
         public void SaveDeviceSpecificDataToDisk(DeviceSpecificData device)
         {
             // Save profile to disk
             string profileJson = JsonSerializer.Serialize(device, ControlAppJsonSerializerOptions);
+
+            System.IO.Directory.CreateDirectory(DevicesFolderFullPath);
             System.IO.File.WriteAllText($@"{DevicesFolderFullPath}{device.DeviceMac}.json", profileJson);
 
             TestFunctionSaveToDSHM(device.DatasContainter);
@@ -243,7 +254,9 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             var dshm_data = new TestNewSaveFormat();
             dataContainer.ConvertAllToDSHM(dshm_data.Global);
             string profileJson = JsonSerializer.Serialize(dshm_data, ControlAppJsonSerializerOptions);
-            System.IO.File.WriteAllText($@"C:\ProgramData\DsHidMini\DsHidMini.json", profileJson);
+
+            System.IO.Directory.CreateDirectory(DshmFolderFullPath);
+            System.IO.File.WriteAllText($@"{DshmFolderFullPath}DsHidMini.json", profileJson);
         }
 
 
