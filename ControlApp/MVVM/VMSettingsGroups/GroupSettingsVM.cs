@@ -39,11 +39,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             GroupSettingsList.Add(GroupRumbleLeftRescale = new(dataContainer, this));
             GroupSettingsList.Add(GroupRumbleRightConversion = new(dataContainer, this));
 
-            this.WhenAnyValue(x => x.Context)
+            this.WhenAnyValue(x => x.Context, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
             .Subscribe(x => UpdateLockStateOfGroups());
-            this.WhenAnyValue(x => x.GroupModeUnique, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
-            .Subscribe(x => UpdateLockStateOfGroups());
-
         }
 
         public void ChangeContextOfAllGroups(SettingsContext context)
