@@ -132,7 +132,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public GroupSticksVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter)
         {
-            AdjustSettingsBasedOnContext();
             leftStickDeadZoneInpercent = this
                 .WhenAnyValue(x => x.LeftStickDeadZone)
                 .Select(LeftStickDeadZone => LeftStickDeadZone * 141 / 180)
@@ -150,18 +149,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             base.ChangeContext(context);
             //this.RaisePropertyChanged(nameof(IsOverrideCheckboxVisible));
             this.RaisePropertyChanged(nameof(IsGroupLocked));
-            AdjustSettingsBasedOnContext();
-        }
-
-        public void AdjustSettingsBasedOnContext()
-        {
-            /* Unecessary anymore?
-            if (Context == SettingsContext.DS4W)
-            {
-                IsOverrideCheckboxVisible = false;
-                IsGroupLocked = true;
-            }
-            */
         }
 
         public override void ResetGroupToOriginalDefaults()
