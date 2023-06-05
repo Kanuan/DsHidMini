@@ -49,7 +49,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
-        public GroupOutRepControlVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter) { }
+        public GroupOutRepControlVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer) { }
 
         public override void ResetGroupToOriginalDefaults()
         {

@@ -117,7 +117,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             this.RaisePropertyChanged(string.Empty);
         }
 
-        public GroupRumbleGeneralVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter) { }
+        public GroupRumbleGeneralVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer) { }
     }
 
 

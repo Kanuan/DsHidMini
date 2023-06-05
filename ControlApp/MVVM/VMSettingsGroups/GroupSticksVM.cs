@@ -130,7 +130,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public int RightStickDeadZoneInPercent => rightStickDeadZoneInpercent.Value;
 
 
-        public GroupSticksVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter)
+        public GroupSticksVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer)
         {
             leftStickDeadZoneInpercent = this
                 .WhenAnyValue(x => x.LeftStickDeadZone)

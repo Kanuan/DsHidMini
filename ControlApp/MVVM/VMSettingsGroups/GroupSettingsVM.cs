@@ -143,9 +143,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public abstract void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource);
         public abstract void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource);
 
-        public GroupSettingsVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter)
+        public GroupSettingsVM(BackingDataContainer backingDataContainer)
         {
-            SettingsContainer = vmGroupsContainter;
             if (DictGroupHeader.TryGetValue(Group, out string groupHeader)) Header = groupHeader;
             LoadSettingsFromBackingDataContainer(backingDataContainer);
             ResetGroupToDefaultsCommand = ReactiveCommand.Create(ResetGroupToOriginalDefaults);

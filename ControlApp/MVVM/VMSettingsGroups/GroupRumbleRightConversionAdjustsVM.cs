@@ -79,7 +79,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
-        public GroupRumbleRightConversionAdjustsVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter) { }
+        public GroupRumbleRightConversionAdjustsVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer) { }
         public override void ResetGroupToOriginalDefaults()
         {
             _tempBackingData.ResetToDefault();
