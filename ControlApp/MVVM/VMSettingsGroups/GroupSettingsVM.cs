@@ -44,14 +44,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         }
 
-        public void ChangeContextOfAllGroups(SettingsContext context)
-        {
-            Context = context;
-            foreach (GroupSettingsVM group in GroupSettingsList)
-            {
-            }
-        }
-
         public void UpdateLockStateOfGroups()
         {
             foreach (GroupSettingsVM group in GroupSettingsList)

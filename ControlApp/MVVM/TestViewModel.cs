@@ -123,7 +123,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public SettingsContext? CurrentHIDMode
         {
             get => DeviceCustomsVM.Context;
-            set => DeviceCustomsVM.ChangeContextOfAllGroups(value.GetValueOrDefault());
+            set => DeviceCustomsVM.Context = value.GetValueOrDefault();
         }
         public List<SettingsContext> HIDDeviceModesList => hidDeviceModesList;
 
