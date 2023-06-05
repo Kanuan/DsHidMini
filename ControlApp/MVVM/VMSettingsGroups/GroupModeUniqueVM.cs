@@ -42,12 +42,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 this.RaisePropertyChanged(nameof(IsGroupEnabled));
             }
         }
-        // General
-        // public DSHM_HidDeviceModes HIDDeviceMode { get => _tempBackingData.; set => this.RaiseAndSetIfChanged(ref _tempBackingData.IsGroupEnabled, value); }
-
-        // SDF and GPJ
-        readonly ObservableAsPropertyHelper<bool> arePressureaNDPadOptionsVisible;
-        public bool ArePressureaNDPadOptionsVisible => arePressureaNDPadOptionsVisible.Value;
 
         public ControlApp_DsPressureMode PressureExposureMode
         {
@@ -113,10 +107,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public GroupModeUniqueVM(BackingDataContainer backingDataContainer, VMGroupsContainer vmGroupsContainter) : base(backingDataContainer, vmGroupsContainter)
         {
-            arePressureaNDPadOptionsVisible = this
-                .WhenAnyValue(x => x.Context)
-                .Select(whatever => ( Context == SettingsContext.SDF ) || (Context == SettingsContext.GPJ))
-                .ToProperty(this, x => x.ArePressureaNDPadOptionsVisible);
         }
 
         public override void ChangeContext(SettingsContext context)
