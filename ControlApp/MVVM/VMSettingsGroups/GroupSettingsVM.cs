@@ -16,7 +16,17 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     public class VMGroupsContainer : ReactiveObject
     {
         [Reactive] internal List<GroupSettingsVM> GroupSettingsList { get; set; } = new();
-        [Reactive] public SettingsContext Context { get; set; }
+        //[Reactive] public SettingsContext Context { get; set; }
+        private SettingsContext context = SettingsContext.XInput;
+        public SettingsContext Context
+        {
+            get => context;
+            set
+            {
+                context = value;
+                GroupModeUnique.Context = value;
+            }
+        }
         [Reactive] public GroupModeUniqueVM GroupModeUnique { get; set; }
         [Reactive] public GroupLEDsCustomsVM GroupLEDsControl { get; set; }
         [Reactive] public GroupWirelessSettingsVM GroupWireless { get; set; }
@@ -28,8 +38,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public VMGroupsContainer(BackingDataContainer dataContainer)
         {
-            Context = dataContainer.modesUniqueData.SettingsContext;
-
             GroupSettingsList.Add(GroupModeUnique = new(dataContainer, this));
             GroupSettingsList.Add(GroupLEDsControl = new(dataContainer, this));
             GroupSettingsList.Add(GroupWireless = new(dataContainer, this));
@@ -39,8 +47,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             GroupSettingsList.Add(GroupRumbleLeftRescale = new(dataContainer, this));
             GroupSettingsList.Add(GroupRumbleRightConversion = new(dataContainer, this));
 
-            this.WhenAnyValue(x => x.Context, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
+            Context = dataContainer.modesUniqueData.SettingsContext;
+
+            this.WhenAnyValue(x => x.GroupModeUnique.Context, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled, x => x.Changed)
             .Subscribe(x => UpdateLockStateOfGroups());
+
+            // Duct tape for RaisePropertyChange(string.empty)
+            this.GroupModeUnique.PropertyChanged += GodMakeThisWorkPlease;
 
         }
 
@@ -60,7 +73,15 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         }
 
-
+        void GodMakeThisWorkPlease(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "":
+                    UpdateLockStateOfGroups();
+                    break;
+            }
+        }
 
         public void SaveAllChangesToBackingData(BackingDataContainer dataContainer)
         {
