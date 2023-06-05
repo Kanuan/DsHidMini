@@ -53,7 +53,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             .Subscribe(x => UpdateLockStateOfGroups());
 
             // Duct tape for RaisePropertyChange(string.empty)
-            this.GroupModeUnique.PropertyChanged += CheckForEmptyStringInPropertyChanged;
+            this.GroupModeUnique.PropertyChanged += UpdateLockStateOfGroupsIfEmptyStringOnPropertyChanged;
 
         }
 
@@ -73,7 +73,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         }
 
-        void CheckForEmptyStringInPropertyChanged(object sender, PropertyChangedEventArgs e)
+        void UpdateLockStateOfGroupsIfEmptyStringOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
