@@ -109,13 +109,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
         }
 
-        public override void ChangeContext(SettingsContext context)
-        {
-            base.ChangeContext(context);
-            _tempBackingData.SettingsContext = context;
-
-        }
-
         public override void ResetGroupToOriginalDefaults()
         {
             _tempBackingData.ResetToDefault();

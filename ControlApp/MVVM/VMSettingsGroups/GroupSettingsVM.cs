@@ -42,7 +42,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             this.WhenAnyValue(x => x.Context, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
             .Subscribe(x => UpdateLockStateOfGroups());
 
-            ChangeContextOfAllGroups(Context);
         }
 
         public void ChangeContextOfAllGroups(SettingsContext context)
@@ -50,7 +49,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             Context = context;
             foreach (GroupSettingsVM group in GroupSettingsList)
             {
-                group.ChangeContext(context);
             }
         }
 
@@ -123,14 +121,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public abstract SettingsModeGroups Group { get; }
 
         public string Header { get; }
-
-
-
-        // Some GroupSettings, like SticksDeadzone, require overriding this since they have logic that depends on the context
-        public virtual void ChangeContext(SettingsContext context)
-        {
-            Context = context;
-        }
 
         public abstract void ResetGroupToOriginalDefaults();
 

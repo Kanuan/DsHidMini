@@ -144,13 +144,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         }
 
-        public override void ChangeContext(SettingsContext context)
-        {
-            base.ChangeContext(context);
-            //this.RaisePropertyChanged(nameof(IsOverrideCheckboxVisible));
-            this.RaisePropertyChanged(nameof(IsGroupLocked));
-        }
-
         public override void ResetGroupToOriginalDefaults()
         {
             _tempBackingData.ResetToDefault();
