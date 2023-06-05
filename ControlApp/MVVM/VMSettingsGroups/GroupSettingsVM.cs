@@ -41,6 +41,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             this.WhenAnyValue(x => x.Context, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
             .Subscribe(x => UpdateLockStateOfGroups());
+
+            ChangeContextOfAllGroups(Context);
         }
 
         public void ChangeContextOfAllGroups(SettingsContext context)
