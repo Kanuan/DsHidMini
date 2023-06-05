@@ -127,8 +127,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         [Reactive] public VMGroupsContainer SettingsContainer { get; set; }
 
-        [Reactive] public SettingsContext Context { get; internal set; } = SettingsContext.XInput;
-
         [Reactive] public virtual bool IsOverrideCheckboxVisible { get; set; } = false;
 
         public abstract SettingsModeGroups Group { get; }

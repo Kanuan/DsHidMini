@@ -33,6 +33,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.Unique_All;
 
+        [Reactive] public SettingsContext Context { get; internal set; } = SettingsContext.XInput;
+
         public bool IsGroupEnabled
         {
             get => _tempBackingData.IsGroupEnabled;
