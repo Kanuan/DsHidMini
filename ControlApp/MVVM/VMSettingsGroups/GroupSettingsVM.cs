@@ -7,6 +7,8 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Reactive;
 using System.Text.Json.Serialization;
 using System.Windows;
@@ -50,7 +52,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             Context = dataContainer.modesUniqueData.SettingsContext;
 
             this.WhenAnyValue(x => x.GroupModeUnique.Context, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled, x => x.Changed)
-            .Subscribe(x => UpdateLockStateOfGroups());
+                .Subscribe(x => UpdateLockStateOfGroups());
 
             // Duct tape for RaisePropertyChange(string.empty)
             this.GroupModeUnique.PropertyChanged += UpdateLockStateOfGroupsIfEmptyStringOnPropertyChanged;
