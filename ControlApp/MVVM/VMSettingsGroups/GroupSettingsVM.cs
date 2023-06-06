@@ -18,7 +18,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     public class VMGroupsContainer : ReactiveObject
     {
         [Reactive] internal List<GroupSettingsVM> GroupSettingsList { get; set; } = new();
-        //[Reactive] public SettingsContext Context { get; set; }
+
         private SettingsContext context = SettingsContext.XInput;
         public SettingsContext Context
         {
