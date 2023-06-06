@@ -127,8 +127,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         [Reactive] public virtual bool IsGroupLocked { get; set; } = false;
 
-        [Reactive] public VMGroupsContainer SettingsContainer { get; set; }
-
         [Reactive] public virtual bool IsOverrideCheckboxVisible { get; set; } = false;
 
         public abstract SettingsModeGroups Group { get; }
