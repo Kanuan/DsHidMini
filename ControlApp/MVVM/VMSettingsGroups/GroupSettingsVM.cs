@@ -137,11 +137,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public abstract void ResetGroupToOriginalDefaults();
 
-        public bool ShouldGroupBeEnabledOnReset()
-        {
-            return true;
-        }
-
         public abstract void LoadSettingsFromBackingDataContainer(BackingDataContainer dataContainerSource);
         public abstract void SaveSettingsToBackingDataContainer(BackingDataContainer dataContainerSource);
 
