@@ -69,15 +69,80 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
-        [Reactive] public BackingData_LEDs.All4LEDsCustoms.singleLEDCustoms CurrentLEDCustoms { get; set; }
+        //[Reactive] public BackingData_LEDs.All4LEDsCustoms.singleLEDCustoms CurrentLEDCustoms { get; set; }
 
-        public int CurrentLEDCustomsIndex
-        {
-            get => CurrentLEDCustoms.LEDIndex;
+
+        public bool IsCurrentLedEnabled
+        { 
+            get => _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IsLedEnabled;
             set
             {
-                CurrentLEDCustoms = _tempBackingData.LEDsCustoms.LED_x_Customs[value];
+                _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IsLedEnabled = value;
+                this.RaisePropertyChanged(nameof(IsCurrentLedEnabled));
+            }
+        }
+        public bool UseLEDEffectsInIndexLED
+        {
+            get => _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].UseLEDEffects;
+            set
+            {
+                _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].UseLEDEffects = value;
+                this.RaisePropertyChanged(nameof(UseLEDEffectsInIndexLED));
+            }
+        }
+
+        public byte IndexLEDDuration
+        {
+            get => _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].Duration;
+            set
+            {
+                _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].Duration = value;
+                this.RaisePropertyChanged(nameof(IndexLEDDuration));
+            }
+        }
+        public byte IndexLEDIntervalDuration
+        {
+            get => _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IntervalDuration;
+            set
+            {
+                _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IntervalDuration = value;
+                this.RaisePropertyChanged(nameof(IndexLEDIntervalDuration));
+            }
+        }
+        public byte IndexLEDIntervalPortionON
+        {
+            get => _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IntervalPortionON;
+            set
+            {
+                _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IntervalPortionON = value;
+                this.RaisePropertyChanged(nameof(IndexLEDIntervalPortionON));
+                this.RaisePropertyChanged(nameof(IndexLEDIntervalPortionOFF));
+            }
+        }
+        public byte IndexLEDIntervalPortionOFF
+        {
+            get => _tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IntervalPortionOFF;
+            set
+            {
+                //_tempBackingData.LEDsCustoms.LED_x_Customs[CurrentLEDCustomsIndex].IntervalPortionOFF = value;
+                this.RaisePropertyChanged(nameof(IndexLEDIntervalPortionOFF));
+            }
+        }
+
+        private int currentLEDIndex = 1;
+        public int CurrentLEDCustomsIndex
+        {
+            get => currentLEDIndex;
+            set
+            {
+                currentLEDIndex = value;
                 this.RaisePropertyChanged(nameof(CurrentLEDCustomsIndex));
+                this.RaisePropertyChanged(nameof(IsCurrentLedEnabled));
+                this.RaisePropertyChanged(nameof(UseLEDEffectsInIndexLED));
+                this.RaisePropertyChanged(nameof(IndexLEDDuration));
+                this.RaisePropertyChanged(nameof(IndexLEDIntervalDuration));
+                this.RaisePropertyChanged(nameof(IndexLEDIntervalPortionON));
+
             }
         }
 

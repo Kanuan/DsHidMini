@@ -76,17 +76,16 @@
 								<TabItem Header="4"/>
 							</TabStrip>
 							<!-- LED fine tuning -->
-							<DockPanel
-								DataContext="{Binding CurrentLEDCustoms}">
+							<DockPanel>
 								<CheckBox
 									DockPanel.Dock="Top"
 									Content="Enable LED"
-									IsChecked="{Binding IsLedEnabled}"/>
+									IsChecked="{Binding IsCurrentLedEnabled}"/>
 								<CheckBox
 									x:Name="UseLEDEffects_Checkbox"
 									DockPanel.Dock="Top"
 									Content="Use advanced effects"
-									IsChecked="{Binding UseLEDEffects}"/>
+									IsChecked="{Binding UseLEDEffectsInIndexLED}"/>
 								<Grid
 									DockPanel.Dock="Top"
 									IsEnabled="{Binding IsChecked, ElementName=UseLEDEffects_Checkbox}"
@@ -113,7 +112,7 @@
 										Maximum="255"
 										ClipValueToMinMax="True"
 										VerticalAlignment="Center"
-										Value="{Binding Duration}"/>
+										Value="{Binding IndexLEDDuration}"/>
 									<TextBlock
 										Grid.Row="1" Grid.Column="0"
 										Text="Interval duration:"
@@ -126,7 +125,7 @@
 										Maximum="255"
 										ClipValueToMinMax="True"
 										VerticalAlignment="Center"
-										Value="{Binding IntervalDuration}"
+										Value="{Binding IndexLEDIntervalDuration}"
 						/>
 									<TextBlock
 										Grid.Row="2" Grid.Column="0"
@@ -140,7 +139,7 @@
 										Maximum="255"
 										ClipValueToMinMax="True"
 										VerticalAlignment="Center"
-										Value="{Binding IntervalPortionON}"
+										Value="{Binding IndexLEDIntervalPortionON}"
 						/>
 									<TextBlock
 										Grid.Row="3" Grid.Column="0"
@@ -154,7 +153,7 @@
 										Maximum="255"
 										ClipValueToMinMax="True"
 										VerticalAlignment="Center"
-										Value="{Binding IntervalPortionOFF}"
+										Value="{Binding IndexLEDIntervalPortionOFF}"
 						/>
 								</Grid>
 							</DockPanel>
