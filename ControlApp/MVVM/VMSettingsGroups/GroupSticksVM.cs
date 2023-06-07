@@ -15,24 +15,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public ObservableAsPropertyHelper<bool> isGroupLockedToPreventDS4WConflicts;
         
-        /*
-        public override bool IsGroupLocked
-        {
-            get
-            {        
-                if (isGroupLockedToPreventDS4WConflicts.Value)
-                    return true;
-
-                return base.IsGroupLocked;
-            }
-            set
-            {
-                base.IsGroupLocked = value;
-                this.RaisePropertyChanged(nameof(IsGroupLocked));
-            }
-        }
-        */
-
         public bool IsGroupEnabled
         {
             get => _tempBackingData.IsGroupEnabled;
