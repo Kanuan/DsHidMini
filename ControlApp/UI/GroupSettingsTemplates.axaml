@@ -587,6 +587,18 @@
 					VerticalContentAlignment="Center"
 						/>
 			</StackPanel>
+			<DockPanel>
+				<TextBlock
+					DockPanel.Dock="Left"
+					Text="HID Device Mode:"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+				<ComboBox
+					DockPanel.Dock="Right"
+					VerticalAlignment="Center"
+					SelectedItem="{Binding Context, FallbackValue=4}"
+					Items="{Binding HIDDeviceModesList}"/>
+			</DockPanel>
 			<!-- Pressure buttons mode -->
 			<DockPanel IsVisible="{Binding Path=Context, Converter={StaticResource VisibilityPerHIDModeConverterKey}, ConverterParameter=11}">
 				<TextBlock

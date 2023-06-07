@@ -13,6 +13,14 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     public class GroupModeUniqueVM : GroupSettingsVM
     {
+        public readonly List<SettingsContext> hidDeviceModesList = new List<SettingsContext>
+        {
+            SettingsContext.SDF,
+            SettingsContext.GPJ,
+            SettingsContext.SXS,
+            SettingsContext.DS4W,
+            SettingsContext.XInput,
+        };
         public static readonly List<ControlApp_DsPressureMode> listOfPressureModes = new()
         {
             ControlApp_DsPressureMode.Digital,
@@ -25,7 +33,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             ControlApp_DPADModes.HAT,
             ControlApp_DPADModes.Buttons,
         };
-
+        public List<SettingsContext> HIDDeviceModesList => hidDeviceModesList;
         public static List<ControlApp_DsPressureMode> ListOfPressureModes { get => listOfPressureModes; }
         public static List<ControlApp_DPADModes> ListOfDPadModes { get => listOfDPadModes; }
 
@@ -33,7 +41,16 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.Unique_All;
 
-        [Reactive] public SettingsContext Context { get; internal set; } = SettingsContext.XInput;
+        public SettingsContext Context 
+        {
+            get => _tempBackingData.SettingsContext;
+            set
+            {
+                _tempBackingData.SettingsContext = value;
+                this.RaisePropertyChanged(nameof(Context));
+            }
+
+        }
 
         public bool IsGroupEnabled
         {

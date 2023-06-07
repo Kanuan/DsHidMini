@@ -112,20 +112,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         }
        
 
-        public readonly List<SettingsContext> hidDeviceModesList = new List<SettingsContext>
-        {
-            SettingsContext.SDF,
-            SettingsContext.GPJ,
-            SettingsContext.SXS,
-            SettingsContext.DS4W,
-            SettingsContext.XInput,
-        };
+
         public SettingsContext? CurrentHIDMode
         {
             get => DeviceCustomsVM.GroupModeUnique.Context;
             set => DeviceCustomsVM.GroupModeUnique.Context = value.GetValueOrDefault();
         }
-        public List<SettingsContext> HIDDeviceModesList => hidDeviceModesList;
+ 
 
         public List<ProfileData> ListOfProfiles => UserDataManager.Profiles;
 
