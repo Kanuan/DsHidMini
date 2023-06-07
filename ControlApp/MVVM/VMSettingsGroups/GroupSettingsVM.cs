@@ -17,17 +17,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class VMGroupsContainer : ReactiveObject
     {
-        private SettingsContext context = SettingsContext.XInput;
         [Reactive] internal List<GroupSettingsVM> GroupSettingsList { get; set; } = new();
-        public SettingsContext Context
-        {
-            get => context;
-            set
-            {
-                context = value;
-                GroupModeUnique.Context = value;
-            }
-        }
         [Reactive] public GroupModeUniqueVM GroupModeUnique { get; set; }
         [Reactive] public GroupLEDsCustomsVM GroupLEDsControl { get; set; }
         [Reactive] public GroupWirelessSettingsVM GroupWireless { get; set; }
@@ -48,8 +38,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             GroupSettingsList.Add(GroupRumbleLeftRescale = new(dataContainer, this));
             GroupSettingsList.Add(GroupRumbleRightConversion = new(dataContainer, this));
 
-            Context = dataContainer.modesUniqueData.SettingsContext;
-
             this.WhenAnyValue(
                 x => x.GroupModeUnique.Context,
                 x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
@@ -67,7 +55,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 group.IsGroupLocked = false;
             }
 
-            if (Context == SettingsContext.DS4W)
+            if (GroupModeUnique.Context == SettingsContext.DS4W)
             {
                 GroupSticksDZ.IsGroupLocked = true;
                 GroupLEDsControl.IsGroupLocked = GroupModeUnique.IsDS4LightbarTranslationEnabled;

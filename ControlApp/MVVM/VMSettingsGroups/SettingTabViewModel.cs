@@ -55,8 +55,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             ModeUniqueSettingsGroupsList = new ObservableCollection<GroupSettingsVM>();
 
-            if (container.Context != SettingsContext.General
-                && container.Context != SettingsContext.Global)
+            if (container.GroupModeUnique.Context != SettingsContext.General
+                && container.GroupModeUnique.Context != SettingsContext.Global)
                 ModeUniqueSettingsGroupsList.Add(container.GroupModeUnique);
         }
     }
