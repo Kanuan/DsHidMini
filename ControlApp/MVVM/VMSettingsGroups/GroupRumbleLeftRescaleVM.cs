@@ -12,16 +12,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleLeftStrRescale;
 
-        public bool IsGroupEnabled
-        {
-            get => _tempBackingData.IsGroupEnabled;
-            set
-            {
-                _tempBackingData.IsGroupEnabled = value;
-                this.RaisePropertyChanged(nameof(IsGroupEnabled));
-            }
-        }
-
         public bool IsLeftMotorStrRescalingEnabled
         {
             get => _tempBackingData.IsLeftMotorStrRescalingEnabled;

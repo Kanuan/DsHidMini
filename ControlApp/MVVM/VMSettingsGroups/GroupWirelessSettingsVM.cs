@@ -10,15 +10,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private BackingData_Wireless _tempBackingData = new();
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.WirelessSettings;
-        public bool IsGroupEnabled
-        {
-            get => _tempBackingData.IsGroupEnabled;
-            set
-            {
-                _tempBackingData.IsGroupEnabled = value;
-                this.RaisePropertyChanged(nameof(IsGroupEnabled));
-            }
-        }
+
         public bool IsWirelessIdleDisconnectEnabled
         {
             get => _tempBackingData.IsWirelessIdleDisconnectEnabled;

@@ -11,15 +11,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private BackingData_RumbleGeneral _tempBackingData = new();
        
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleGeneral;
-        public bool IsGroupEnabled
-        {
-            get => _tempBackingData.IsGroupEnabled;
-            set
-            {
-                _tempBackingData.IsGroupEnabled = value;
-                this.RaisePropertyChanged(nameof(IsGroupEnabled));
-            }
-        }
+
         public bool IsVariableLightRumbleEmulationEnabled
         {
             get => _tempBackingData.IsVariableLightRumbleEmulationEnabled;

@@ -15,16 +15,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public ObservableAsPropertyHelper<bool> isGroupLockedToPreventDS4WConflicts;
         
-        public bool IsGroupEnabled
-        {
-            get => _tempBackingData.IsGroupEnabled;
-            set
-            {
-                _tempBackingData.IsGroupEnabled = value;
-                this.RaisePropertyChanged(nameof(IsGroupEnabled));
-            }
-        }
-
         public bool ApplyLeftStickDeadZone
         {
             get => _tempBackingData.LeftStickData.IsDeadZoneEnabled;

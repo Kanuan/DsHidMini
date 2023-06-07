@@ -14,15 +14,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.RumbleRightConversion;
 
-        public bool IsGroupEnabled
-        {
-            get => _tempBackingData.IsGroupEnabled;
-            set
-            {
-                _tempBackingData.IsGroupEnabled = value;
-                this.RaisePropertyChanged(nameof(IsGroupEnabled));
-            }
-        }
         public int RightRumbleConversionUpperRange
         {
             get => _tempBackingData.RightRumbleConversionUpperRange;

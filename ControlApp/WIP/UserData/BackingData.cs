@@ -144,15 +144,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
     public abstract class SettingsBackingData
     {
-        protected bool isGroupEnabled = true;
-
-        public bool IsGroupEnabled { get => isGroupEnabled; set => isGroupEnabled = value; }
-
-        //public SettingsContext Context = SettingsContext.XInput;
-
         public abstract void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings);
-
-
     }
 
     public class BackingData_ModesUnique : SettingsBackingData
@@ -233,7 +225,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public static void CopySettings(BackingData_LEDs destiny, BackingData_LEDs source)
         {
-            destiny.IsGroupEnabled = source.IsGroupEnabled;
             destiny.LEDMode = source.LEDMode;
             destiny.LEDsCustoms.CopyLEDsCustoms(source.LEDsCustoms);
         }
@@ -241,11 +232,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
             DSHM_Format_ContextSettings.AllLEDSettings dshm_AllLEDsSettings = dshmContextSettings.LEDSettings;
-            if (!this.IsGroupEnabled)
-            {
-                dshm_AllLEDsSettings = null;
-                return;
-            }
 
             dshm_AllLEDsSettings.Mode = SaveLoadUtils.Get_DSHM_LEDModes_From_ControlApp[this.LEDMode];
 
@@ -391,7 +377,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public static void CopySettings(BackingData_Wireless destiny, BackingData_Wireless source)
         {
-            destiny.IsGroupEnabled = source.IsGroupEnabled;
             destiny.IsQuickDisconnectComboEnabled = source.IsQuickDisconnectComboEnabled;
             destiny.IsWirelessIdleDisconnectEnabled = source.IsWirelessIdleDisconnectEnabled;
             destiny.QuickDisconnectCombo.copyCombo(source.QuickDisconnectCombo);
@@ -400,15 +385,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
-
-            if (!this.IsGroupEnabled)
-            {
-                dshmContextSettings.DisableWirelessIdleTimeout = null;
-                dshmContextSettings.WirelessIdleTimeoutPeriodMs = null;
-                //dshmContextSettings.QuickDisconnectCombo = null;
-                return;
-            }
-
             dshmContextSettings.DisableWirelessIdleTimeout = !this.IsWirelessIdleDisconnectEnabled;
             dshmContextSettings.WirelessIdleTimeoutPeriodMs = this.WirelessIdleDisconnectTime * 60 * 1000;
             //dshmContextSettings.QuickDisconnectCombo = dictionary combo pair;
@@ -428,8 +404,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public static void CopySettings(BackingData_Sticks destiny, BackingData_Sticks source)
         {
-            destiny.IsGroupEnabled = source.IsGroupEnabled;
-
             destiny.LeftStickData.CopyStickDataFromOtherStick(source.LeftStickData);
             destiny.RightStickData.CopyStickDataFromOtherStick(source.RightStickData);
         }
@@ -547,7 +521,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public static void CopySettings(BackingData_RumbleGeneral destiny, BackingData_RumbleGeneral source)
         {
-            destiny.isGroupEnabled = source.IsGroupEnabled;
             destiny.isVariableLightRumbleEmulationEnabled = source.IsVariableLightRumbleEmulationEnabled;
             destiny.isLeftMotorDisabled = source.IsLeftMotorDisabled;
             destiny.isRightMotorDisabled = source.IsRightMotorDisabled;
@@ -558,14 +531,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
             DSHM_Format_ContextSettings.AllRumbleSettings dshmRumbleSettings = dshmContextSettings.RumbleSettings;
-
-            if (!this.IsGroupEnabled)
-            {
-                dshmRumbleSettings.SMToBMConversion.Enabled = null;
-                dshmRumbleSettings.DisableBM = null;
-                dshmRumbleSettings.DisableSM = null;
-                return;
-            }
 
             dshmRumbleSettings.SMToBMConversion.Enabled = this.IsVariableLightRumbleEmulationEnabled;
             dshmRumbleSettings.DisableBM = this.IsLeftMotorDisabled;
@@ -600,7 +565,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public static void CopySettings(BackingData_OutRepControl destiny, BackingData_OutRepControl source)
         {
-            destiny.isGroupEnabled = source.IsGroupEnabled;
             destiny.isOutputReportDeduplicatorEnabled = source.IsOutputReportDeduplicatorEnabled;
             destiny.isOutputReportRateControlEnabled = source.IsOutputReportRateControlEnabled;
             destiny.maxOutputRate = source.MaxOutputRate;
@@ -608,13 +572,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
         {
-            if (!this.IsGroupEnabled)
-            {
-                dshmContextSettings.IsOutputRateControlEnabled = null;
-                dshmContextSettings.OutputRateControlPeriodMs = null;
-                dshmContextSettings.IsOutputDeduplicatorEnabled = null;
-                return;
-            }
             dshmContextSettings.IsOutputRateControlEnabled = this.IsOutputReportRateControlEnabled;
             dshmContextSettings.OutputRateControlPeriodMs = (byte)this.MaxOutputRate;
             dshmContextSettings.IsOutputDeduplicatorEnabled = this.IsOutputReportDeduplicatorEnabled;
@@ -671,7 +628,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public static void CopySettings(BackingData_LeftRumbleRescale destiny, BackingData_LeftRumbleRescale source)
         {
-            destiny.isGroupEnabled = source.IsGroupEnabled;
             destiny.isLeftMotorStrRescalingEnabled = source.IsLeftMotorStrRescalingEnabled;
             destiny.leftMotorStrRescalingLowerRange = source.LeftMotorStrRescalingLowerRange;
             destiny.leftMotorStrRescalingUpperRange = source.LeftMotorStrRescalingUpperRange;
@@ -681,11 +637,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             DSHM_Format_ContextSettings.BMStrRescaleSettings dshmLeftRumbleRescaleSettings = dshmContextSettings.RumbleSettings.BMStrRescale;
 
-            if (!this.IsGroupEnabled)
-            {
-                dshmLeftRumbleRescaleSettings = null;
-                return;
-            }
             dshmLeftRumbleRescaleSettings.Enabled = this.IsLeftMotorStrRescalingEnabled;
             dshmLeftRumbleRescaleSettings.MinValue = (byte)this.LeftMotorStrRescalingLowerRange;
             dshmLeftRumbleRescaleSettings.MaxValue = (byte)this.LeftMotorStrRescalingUpperRange;
@@ -749,7 +700,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public static void CopySettings(BackingData_VariablaRightRumbleEmulAdjusts destiny, BackingData_VariablaRightRumbleEmulAdjusts source)
         {
             destiny.PrepareForSettingsLoading();
-            destiny.IsGroupEnabled = source.IsGroupEnabled;
             destiny.RightRumbleConversionLowerRange = source.RightRumbleConversionLowerRange;
             destiny.RightRumbleConversionUpperRange = source.RightRumbleConversionUpperRange;
             // Right rumble (light) threshold
@@ -770,15 +720,6 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             DSHM_Format_ContextSettings.SMToBMConversionSettings dshmSMConversionSettings = dshmContextSettings.RumbleSettings.SMToBMConversion;
             DSHM_Format_ContextSettings.ForcedSMSettings dshmForcedSMSettings = dshmContextSettings.RumbleSettings.ForcedSM;
-
-            if (!this.IsGroupEnabled)
-            {
-                dshmSMConversionSettings.RescaleMinValue = null;
-                dshmSMConversionSettings.RescaleMaxValue = null;
-
-                dshmForcedSMSettings = null;
-                return;
-            }
 
             // Right rumble conversion rescaling adjustment
             dshmSMConversionSettings.RescaleMinValue = (byte)this.RightRumbleConversionLowerRange;

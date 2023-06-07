@@ -10,16 +10,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         private BackingData_OutRepControl _tempBackingData = new();
         public override SettingsModeGroups Group { get; } = SettingsModeGroups.OutputReportControl;
-        public bool IsGroupEnabled
-        {
-            get => _tempBackingData.IsGroupEnabled;
-            set
-            {
-                _tempBackingData.IsGroupEnabled = value;
-                this.RaisePropertyChanged(nameof(IsGroupEnabled));
-            }
-        }
-
         public bool IsOutputReportRateControlEnabled
         {
             get => _tempBackingData.IsOutputReportRateControlEnabled;
@@ -29,6 +19,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 this.RaisePropertyChanged(nameof(IsOutputReportRateControlEnabled));
             }
         }
+
         public int MaxOutputRate
         {
             get => _tempBackingData.MaxOutputRate;

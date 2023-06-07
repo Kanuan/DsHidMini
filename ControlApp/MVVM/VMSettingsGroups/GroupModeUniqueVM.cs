@@ -51,17 +51,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
 
         }
-
-        public bool IsGroupEnabled
-        {
-            get => _tempBackingData.IsGroupEnabled;
-            set
-            {
-                _tempBackingData.IsGroupEnabled = value;
-                this.RaisePropertyChanged(nameof(IsGroupEnabled));
-            }
-        }
-
         public ControlApp_DsPressureMode PressureExposureMode
         {
             get => _tempBackingData.PressureExposureMode;
@@ -71,6 +60,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 this.RaisePropertyChanged(nameof(PressureExposureMode));
             }
         }
+
         public ControlApp_DPADModes DPadExposureMode
         {
             get => _tempBackingData.DPadExposureMode;
