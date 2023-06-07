@@ -573,6 +573,18 @@
 	<!-- Template: Mode_Unique_All -->
 	<DataTemplate x:Key="Template_Unique_All">
 		<StackPanel DataContext="{Binding $parent[DockPanel].DataContext}">
+			<DockPanel>
+				<TextBlock
+					DockPanel.Dock="Left"
+					Text="HID Device Mode:"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+				<ComboBox
+					DockPanel.Dock="Right"
+					VerticalAlignment="Center"
+					SelectedItem="{Binding Context, FallbackValue=4}"
+					Items="{Binding HIDDeviceModesList}"/>
+			</DockPanel>
 			<DockPanel DockPanel.Dock="Top">
 				<CheckBox
 					DockPanel.Dock="Left"
@@ -588,18 +600,6 @@
 					IsChecked="{Binding IsDS4LightbarTranslationEnabled}"
 					VerticalContentAlignment="Center"
 						/>
-			</DockPanel>
-			<DockPanel>
-				<TextBlock
-					DockPanel.Dock="Left"
-					Text="HID Device Mode:"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"/>
-				<ComboBox
-					DockPanel.Dock="Right"
-					VerticalAlignment="Center"
-					SelectedItem="{Binding Context, FallbackValue=4}"
-					Items="{Binding HIDDeviceModesList}"/>
 			</DockPanel>
 			<!-- Pressure buttons mode -->
 			<DockPanel IsVisible="{Binding Path=Context, Converter={StaticResource VisibilityPerHIDModeConverterKey}, ConverterParameter=11}">
