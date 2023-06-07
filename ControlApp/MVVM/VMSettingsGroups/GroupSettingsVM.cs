@@ -50,7 +50,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             Context = dataContainer.modesUniqueData.SettingsContext;
 
-            this.WhenAnyValue(x => x.GroupModeUnique.Context, x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled, x => x.Changed)
+            this.WhenAnyValue(
+                x => x.GroupModeUnique.Context,
+                x => x.GroupModeUnique.IsDS4LightbarTranslationEnabled)
                 .Subscribe(x => UpdateLockStateOfGroups());
 
             // Duct tape for RaisePropertyChange(string.empty)
