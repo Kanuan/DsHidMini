@@ -573,20 +573,22 @@
 	<!-- Template: Mode_Unique_All -->
 	<DataTemplate x:Key="Template_Unique_All">
 		<StackPanel DataContext="{Binding $parent[DockPanel].DataContext}">
-			<StackPanel DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top">
 				<CheckBox
+					DockPanel.Dock="Left"
 					IsVisible="{Binding Path=Context, Converter={StaticResource VisibilityPerHIDModeConverterKey}, ConverterParameter=100}"
 					Content="Allow apps to control LEDs (e.g.: RPCS3)"
 					IsChecked="{Binding AllowAppsToControlLEDsInSXSMode}"
 					VerticalContentAlignment="Center"
 						/>
 				<CheckBox
+					DockPanel.Dock="Right"
 					IsVisible="{Binding Path=Context, Converter={StaticResource VisibilityPerHIDModeConverterKey}, ConverterParameter=1000}"
 					Content="Enable DS4 Lightbar Translation"
 					IsChecked="{Binding IsDS4LightbarTranslationEnabled}"
 					VerticalContentAlignment="Center"
 						/>
-			</StackPanel>
+			</DockPanel>
 			<DockPanel>
 				<TextBlock
 					DockPanel.Dock="Left"
