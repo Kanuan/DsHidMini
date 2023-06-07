@@ -110,15 +110,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 ChangeProfileForDevice(value);
             }
         }
-       
-
-
-        public SettingsContext? CurrentHIDMode
-        {
-            get => DeviceCustomsVM.GroupModeUnique.Context;
-            set => DeviceCustomsVM.GroupModeUnique.Context = value.GetValueOrDefault();
-        }
- 
 
         public List<ProfileData> ListOfProfiles => UserDataManager.Profiles;
 
