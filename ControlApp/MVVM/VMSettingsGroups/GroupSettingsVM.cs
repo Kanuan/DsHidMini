@@ -60,8 +60,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 GroupSticksDZ.IsGroupLocked = true;
                 GroupLEDsControl.IsGroupLocked = GroupModeUnique.IsDS4LightbarTranslationEnabled;
             }
-
-
         }
 
         void UpdateLockStateOfGroupsIfEmptyStringOnPropertyChanged(object sender, PropertyChangedEventArgs e)
