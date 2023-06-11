@@ -275,6 +275,16 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             Profiles.Add(newProfile);
         }
 
+        public void DeleteProfile(ProfileData profile)
+        {
+            Profiles.Remove(profile);
+            try
+            {
+                System.IO.File.Delete(profile.DiskFileName);
+            }
+
+        }
+
 
         public DeviceSpecificData GetDeviceSpecificData(string deviceMac)
         {
