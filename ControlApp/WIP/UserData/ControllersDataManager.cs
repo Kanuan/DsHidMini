@@ -268,6 +268,13 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             System.IO.File.WriteAllText($@"{DshmFolderFullPath}DsHidMini.json", profileJson);
         }
 
+        public void CreateNewProfile(string profileName)
+        {
+            ProfileData newProfile = new();
+            newProfile.ProfileName = profileName;
+            Profiles.Add(newProfile);
+        }
+
 
         public DeviceSpecificData GetDeviceSpecificData(string deviceMac)
         {
