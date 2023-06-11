@@ -1,18 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Nefarius.DsHidMini.ControlApp.MVVM;
-using Nefarius.DsHidMini.ControlApp.UserData;
-
 
 namespace ControlApp.UI.Devices
 {
-    public partial class DeviceDetailsView : UserControl
+    public partial class DeviceSettingsCustomizer : UserControl
     {
-        public DeviceDetailsView()
+        public DeviceSettingsCustomizer()
         {
-            TestViewModel testViewModel = new();
-            this.DataContext = testViewModel;
             InitializeComponent();
         }
 

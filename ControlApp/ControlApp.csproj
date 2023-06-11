@@ -42,4 +42,9 @@
 	  <AvaloniaResource Include="Assets\**" />
 	  <AvaloniaResource Include="UI/GroupSettingsTemplates.axaml" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="UI\Devices\DeviceSettingsCustomizer.axaml.cs">
+      <DependentUpon>DeviceSettingsCustomizer.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>
