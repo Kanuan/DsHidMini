@@ -195,7 +195,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
                     data.DiskFileName = dirName;
                     profilesOnDisk.Add(data);
                 }
-            }          
+            }
 
             return profilesOnDisk;
         }
@@ -279,11 +279,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public void DeleteProfile(ProfileData profile)
         {
             Profiles.Remove(profile);
-            try
-            {
-                System.IO.File.Delete(profile.DiskFileName);
-            }
-
+            System.IO.File.Delete(profile.DiskFileName);
         }
 
 
