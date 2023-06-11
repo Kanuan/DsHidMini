@@ -6,9 +6,16 @@
 			 xmlns:devices="clr-namespace:ControlApp.UI.Devices"
 			 xmlns:super="clr-namespace:Nefarius.DsHidMini.ControlApp.Util.WPF"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
-             x:Class="ControlApp.UI.Devices.DeviceDetailsView">
+             x:Class="ControlApp.UI.Devices.ProfileEditorView">
 	<UserControl.Resources>
+
 	</UserControl.Resources>
+	<UserControl.Styles>
+		<Style Selector="TextBlock.h1">
+			<Setter Property="FontSize" Value="24" />
+			<Setter Property="FontWeight" Value="Bold" />
+		</Style>
+	</UserControl.Styles>
 	<!-- View area -->
 
 	<Grid>
@@ -21,44 +28,11 @@
 
 		<!-- Device details -->
 		<DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
-			<!--TO Name it-->
-			<DockPanel DockPanel.Dock="Top">
-				<DockPanel DockPanel.Dock="Top" LastChildFill="True">
-					<Label
-						DockPanel.Dock="Left"
-						Content="Load settings from..."
-						VerticalContentAlignment="Center"
-						/>
-					<ComboBox
-						DockPanel.Dock="Left"
-						x:Name="SettingsModeSelection_ComboBox"
-						VerticalAlignment="Center"
-						Items="{Binding SettingsModesList}"
-						SelectedItem="{Binding CurrentDeviceSettingsMode}"
-						/>
-					<Label
-						IsVisible="{Binding IsDeviceInProfileSettingsMode}"
-						DockPanel.Dock="Left"
-						Content="->"
-						VerticalContentAlignment="Center"
-						/>
-					<ComboBox
-						DockPanel.Dock="Left"
-						IsVisible="{Binding IsDeviceInProfileSettingsMode}"
-						x:Name="ProfileSelection_ComboBox"
-						VerticalAlignment="Center"
-						Items="{Binding ListOfProfiles}"
-						SelectedItem="{Binding CurrentlySelectedProfile}"
-						/>
-				</DockPanel>
-			</DockPanel>
-
-
 			<!--Apply and cancel buttons-->
 			<DockPanel DockPanel.Dock="Bottom">
 				<Button
 					DockPanel.Dock="Left"
-					Content="Apply changes"
+					Content="Save changes"
 					Command="{Binding SaveChangesCommand}"/>
 				<Button
 					DockPanel.Dock="Left"
@@ -66,7 +40,7 @@
 					Content="Cancel"/>
 			</DockPanel>
 			
-			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" DataContext="{Binding CurrentTab}"/>
+			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" DataContext="{Binding SettingsEditor}"/>
 
 			
 		</DockPanel>

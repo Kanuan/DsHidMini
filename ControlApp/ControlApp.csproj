@@ -43,6 +43,12 @@
 	  <AvaloniaResource Include="UI/GroupSettingsTemplates.axaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="UI\Devices\ProfileEditorView.axaml.cs">
+      <DependentUpon>ProfileEditorView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Devices\ProfilesListView.axaml.cs">
+      <DependentUpon>ProfilesListView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="UI\Devices\DeviceSettingsCustomizer.axaml.cs">
       <DependentUpon>DeviceSettingsCustomizer.axaml</DependentUpon>
     </Compile>

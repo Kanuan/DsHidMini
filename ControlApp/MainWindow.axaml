@@ -30,6 +30,22 @@
                 </Grid>
             </TabItem>
 
+			<!-- Profiles -->
+			<TabItem Header="Profiles">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="300" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<!-- Profiles list -->
+					<devices:ProfilesListView Grid.Column="0"/>
+
+					<!-- Profile editor -->
+					<devices:ProfileEditorView Grid.Column="1"/>
+				</Grid>
+			</TabItem>
+
             <!-- Settings -->
             <TabItem Header="Settings">
                 <Grid>
