@@ -109,10 +109,19 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         // -----------------------------------------------------------
 
         public static Guid guid = new();
+        private List<ProfileData> profiles = new();
 
         public DeviceSpecificData NewControllersDefault { get; set; } = new("0123456789"); //"Global"
 
-        public List<ProfileData> Profiles { get; set; } = new();
+        public List<ProfileData> Profiles
+        {
+            get => profiles;
+            set
+            {
+                profiles = value;
+                UpdateDictionaryOfLoadedProfilesPerGuid();
+            }
+        }
         public Dictionary<Guid, ProfileData> ProfilesPerGuid { get; set; } = new();
 
         public List<DeviceSpecificData> Devices { get; set; } = new();
@@ -120,7 +129,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public ControllersUserData()
         {
             Profiles = CreateListOfProfilesOnDisk();
-            UpdateDictionaryOfLoadedProfilesPerGuid();
+
 
             Devices = LoadDevicesFromDisk();
 
