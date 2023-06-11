@@ -39,25 +39,24 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public void setNewSettingsVMGroupsContainer(VMGroupsContainer container)
         {
             BasicSettingsGroupsList = new ObservableCollection<GroupSettingsVM>
-                    {
-                        container.GroupLEDsControl,
-                        container.GroupWireless,
-                        container.GroupSticksDZ,
-                        container.GroupRumbleGeneral,
-                    };
+            {
+                container.GroupLEDsControl,
+                container.GroupWireless,
+                container.GroupSticksDZ,
+                container.GroupRumbleGeneral,
+            };
 
             AdvancedSettingsGroupsList = new ObservableCollection<GroupSettingsVM>
-                    {
-                        container.GroupOutRepControl,
-                        container.GroupRumbleLeftRescale,
-                        container.GroupRumbleRightConversion,
-                    };
+            {
+                container.GroupOutRepControl,
+                container.GroupRumbleLeftRescale,
+                container.GroupRumbleRightConversion,
+            };
 
-            ModeUniqueSettingsGroupsList = new ObservableCollection<GroupSettingsVM>();
-
-            if (container.GroupModeUnique.Context != SettingsContext.General
-                && container.GroupModeUnique.Context != SettingsContext.Global)
-                ModeUniqueSettingsGroupsList.Add(container.GroupModeUnique);
+            ModeUniqueSettingsGroupsList = new ObservableCollection<GroupSettingsVM>
+            {
+                container.GroupModeUnique,
+            };                
         }
     }
 
