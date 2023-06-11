@@ -5,15 +5,13 @@ using Nefarius.DsHidMini.ControlApp.MVVM;
 
 namespace ControlApp.UI.Devices
 {
-    internal static class ForcingThingsAround
-    {
-        internal static ProfileEditorViewModel vm = new ProfileEditorViewModel();
-    }
+
     public partial class ProfilesListView : UserControl
     {
         public ProfilesListView()
         {
-            this.DataContext= ForcingThingsAround.vm;
+
+            this.DataContext = TestViewModel.vm;
             InitializeComponent();
         }
 

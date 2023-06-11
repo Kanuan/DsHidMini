@@ -19,7 +19,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         private ObservableCollection<SettingTabViewModel> _settingsTabs;
         private SettingTabViewModel _settingsEditor;
-        [Reactive] public ControllersUserData UserDataManager { get; set; } = new();
         [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
         [Reactive] private SettingTabViewModel DeviceCustomSettingsTab { get; set; } = new SettingTabViewModel("Custom", null, true);
         [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
@@ -47,10 +46,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public ProfileEditorViewModel()
         {
             SettingsEditor = new("wot", null, true);
-            Profiles = new ObservableCollection<ProfileData>(UserDataManager.Profiles);
+            Profiles = new ObservableCollection<ProfileData>(TestViewModel.UserDataManager.Profiles);
 
             Guid temp = new("eca59e04-ddac-4c28-b4a4-22e72f4f8947");
-            SelectedProfile = UserDataManager.ProfilesPerGuid[temp];
+            SelectedProfile = TestViewModel.UserDataManager.ProfilesPerGuid[temp];
 
             ProfileSelectedCommand = ReactiveCommand.Create<ProfileData>(OnProfileSelected);
             SaveChangesCommand = ReactiveCommand.Create(OnSaveButtonPressed);
@@ -77,7 +76,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public List<SettingsModes> SettingsModesList => settingsModesList;
 
 
-        public List<ProfileData> ListOfProfiles => UserDataManager.Profiles;
+        public List<ProfileData> ListOfProfiles => TestViewModel.UserDataManager.Profiles;
 
         public ObservableCollection<SettingTabViewModel> SettingsTabs
         {
@@ -108,7 +107,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private void OnSaveButtonPressed()
         {
             SelectedProfile.GetProfileVMGroupsContainer().SaveAllChangesToBackingData(SelectedProfile.DataContainer);
-            UserDataManager.SaveProfileToDisk(SelectedProfile);
+            TestViewModel.UserDataManager.SaveProfileToDisk(SelectedProfile);
         }
 
         private void OnCancelButtonPressed()

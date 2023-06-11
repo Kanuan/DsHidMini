@@ -11,15 +11,16 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     internal class TestViewModel : ReactiveObject
     {
+        internal static ControllersUserData UserDataManager = new ControllersUserData();
+        internal static ProfileEditorViewModel vm = new ProfileEditorViewModel();
+
+
         private DeviceSpecificData deviceUserData;
         private ObservableCollection<SettingTabViewModel> _settingsTabs;
         private SettingTabViewModel _currentTab;
-        [Reactive] public ControllersUserData UserDataManager { get; set; } = new();
         [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
         [Reactive] private SettingTabViewModel DeviceCustomSettingsTab { get; set; } = new SettingTabViewModel("Custom", null, true);
         [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
-
-
 
         public TestViewModel()
         {

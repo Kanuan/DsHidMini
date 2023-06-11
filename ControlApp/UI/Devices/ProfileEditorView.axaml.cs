@@ -11,7 +11,7 @@ namespace ControlApp.UI.Devices
     {
         public ProfileEditorView()
         {
-            this.DataContext = ForcingThingsAround.vm;
+            this.DataContext = TestViewModel.vm;
             InitializeComponent();
         }
 
