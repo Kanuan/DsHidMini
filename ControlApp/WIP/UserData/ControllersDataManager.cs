@@ -272,6 +272,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             ProfileData newProfile = new();
             newProfile.ProfileName = profileName;
+            SaveProfileToDisk(newProfile);
             Profiles.Add(newProfile);
         }
 
