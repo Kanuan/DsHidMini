@@ -13,6 +13,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         internal static ControllersUserData UserDataManager = new ControllersUserData();
         internal static ProfileEditorViewModel vm = new ProfileEditorViewModel();
+        private readonly PnPDevice _device;
 
 
         private DeviceSpecificData deviceUserData;
@@ -23,7 +24,9 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
 
         public TestViewModel()
+        public TestViewModel(PnPDevice device)
         {
+            _device = device;
             // Hard-coded controller MAC address for testing purposes
             string controllerMacTest = "123";
             // Loads correspondent controller data based on controller's MAC address 
