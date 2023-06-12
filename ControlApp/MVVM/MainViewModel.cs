@@ -29,6 +29,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         {
             Devices = new ObservableCollection<TestViewModel>();
 
+            /*
             Devices.CollectionChanged += (sender, args) =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasNoDevices)));
@@ -43,6 +44,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                             new PropertyChangedEventArgs(nameof(IsPressureMutingSupported)));
                     };
             };
+            */
         }
 
         public ApplicationConfiguration AppConfig => ApplicationConfiguration.Instance;
@@ -59,6 +61,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         /// </summary>
         public bool HasNoDevices => Devices.Count == 0;
 
+        /*
         /// <summary>
         ///     Helper to check if run with elevated privileges.
         /// </summary>
@@ -144,5 +147,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AreBthPS3SettingsIncorrect"));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AreBthPS3SettingsCorrect"));
         }
+        */
     }
 }
