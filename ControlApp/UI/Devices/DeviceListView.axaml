@@ -37,7 +37,8 @@
 
             <TextBlock Text="No compatible devices found"
                        HorizontalAlignment="Center"
-                       Padding="20" />
+                       Padding="20"
+					   IsVisible="{Binding HasNoDevices}"/>
         </Panel>
     </StackPanel>
 </UserControl>
