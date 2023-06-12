@@ -7,6 +7,7 @@ using Nefarius.DsHidMini.ControlApp.Util;
 using Nefarius.DsHidMini.ControlApp.Util.App;
 using Nefarius.DsHidMini.ControlApp.Util.Web;
 using Nefarius.DsHidMini.Util;
+using Nefarius.Utilities.DeviceManagement.PnP;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -14,9 +15,19 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     public class MainViewModel : ReactiveObject
     {
+        /// <summary>
+        ///     List of detected devices.
+        /// </summary>
+        internal ObservableCollection<TestViewModel> Devices { get; set; }
+
+        /// <summary>
+        ///     Currently selected device, if any.
+        /// </summary>
+        [Reactive] internal TestViewModel SelectedDevice { get; set; }
+
         public MainViewModel()
         {
-            Devices = new ObservableCollection<DeviceViewModel>();
+            Devices = new ObservableCollection<TestViewModel>();
 
             Devices.CollectionChanged += (sender, args) =>
             {
@@ -36,15 +47,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public ApplicationConfiguration AppConfig => ApplicationConfiguration.Instance;
 
-        /// <summary>
-        ///     List of detected devices.
-        /// </summary>
-        public ObservableCollection<DeviceViewModel> Devices { get; set; }
 
-        /// <summary>
-        ///     Currently selected device, if any.
-        /// </summary>
-        public DeviceViewModel SelectedDevice { get; set; }
 
         /// <summary>
         ///     Is a device currently selected.
