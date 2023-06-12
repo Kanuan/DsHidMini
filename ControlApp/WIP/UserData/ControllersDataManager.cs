@@ -70,7 +70,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             DeviceMac = deviceMac;
         }
 
-        public void SaveToDSHM(DSHM_Format_ContextSettings dshmContextData)
+        public void SaveToDSHM(DSHM_Format_Settings dshmContextData)
         {
             DatasContainter.modesUniqueData.SaveToDSHMSettings(dshmContextData);
             DatasContainter.ledsData.SaveToDSHMSettings(dshmContextData);

@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Nefarius.DsHidMini.ControlApp.MVVM;
+using static Nefarius.DsHidMini.ControlApp.DSHM_Settings.DSHM_Format_Settings;
 
 namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
 {
@@ -20,32 +21,20 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
         public byte? OutputRateControlPeriodMs { get; set; }// = 150;
         public bool? IsOutputDeduplicatorEnabled { get; set; }// = false;
         public double? WirelessIdleTimeoutPeriodMs { get; set; }// = 300000;
-
         public bool? IsQuickDisconnectComboEnabled { get; set; }// = true;
         public DSHM_QuickDisconnectCombo? QuickDisconnectCombo { get; set; }// = DSHM_QuickDisconnectCombo.PS_R1_L1
-        public DSHM_PressureModes? PressureExposureMode { get; set; }// = DSHM_PressureModes.Default;
-        public DSHM_DPadExposureModes? DPadExposureMode { get; set; }// = DSHM_DPadExposureModes.Default;
-        public DeadZoneSettings DeadZoneLeft { get; set; } = new();
-        public DeadZoneSettings DeadZoneRight { get; set; } = new();
-        public AllRumbleSettings RumbleSettings { get; set; } = new();
-        public AllLEDSettings LEDSettings { get; set; } = new();
-        public AxesFlipping FlipAxis { get; set; } = new();
-        public DSHM_Format_Settings SDF { get; set; }
-        public DSHM_Format_Settings GPJ { get; set; }
-        public DSHM_Format_Settings SXS { get; set; }
-        public DSHM_Format_Settings DS4Windows { get; set; }
-        public DSHM_Format_Settings XInput { get; set; }
 
-        public DSHM_Format_Settings(bool CreateModesSubContextSettings = true)
+        [JsonIgnore]
+        public DSHM_Format_ContextSpecificSettings ContextSettings { get; set; } = new();
+        public DSHM_Format_ContextSpecificSettings SDF { get; set; }
+        public DSHM_Format_ContextSpecificSettings GPJ { get; set; }
+        public DSHM_Format_ContextSpecificSettings SXS { get; set; }
+        public DSHM_Format_ContextSpecificSettings DS4Windows { get; set; }
+        public DSHM_Format_ContextSpecificSettings XInput { get; set; }
+
+        public DSHM_Format_Settings()
         {
-            if (CreateModesSubContextSettings)
-            {
-                SDF = new(false);
-                GPJ = new(false);
-                SXS = new(false);
-                DS4Windows = new(false);
-                XInput = new(false);
-            }
+
         }
 
         public class DeadZoneSettings
@@ -124,6 +113,17 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
             public bool? RightX { get; set; }
             public bool? RightY { get; set; }
         }
+    }
+
+    public class DSHM_Format_ContextSpecificSettings
+    {
+        public DSHM_PressureModes? PressureExposureMode { get; set; }// = DSHM_PressureModes.Default;
+        public DSHM_DPadExposureModes? DPadExposureMode { get; set; }// = DSHM_DPadExposureModes.Default;
+        public DeadZoneSettings DeadZoneLeft { get; set; } = new();
+        public DeadZoneSettings DeadZoneRight { get; set; } = new();
+        public AllRumbleSettings RumbleSettings { get; set; } = new();
+        public AllLEDSettings LEDSettings { get; set; } = new();
+        public AxesFlipping FlipAxis { get; set; } = new();
     }
 
     /// <summary>

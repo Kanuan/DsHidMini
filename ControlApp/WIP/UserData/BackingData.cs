@@ -100,51 +100,51 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             rightVariableEmulData.ResetToDefault();
         }
 
-        public void ConvertAllToDSHM(DSHM_Format_ContextSettings dshm_data)
+        public void ConvertAllToDSHM(DSHM_Format_Settings dshm_data)
         {
-            DSHM_Format_ContextSettings modeContext = dshm_data;
+            modesUniqueData.SaveToDSHMSettings(dshm_data);
+            ledsData.SaveToDSHMSettings(dshm_data);
+            wirelessData.SaveToDSHMSettings(dshm_data);
+            sticksData.SaveToDSHMSettings(dshm_data);
+            rumbleGeneralData.SaveToDSHMSettings(dshm_data);
+            outRepData.SaveToDSHMSettings(dshm_data);
+            leftRumbleRescaleData.SaveToDSHMSettings(dshm_data);
+            rightVariableEmulData.SaveToDSHMSettings(dshm_data);
+
+            if (modesUniqueData.SettingsContext == SettingsContext.DS4W)
+            {
+                dshm_data.ContextSettings.DeadZoneLeft.Apply = false;
+                dshm_data.ContextSettings.DeadZoneRight.Apply = false;
+            }
+
+            //DSHM_Format_ContextSpecificSettings modeContext = dshm_data;
             switch (modesUniqueData.SettingsContext)
             {
                 case SettingsContext.SDF:
-                    modeContext = dshm_data.SDF;
+                    dshm_data.SDF = dshm_data.ContextSettings;
                     break;
                 case SettingsContext.GPJ:
-                    modeContext = dshm_data.GPJ;
+                    dshm_data.GPJ = dshm_data.ContextSettings;
                     break;
                 case SettingsContext.SXS:
-                    modeContext = dshm_data.SXS;
+                    dshm_data.SXS = dshm_data.ContextSettings;
                     break;
                 case SettingsContext.DS4W:
-                    modeContext = dshm_data.DS4Windows;
+                    dshm_data.DS4Windows = dshm_data.ContextSettings;
                     break;
                 case SettingsContext.XInput:
-                    modeContext = dshm_data.XInput;
+                    dshm_data.XInput = dshm_data.ContextSettings;
                     break;
                 default:
                     break;
             }
-
-
-            modesUniqueData.SaveToDSHMSettings(dshm_data);
-            ledsData.SaveToDSHMSettings(modeContext);
-            wirelessData.SaveToDSHMSettings(dshm_data);
-            sticksData.SaveToDSHMSettings(modeContext);
-            rumbleGeneralData.SaveToDSHMSettings(modeContext);
-            outRepData.SaveToDSHMSettings(dshm_data);
-            leftRumbleRescaleData.SaveToDSHMSettings(modeContext);
-            rightVariableEmulData.SaveToDSHMSettings(modeContext);
-
-            if (modesUniqueData.SettingsContext == SettingsContext.DS4W)
-            {
-                dshm_data.DeadZoneLeft.Apply = false;
-                dshm_data.DeadZoneRight.Apply = false;
-            }
+            dshm_data.ContextSettings = null;
         }
     }
 
     public abstract class SettingsBackingData
     {
-        public abstract void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings);
+        public abstract void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings);
     }
 
     public class BackingData_ModesUnique : SettingsBackingData
@@ -183,25 +183,25 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         }
 
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
             if (SettingsContext != SettingsContext.General)
             {
                 dshmContextSettings.HIDDeviceMode = SaveLoadUtils.Get_DSHM_HIDDeviceMode_From_ControlApp[SettingsContext];
             }
 
-            dshmContextSettings.SDF.PressureExposureMode = dshmContextSettings.GPJ.PressureExposureMode =
+            dshmContextSettings.ContextSettings.PressureExposureMode = dshmContextSettings.ContextSettings.PressureExposureMode =
                 (this.SettingsContext == SettingsContext.SDF
                 || this.SettingsContext == SettingsContext.GPJ)
                 ? SaveLoadUtils.Get_DSHM_DsPressureMode_From_ControlApp[this.PressureExposureMode] : null;
 
-            dshmContextSettings.SDF.DPadExposureMode = dshmContextSettings.GPJ.DPadExposureMode =
+            dshmContextSettings.ContextSettings.DPadExposureMode = dshmContextSettings.ContextSettings.DPadExposureMode =
                 (this.SettingsContext == SettingsContext.SDF
                 || this.SettingsContext == SettingsContext.GPJ)
                 ? SaveLoadUtils.Get_DSHM_DPadMode_From_ControlApp[this.DPadExposureMode] : null;
 
-            dshmContextSettings.SXS.LEDSettings.Authority = this.AllowAppsToOverrideLEDsInSXSMode ? DSHM_LEDsAuthority.Application : DSHM_LEDsAuthority.Driver;
-            dshmContextSettings.DS4Windows.LEDSettings.Authority = this.IsDS4LightbarTranslationEnabled ? DSHM_LEDsAuthority.Application : DSHM_LEDsAuthority.Driver;
+            dshmContextSettings.ContextSettings.LEDSettings.Authority = this.AllowAppsToOverrideLEDsInSXSMode ? DSHM_LEDsAuthority.Application : DSHM_LEDsAuthority.Driver;
+            dshmContextSettings.ContextSettings.LEDSettings.Authority = this.IsDS4LightbarTranslationEnabled ? DSHM_LEDsAuthority.Application : DSHM_LEDsAuthority.Driver;
         }
     }
 
@@ -229,15 +229,15 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             destiny.LEDsCustoms.CopyLEDsCustoms(source.LEDsCustoms);
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
-            DSHM_Format_ContextSettings.AllLEDSettings dshm_AllLEDsSettings = dshmContextSettings.LEDSettings;
+            DSHM_Format_Settings.AllLEDSettings dshm_AllLEDsSettings = dshmContextSettings.ContextSettings.LEDSettings;
 
             dshm_AllLEDsSettings.Mode = SaveLoadUtils.Get_DSHM_LEDModes_From_ControlApp[this.LEDMode];
 
             var dshm_Customs = dshm_AllLEDsSettings.CustomPatterns;
 
-            var dshm_singleLED = new DSHM_Format_ContextSettings.SingleLEDCustoms[]
+            var dshm_singleLED = new DSHM_Format_Settings.SingleLEDCustoms[]
             { dshm_Customs.Player1, dshm_Customs.Player2,dshm_Customs.Player3,dshm_Customs.Player4, };
 
 
@@ -383,7 +383,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             destiny.WirelessIdleDisconnectTime = source.WirelessIdleDisconnectTime;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
             dshmContextSettings.DisableWirelessIdleTimeout = !this.IsWirelessIdleDisconnectEnabled;
             dshmContextSettings.WirelessIdleTimeoutPeriodMs = this.WirelessIdleDisconnectTime * 60 * 1000;
@@ -408,11 +408,11 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             destiny.RightStickData.CopyStickDataFromOtherStick(source.RightStickData);
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
-            DSHM_Format_ContextSettings.DeadZoneSettings dshmLeftDZSettings = dshmContextSettings.DeadZoneLeft;
-            DSHM_Format_ContextSettings.DeadZoneSettings dshmRightDZSettings = dshmContextSettings.DeadZoneRight;
-            DSHM_Format_ContextSettings.AxesFlipping axesFlipping = dshmContextSettings.FlipAxis;
+            DSHM_Format_Settings.DeadZoneSettings dshmLeftDZSettings = dshmContextSettings.ContextSettings.DeadZoneLeft;
+            DSHM_Format_Settings.DeadZoneSettings dshmRightDZSettings = dshmContextSettings.ContextSettings.DeadZoneRight;
+            DSHM_Format_Settings.AxesFlipping axesFlipping = dshmContextSettings.ContextSettings.FlipAxis;
 
 
             dshmLeftDZSettings.Apply = this.LeftStickData.IsDeadZoneEnabled;
@@ -528,9 +528,9 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             destiny.variableRightEmulToggleCombo.copyCombo(source.VariableRightEmulToggleCombo);
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
-            DSHM_Format_ContextSettings.AllRumbleSettings dshmRumbleSettings = dshmContextSettings.RumbleSettings;
+            DSHM_Format_Settings.AllRumbleSettings dshmRumbleSettings = dshmContextSettings.ContextSettings.RumbleSettings;
 
             dshmRumbleSettings.SMToBMConversion.Enabled = this.IsVariableLightRumbleEmulationEnabled;
             dshmRumbleSettings.DisableBM = this.IsLeftMotorDisabled;
@@ -570,7 +570,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             destiny.maxOutputRate = source.MaxOutputRate;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
             dshmContextSettings.IsOutputRateControlEnabled = this.IsOutputReportRateControlEnabled;
             dshmContextSettings.OutputRateControlPeriodMs = (byte)this.MaxOutputRate;
@@ -633,9 +633,9 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             destiny.leftMotorStrRescalingUpperRange = source.LeftMotorStrRescalingUpperRange;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
-            DSHM_Format_ContextSettings.BMStrRescaleSettings dshmLeftRumbleRescaleSettings = dshmContextSettings.RumbleSettings.BMStrRescale;
+            DSHM_Format_Settings.BMStrRescaleSettings dshmLeftRumbleRescaleSettings = dshmContextSettings.ContextSettings.RumbleSettings.BMStrRescale;
 
             dshmLeftRumbleRescaleSettings.Enabled = this.IsLeftMotorStrRescalingEnabled;
             dshmLeftRumbleRescaleSettings.MinValue = (byte)this.LeftMotorStrRescalingLowerRange;
@@ -716,10 +716,10 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             rightRumbleConversionUpperRange = 255;
         }
 
-        public override void SaveToDSHMSettings(DSHM_Format_ContextSettings dshmContextSettings)
+        public override void SaveToDSHMSettings(DSHM_Format_Settings dshmContextSettings)
         {
-            DSHM_Format_ContextSettings.SMToBMConversionSettings dshmSMConversionSettings = dshmContextSettings.RumbleSettings.SMToBMConversion;
-            DSHM_Format_ContextSettings.ForcedSMSettings dshmForcedSMSettings = dshmContextSettings.RumbleSettings.ForcedSM;
+            DSHM_Format_Settings.SMToBMConversionSettings dshmSMConversionSettings = dshmContextSettings.ContextSettings.RumbleSettings.SMToBMConversion;
+            DSHM_Format_Settings.ForcedSMSettings dshmForcedSMSettings = dshmContextSettings.ContextSettings.RumbleSettings.ForcedSM;
 
             // Right rumble conversion rescaling adjustment
             dshmSMConversionSettings.RescaleMinValue = (byte)this.RightRumbleConversionLowerRange;
