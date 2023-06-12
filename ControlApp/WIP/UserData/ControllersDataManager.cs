@@ -260,7 +260,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public void TestFunctionSaveToDSHM(BackingDataContainer dataContainer)
         {
-            var dshm_data = new TestNewSaveFormat();
+            var dshm_data = new DshmMainDataContainer();
             dataContainer.ConvertAllToDSHM(dshm_data.Global);
             string profileJson = JsonSerializer.Serialize(dshm_data, ControlAppJsonSerializerOptions);
 

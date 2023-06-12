@@ -129,7 +129,7 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
     /// <summary>
     /// WIP: Json-serializalying an object from this class and saving it to disk results in a file with the appropriate contents to be loaded by the DsHidMini v3 driver
     /// </summary>
-    public class TestNewSaveFormat
+    public class DshmMainDataContainer
     {
         public DSHM_Format_ContextSettings Global { get; set; } = new();
         public List<DSHMDeviceCustomSettings> Devices { get; set; } = new();
