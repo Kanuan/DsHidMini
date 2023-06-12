@@ -132,6 +132,15 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
     public class TestNewSaveFormat
     {
         public DSHM_Format_ContextSettings Global { get; set; } = new();
+        public List<DSHMDeviceCustomSettings> Devices { get; set; } = new();
+    }
+
+    public class DSHMDeviceCustomSettings
+    {
+        public string DeviceAddress { get; set; }
+        public DSHM_Format_ContextSettings CustomSettings { get; set; } = new();
+
+    }
 
     }
 
