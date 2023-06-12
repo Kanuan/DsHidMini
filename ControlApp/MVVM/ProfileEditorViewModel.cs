@@ -48,8 +48,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             SettingsEditor = new("wot", null, true);
             Profiles = new ObservableCollection<ProfileData>(TestViewModel.UserDataManager.Profiles);
 
-            Guid temp = new("eca59e04-ddac-4c28-b4a4-22e72f4f8947");
-            SelectedProfile = TestViewModel.UserDataManager.ProfilesPerGuid[temp];
             UpdateProfileList();
 
             CreateProfileCommand = ReactiveCommand.Create(OnAddProfileButtonPressed);
@@ -67,7 +65,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         /// </summary>
         //readonly ObservableAsPropertyHelper<bool> isDeviceInProfileSettingsMode;
         //public bool IsDeviceInProfileSettingsMode { get => isDeviceInProfileSettingsMode.Value; }
-
 
 
         public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
