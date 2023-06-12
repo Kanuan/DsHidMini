@@ -9,7 +9,7 @@ using Nefarius.DsHidMini.ControlApp.MVVM;
 
 namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
 {
-    public class DSHM_Format_ContextSettings
+    public class DSHM_Format_Settings
     {
         public DSHM_HidDeviceModes? HIDDeviceMode { get; set; }// = DSHM_HidDeviceModes.DS4Windows;
         public bool? EnableDS4WLightbarTranslation { get; set; } // = false;
@@ -30,13 +30,13 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
         public AllRumbleSettings RumbleSettings { get; set; } = new();
         public AllLEDSettings LEDSettings { get; set; } = new();
         public AxesFlipping FlipAxis { get; set; } = new();
-        public DSHM_Format_ContextSettings SDF { get; set; }
-        public DSHM_Format_ContextSettings GPJ { get; set; }
-        public DSHM_Format_ContextSettings SXS { get; set; }
-        public DSHM_Format_ContextSettings DS4Windows { get; set; }
-        public DSHM_Format_ContextSettings XInput { get; set; }
+        public DSHM_Format_Settings SDF { get; set; }
+        public DSHM_Format_Settings GPJ { get; set; }
+        public DSHM_Format_Settings SXS { get; set; }
+        public DSHM_Format_Settings DS4Windows { get; set; }
+        public DSHM_Format_Settings XInput { get; set; }
 
-        public DSHM_Format_ContextSettings(bool CreateModesSubContextSettings = true)
+        public DSHM_Format_Settings(bool CreateModesSubContextSettings = true)
         {
             if (CreateModesSubContextSettings)
             {
@@ -131,14 +131,14 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
     /// </summary>
     public class DshmMainDataContainer
     {
-        public DSHM_Format_ContextSettings Global { get; set; } = new();
+        public DSHM_Format_Settings Global { get; set; } = new();
         public List<DSHMDeviceCustomSettings> Devices { get; set; } = new();
     }
 
     public class DSHMDeviceCustomSettings
     {
         public string DeviceAddress { get; set; }
-        public DSHM_Format_ContextSettings CustomSettings { get; set; } = new();
+        public DSHM_Format_Settings CustomSettings { get; set; } = new();
 
     }
 
