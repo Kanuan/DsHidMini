@@ -7,10 +7,12 @@ using Nefarius.DsHidMini.ControlApp.Util;
 using Nefarius.DsHidMini.ControlApp.Util.App;
 using Nefarius.DsHidMini.ControlApp.Util.Web;
 using Nefarius.DsHidMini.Util;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : ReactiveObject
     {
         public MainViewModel()
         {
