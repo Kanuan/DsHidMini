@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
              x:Class="ControlApp.UI.Devices.ProfilesListView">
     <UserControl.Styles>
         <Style Selector="TextBlock.h1">
@@ -14,8 +14,20 @@
 
     <StackPanel>
         <TextBlock HorizontalAlignment="Center" Classes="h1">Profile List</TextBlock>
+		
+		<Grid Height="40">	
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="2*" />
+				<ColumnDefinition Width="2*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Button Grid.Column="0" Content="Add" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding CreateProfileCommand}" />
+			<Button Grid.Column="1" Content="Set as Global" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+			<Button Grid.Column="2" Content="Delete" Command="{Binding DeleteProfileCommand}" CommandParameter="{Binding ElementName=ProfilesListBox, Path=SelectedItem}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+		</Grid>
         <Panel>
-            <ListBox Items="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
+            <ListBox Items="{Binding Profiles}" Name="ProfilesListBox" SelectedItem="{Binding SelectedProfile}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="40">
