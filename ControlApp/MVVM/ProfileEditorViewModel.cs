@@ -50,7 +50,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             Guid temp = new("eca59e04-ddac-4c28-b4a4-22e72f4f8947");
             SelectedProfile = TestViewModel.UserDataManager.ProfilesPerGuid[temp];
+            UpdateProfileList();
 
+            CreateProfileCommand = ReactiveCommand.Create(OnAddProfileButtonPressed);
+            DeleteProfileCommand = ReactiveCommand.Create<ProfileData>(OnDeleteProfileButtonPressed);
             ProfileSelectedCommand = ReactiveCommand.Create<ProfileData>(OnProfileSelected);
             SaveChangesCommand = ReactiveCommand.Create(OnSaveButtonPressed);
             CancelChangesCommand = ReactiveCommand.Create(OnCancelButtonPressed);
@@ -95,6 +98,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public ReactiveCommand<Unit, Unit> SaveChangesCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelChangesCommand { get; }
         public ReactiveCommand<ProfileData, Unit> ProfileSelectedCommand { get; }
+        public ReactiveCommand<Unit, Unit> CreateProfileCommand { get; }
+        public ReactiveCommand<ProfileData, Unit> DeleteProfileCommand { get; }
 
         // ---------------------------------------- Commands
 
@@ -105,6 +110,19 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             {
                 SettingsEditor.setNewSettingsVMGroupsContainer(obj.GetProfileVMGroupsContainer());
             }
+        }
+
+        private void OnAddProfileButtonPressed()
+        {
+            TestViewModel.UserDataManager.CreateNewProfile("New profile");
+            UpdateProfileList();
+        }
+
+        private void OnDeleteProfileButtonPressed(ProfileData? obj)
+        {
+            if (obj == null) return;
+            TestViewModel.UserDataManager.DeleteProfile(obj);
+            UpdateProfileList();
         }
 
         private void OnSaveButtonPressed()
