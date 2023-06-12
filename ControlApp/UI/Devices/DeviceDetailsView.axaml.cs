@@ -11,8 +11,6 @@ namespace ControlApp.UI.Devices
     {
         public DeviceDetailsView()
         {
-            TestViewModel testViewModel = new();
-            this.DataContext = testViewModel;
             InitializeComponent();
         }
 

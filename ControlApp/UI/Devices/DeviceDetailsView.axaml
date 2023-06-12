@@ -11,7 +11,7 @@
 	</UserControl.Resources>
 	<!-- View area -->
 
-	<Grid>
+	<Grid DataContext="{Binding SelectedDevice}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
