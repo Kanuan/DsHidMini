@@ -48,8 +48,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             SettingsEditor = new("wot", null, true);
             Profiles = new ObservableCollection<ProfileData>(TestViewModel.UserDataManager.Profiles);
 
-            UpdateProfileList();
-
             CreateProfileCommand = ReactiveCommand.Create(OnAddProfileButtonPressed);
             DeleteProfileCommand = ReactiveCommand.Create<ProfileData>(OnDeleteProfileButtonPressed);
             ProfileSelectedCommand = ReactiveCommand.Create<ProfileData>(OnProfileSelected);
