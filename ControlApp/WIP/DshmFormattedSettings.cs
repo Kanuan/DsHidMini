@@ -142,8 +142,39 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
 
     }
 
+    public class DshmCustomJsonConverter : JsonConverter<DshmMainDataContainer>
+    {
+        public override DshmMainDataContainer Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(
+        Utf8JsonWriter writer, DshmMainDataContainer instance, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+                writer.WritePropertyName(nameof(instance.Global));
+                var serializedGlobal = JsonSerializer.Serialize(instance.Global, options);
+                writer.WriteRawValue(serializedGlobal);
+
+                //JsonSerializer.Serialize(writer, new { instance.Global }, options);
+
+                writer.WritePropertyName(nameof(instance.Devices));
+                writer.WriteStartObject();
+                    foreach (DSHMDeviceCustomSettings device in instance.Devices)
+                    {
+                        if (string.IsNullOrEmpty(device.DeviceAddress?.Trim()))
+                            throw new JsonException("Expected non-null, non-empty Name");
+                        writer.WritePropertyName(device.DeviceAddress);
+
+                        var serializedCustomSettings = JsonSerializer.Serialize(device.CustomSettings, options);
+                        writer.WriteRawValue(serializedCustomSettings);
     }
+                writer.WriteEndObject();
 
+            writer.WriteEndObject();
 
+}
+    }
 }
 

@@ -92,7 +92,9 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
             Converters =
             {
-                new JsonStringEnumConverter()
+                new JsonStringEnumConverter(),
+                new DshmCustomJsonConverter(),
+
             }
         };
 
