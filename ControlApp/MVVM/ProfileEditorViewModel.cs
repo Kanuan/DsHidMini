@@ -84,7 +84,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set => this.RaiseAndSetIfChanged(ref _settingsTabs, value);
         }
 
-
+        public void UpdateProfileList()
+        {
+            Profiles = new ObservableCollection<ProfileData>(TestViewModel.UserDataManager.Profiles);
+        }
 
 
         // ---------------------------------------- ReactiveCommands
