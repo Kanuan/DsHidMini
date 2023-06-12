@@ -55,16 +55,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             CancelChangesCommand = ReactiveCommand.Create(OnCancelButtonPressed);
         }
 
-
-
-        /// <summary>
-        /// This should update on its own when changing SettingsMode.
-        /// Initialized in the base constructor
-        /// </summary>
-        //readonly ObservableAsPropertyHelper<bool> isDeviceInProfileSettingsMode;
-        //public bool IsDeviceInProfileSettingsMode { get => isDeviceInProfileSettingsMode.Value; }
-
-
         public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
         {
             SettingsModes.Global,
