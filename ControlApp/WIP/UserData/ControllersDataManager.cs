@@ -264,6 +264,16 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             var dshm_data = new DshmMainDataContainer();
             dataContainer.ConvertAllToDSHM(dshm_data.Global);
+            
+           
+            foreach(DeviceSpecificData dev in Devices)
+            {
+                var temp = new DSHMDeviceCustomSettings();
+                temp.DeviceAddress = dev.DeviceMac;
+                dev.DatasContainter.ConvertAllToDSHM(temp.CustomSettings);
+                dshm_data.Devices.Add(temp);
+            }
+            
             string profileJson = JsonSerializer.Serialize(dshm_data, ControlAppJsonSerializerOptions);
 
             System.IO.Directory.CreateDirectory(DshmFolderFullPath);
