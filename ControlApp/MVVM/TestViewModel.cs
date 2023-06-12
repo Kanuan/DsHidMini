@@ -1,4 +1,6 @@
-﻿using Nefarius.DsHidMini.ControlApp.UserData;
+﻿using Nefarius.DsHidMini.ControlApp.Drivers;
+using Nefarius.DsHidMini.ControlApp.UserData;
+using Nefarius.Utilities.DeviceManagement.PnP;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -19,18 +21,24 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private DeviceSpecificData deviceUserData;
         private ObservableCollection<SettingTabViewModel> _settingsTabs;
         private SettingTabViewModel _currentTab;
+        private string deviceAddress;
+
         [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
         [Reactive] private SettingTabViewModel DeviceCustomSettingsTab { get; set; } = new SettingTabViewModel("Custom", null, true);
         [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
 
-        public TestViewModel()
+        internal string DisplayName { get; set; }
+
+        internal string DeviceAddress => deviceAddress;
+
         public TestViewModel(PnPDevice device)
         {
             _device = device;
             // Hard-coded controller MAC address for testing purposes
-            string controllerMacTest = "123";
+            deviceAddress = _device.GetProperty<string>(DsHidMiniDriver.DeviceAddressProperty).ToUpper();
+            DisplayName = deviceAddress;
             // Loads correspondent controller data based on controller's MAC address 
-            deviceUserData = UserDataManager.GetDeviceSpecificData(controllerMacTest);
+            deviceUserData = UserDataManager.GetDeviceSpecificData(deviceAddress);
 
             // Loads device' specific custom settings from its BackingDataContainer into the Settings Groups VM
             DeviceCustomsVM = new(deviceUserData.DatasContainter);
