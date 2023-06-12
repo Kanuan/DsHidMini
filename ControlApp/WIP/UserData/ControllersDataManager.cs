@@ -272,6 +272,8 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             ProfileData newProfile = new();
             newProfile.ProfileName = profileName;
+            newProfile.DiskFileName = profileName + ".json";
+            CheckAndFixRepeatedProfileFilePath(newProfile);
             SaveProfileToDisk(newProfile);
             Profiles.Add(newProfile);
         }
@@ -279,7 +281,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public void DeleteProfile(ProfileData profile)
         {
             Profiles.Remove(profile);
-            System.IO.File.Delete(profile.DiskFileName);
+            System.IO.File.Delete($@"{ProfilesFolderFullPath}{profile.DiskFileName}");
         }
 
 
