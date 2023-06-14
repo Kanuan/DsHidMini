@@ -307,14 +307,25 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public void TestFunctionSaveToDSHM(BackingDataContainer dataContainer)
         {
             var dshm_data = new DshmMainDataContainer();
-            dataContainer.ConvertAllToDSHM(dshm_data.Global);
             
+            GlobalProfile.DataContainer.ConvertAllToDSHM(dshm_data.Global);
            
             foreach(DeviceSpecificData dev in Devices)
             {
                 var temp = new DSHMDeviceCustomSettings();
                 temp.DeviceAddress = dev.DeviceMac;
+                switch (dev.SettingsMode)
+                {
+                    case SettingsModes.Custom:
                 dev.DatasContainter.ConvertAllToDSHM(temp.CustomSettings);
+                        break;
+                    case SettingsModes.Profile:
+                        GetProfile(dev.GuidOfProfileToUse).DataContainer.ConvertAllToDSHM(temp.CustomSettings);
+                        break;
+                    case SettingsModes.Global:
+                    default:
+                        continue;
+                }
                 dshm_data.Devices.Add(temp);
             }
             
