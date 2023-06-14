@@ -46,7 +46,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             DeviceCustomSettingsTab.setNewSettingsVMGroupsContainer(DeviceCustomsVM);
 
             // Checks if the Profile GUID the controller is set to use actually exists in the list of disk profiles and loads it if so
-            ProfileData profileToUse = UserDataManager.GetProfileByProfileGUID(deviceUserData.GuidOfProfileToUse);
+            ProfileData profileToUse = UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse);
             if(profileToUse == null)
             {
                 ChangeProfileForDevice(ProfileData.DefaultProfile);
@@ -115,7 +115,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public ProfileData? CurrentlySelectedProfile
         {
-            get => UserDataManager.GetProfileByProfileGUID(deviceUserData.GuidOfProfileToUse);
+            get => UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse);
             set
             {
                 ChangeProfileForDevice(value);

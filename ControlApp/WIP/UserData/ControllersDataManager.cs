@@ -119,7 +119,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             get
             {
-                ProfileData gp = GetProfileByProfileGUID(GlobalProfileGuid);
+                ProfileData gp = GetProfile(GlobalProfileGuid);
                 if(gp == null)
                 {
                     GlobalProfileGuid = ProfileData.DefaultGuid;
@@ -216,7 +216,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             return profilesOnDisk;
         }
 
-        public ProfileData GetProfileByProfileGUID(Guid profileGuid)
+        public ProfileData GetProfile(Guid profileGuid)
         {
             ProfileData profile = null;
 
