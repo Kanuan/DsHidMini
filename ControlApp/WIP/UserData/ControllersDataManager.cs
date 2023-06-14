@@ -102,6 +102,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         private const string DISK = @"C:\";
         private const string CONTROL_APP_FOLDER_PATH_IN_DISK = @"ProgramData\DsHidMini\ControlApp\";
+        private const string CONTROL_APP_SETTINGS_FILE_NAME = @"ControlAppSettings.json";
         private const string DSHM_FOLDER_PATH_IN_DISK = @"ProgramData\DsHidMini\";
         private const string PROFILE_FOLDER_NAME = @"Profiles\";
         private const string DEVICES_FOLDER_NAME = @"Devices\";
@@ -109,6 +110,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public string DshmFolderFullPath { get; } = $@"{DISK}{DSHM_FOLDER_PATH_IN_DISK}";
         public string ProfilesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{PROFILE_FOLDER_NAME}";
         public string DevicesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{DEVICES_FOLDER_NAME}";
+        public string ControlAppSettingsFileFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{CONTROL_APP_SETTINGS_FILE_NAME}";
 
         // ----------------------------------------------------------- AUTO-PROPERTIES
 
@@ -240,6 +242,15 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             return profile;
         }
         
+        public void LoadControlAppSettingsFromDisk()
+        {
+            if(File.Exists(ControlAppSettingsFileFullPath))
+            {
+                var jsonText = File.ReadAllText(ControlAppSettingsFileFullPath);
+                controlAppSettings = JsonSerializer.Deserialize<ControlAppGeneralSettings>(jsonText, ControlAppJsonSerializerOptions);
+            }
+        }
+
         public void SaveAllProfilesToDisk(List<ProfileData> profiles)
         {
             foreach (ProfileData profile in profiles)
