@@ -332,7 +332,10 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public void DeleteProfile(ProfileData profile)
         {
             Profiles.Remove(profile);
-            System.IO.File.Delete($@"{ProfilesFolderFullPath}{profile.DiskFileName}");
+            if(File.Exists($@"{ProfilesFolderFullPath}{profile.DiskFileName}"))
+            {
+                System.IO.File.Delete($@"{ProfilesFolderFullPath}{profile.DiskFileName}");
+            }
         }
 
 
