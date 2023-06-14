@@ -53,11 +53,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public List<ProfileData> ListOfProfiles => TestViewModel.UserDataManager.Profiles;
 
-        public ObservableCollection<SettingTabViewModel> SettingsTabs
-        {
-            get => _settingsTabs;
-            set => this.RaiseAndSetIfChanged(ref _settingsTabs, value);
-        }
 
         // ----------------------------------------------------------- CONSTRUCTOR
 
