@@ -17,16 +17,21 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     internal class ProfileEditorViewModel : ReactiveObject
     {
+        // ----------------------------------------------------------- FIELDS
+
         private ObservableCollection<SettingTabViewModel> _settingsTabs;
         private SettingTabViewModel _settingsEditor;
+        private ObservableCollection<ProfileData> _profiles;
+
+        private ProfileData? _selectedProfile;
+
+        // ----------------------------------------------------------- PROPERTIES
+
         [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
         [Reactive] private SettingTabViewModel DeviceCustomSettingsTab { get; set; } = new SettingTabViewModel("Custom", null, true);
         [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
-
-        private ObservableCollection<ProfileData> _profiles;
         [Reactive] public ObservableCollection<ProfileData> Profiles { get => _profiles; set => _profiles = value; }
 
-        private ProfileData? _selectedProfile;
         public ProfileData? SelectedProfile
         {
             get => _selectedProfile;
@@ -42,6 +47,23 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             set => this.RaiseAndSetIfChanged(ref _settingsEditor, value);
         }
 
+        public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
+        {
+            SettingsModes.Global,
+            SettingsModes.Profile,
+            SettingsModes.Custom,
+        };
+        public List<SettingsModes> SettingsModesList => settingsModesList;
+
+        public List<ProfileData> ListOfProfiles => TestViewModel.UserDataManager.Profiles;
+
+        public ObservableCollection<SettingTabViewModel> SettingsTabs
+        {
+            get => _settingsTabs;
+            set => this.RaiseAndSetIfChanged(ref _settingsTabs, value);
+        }
+
+        // ----------------------------------------------------------- CONSTRUCTOR
 
         public ProfileEditorViewModel()
         {
@@ -54,23 +76,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             SetProfileAsGlobalCommand = ReactiveCommand.Create<ProfileData>(OnSetAsGlobalButtonPressed);
             SaveChangesCommand = ReactiveCommand.Create(OnSaveButtonPressed);
             CancelChangesCommand = ReactiveCommand.Create(OnCancelButtonPressed);
-        }
-
-        public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
-        {
-            SettingsModes.Global,
-            SettingsModes.Profile,
-            SettingsModes.Custom,
-        };
-        public List<SettingsModes> SettingsModesList => settingsModesList;
-
-
-        public List<ProfileData> ListOfProfiles => TestViewModel.UserDataManager.Profiles;
-
-        public ObservableCollection<SettingTabViewModel> SettingsTabs
-        {
-            get => _settingsTabs;
-            set => this.RaiseAndSetIfChanged(ref _settingsTabs, value);
         }
 
         public void UpdateProfileList()
