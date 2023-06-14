@@ -110,6 +110,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public string DshmFolderFullPath { get; } = $@"{DISK}{DSHM_FOLDER_PATH_IN_DISK}";
         public string ProfilesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{PROFILE_FOLDER_NAME}";
         public string DevicesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{DEVICES_FOLDER_NAME}";
+        public string ControlAppFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}";
         public string ControlAppSettingsFileFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{CONTROL_APP_SETTINGS_FILE_NAME}";
 
         // ----------------------------------------------------------- AUTO-PROPERTIES
@@ -137,6 +138,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             set
             {
                 controlAppSettings.GlobalProfileGuid = value.ProfileGuid;
+                SaveControlAppSettingsToDisk();
             }
         }
         public List<ProfileData> Profiles
@@ -249,6 +251,14 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
                 var jsonText = File.ReadAllText(ControlAppSettingsFileFullPath);
                 controlAppSettings = JsonSerializer.Deserialize<ControlAppGeneralSettings>(jsonText, ControlAppJsonSerializerOptions);
             }
+        }
+
+        public void SaveControlAppSettingsToDisk()
+        {
+            string settingsJson = JsonSerializer.Serialize(controlAppSettings, ControlAppJsonSerializerOptions);
+
+            System.IO.Directory.CreateDirectory(ControlAppFolderFullPath);
+            System.IO.File.WriteAllText($@"{ControlAppSettingsFileFullPath}", settingsJson);
         }
 
         public void SaveAllProfilesToDisk(List<ProfileData> profiles)
