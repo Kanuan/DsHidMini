@@ -108,28 +108,28 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public string ProfilesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{PROFILE_FOLDER_NAME}";
         public string DevicesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{DEVICES_FOLDER_NAME}";
 
-        // -----------------------------------------------------------
+        // ----------------------------------------------------------- PROPERTIES
+
+        private ControlAppGeneralSettings controlAppSettings { get; set; } = new();
 
         public static Guid guid = new();
         private List<ProfileData> profiles = new();
-
-        public Guid GlobalProfileGuid { get; set; } = ProfileData.DefaultGuid;
 
         public ProfileData GlobalProfile
         {
             get
             {
-                ProfileData gp = GetProfile(GlobalProfileGuid);
+                ProfileData gp = GetProfile(controlAppSettings.GlobalProfileGuid);
                 if(gp == null)
                 {
-                    GlobalProfileGuid = ProfileData.DefaultGuid;
+                    controlAppSettings.GlobalProfileGuid = ProfileData.DefaultGuid;
                     gp = ProfileData.DefaultProfile;
                 }
                 return gp;
             }
             set
             {
-                GlobalProfileGuid = value.ProfileGuid;
+                controlAppSettings.GlobalProfileGuid = value.ProfileGuid;
             }
         }
 
@@ -141,6 +141,8 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             set => profiles = value;
         }
         public List<DeviceSpecificData> Devices { get; set; } = new();
+
+        // ----------------------------------------------------------- CONSTRUCTOR
 
         public ControllersUserData()
         {
@@ -161,6 +163,13 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
             SaveAllProfilesToDisk(Profiles);
         }
+
+        private class ControlAppGeneralSettings
+        {
+            public Guid GlobalProfileGuid { get; set; } = ProfileData.DefaultGuid;
+        }
+
+        // ----------------------------------------------------------- METHODS
 
         private List<DeviceSpecificData> LoadDevicesFromDisk()
         {
