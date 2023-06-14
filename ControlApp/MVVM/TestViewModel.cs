@@ -49,11 +49,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             ProfileData profileToUse = UserDataManager.GetProfileByProfileGUID(deviceUserData.GuidOfProfileToUse);
             if(profileToUse == null)
             {
-                deviceUserData.GuidOfProfileToUse = ProfileData.DefaultGuid;
-                profileToUse = ProfileData.DefaultProfile;
+                ChangeProfileForDevice(ProfileData.DefaultProfile);
             }
-            var ProfileGroupsContainerVM = profileToUse.GetProfileVMGroupsContainer();
-            DeviceProfileSettingsTab.setNewSettingsVMGroupsContainer(ProfileGroupsContainerVM);
 
             // Selects correct tab for the settings based on if it's set to use custom, profile or global settings
             UpdateSettingsEditor();
