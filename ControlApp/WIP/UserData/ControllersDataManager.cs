@@ -154,19 +154,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             Profiles = LoadProfilesFromDisk();
             Devices = LoadDevicesFromDisk();
-
             LoadControlAppSettingsFromDisk();
-
-            /*
-            ProfileData profileTest = new()
-            {
-                ProfileName = "Test",
-                DiskFileName = "Test.json",
-            };
-            CheckAndFixRepeatedProfileFilePath(profileTest);
-            Profiles.Add(profileTest);
-            */
-
             SaveAllProfilesToDisk(Profiles);
         }
 
