@@ -115,6 +115,24 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public Guid GlobalProfileGuid { get; set; } = ProfileData.DefaultGuid;
 
+        public ProfileData GlobalProfile
+        {
+            get
+            {
+                ProfileData gp = GetProfileByProfileGUID(GlobalProfileGuid);
+                if(gp == null)
+                {
+                    GlobalProfileGuid = ProfileData.DefaultGuid;
+                    gp = ProfileData.DefaultProfile;
+                }
+                return gp;
+            }
+            set
+            {
+                GlobalProfileGuid = value.ProfileGuid;
+            }
+        }
+
         public DeviceSpecificData NewControllersDefault { get; set; } = new("0123456789"); //"Global"
 
         public List<ProfileData> Profiles
