@@ -96,6 +96,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             if (obj != null)
             {
                 SettingsEditor.setNewSettingsVMGroupsContainer(obj.GetProfileVMGroupsContainer());
+                SettingsEditor.AllowEditing = (obj == ProfileData.DefaultProfile) ? false : true;
             }
         }
 

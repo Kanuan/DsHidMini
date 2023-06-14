@@ -190,7 +190,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public List<ProfileData> LoadProfilesFromDisk()
         {
             var profilesOnDisk = new List<ProfileData>();
-
+            profilesOnDisk.Add(ProfileData.DefaultProfile); // Include Default Profile on profile list
             if(Directory.Exists(ProfilesFolderFullPath))
             {
                 string[] profilesPaths = Directory.GetFiles($@"{ProfilesFolderFullPath}", "*.json");
@@ -256,6 +256,10 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             foreach (ProfileData profile in profiles)
             {
+                if(profile == ProfileData.DefaultProfile)
+                {
+                    continue;
+                }
                 SaveProfileToDisk(profile);
             }
         }
@@ -332,6 +336,10 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public void DeleteProfile(ProfileData profile)
         {
+            if (profile == ProfileData.DefaultProfile) // Must not save Default Profile to disk
+            {
+                return;
+            }
             Profiles.Remove(profile);
             if(File.Exists($@"{ProfilesFolderFullPath}{profile.DiskFileName}"))
             {
