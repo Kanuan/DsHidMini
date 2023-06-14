@@ -46,11 +46,14 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             DeviceCustomSettingsTab.setNewSettingsVMGroupsContainer(DeviceCustomsVM);
 
             // Checks if the Profile GUID the controller is set to use actually exists in the list of disk profiles and loads it if so
-            if (UserDataManager.ProfilesPerGuid.ContainsKey(deviceUserData.GuidOfProfileToUse))
+            ProfileData profileToUse = UserDataManager.GetProfileByProfileGUID(deviceUserData.GuidOfProfileToUse);
+            if(profileToUse == null)
             {
-                var DeviceProfileVM = UserDataManager.ProfilesPerGuid[deviceUserData.GuidOfProfileToUse].GetProfileVMGroupsContainer();
-                DeviceProfileSettingsTab.setNewSettingsVMGroupsContainer(DeviceProfileVM);
+                deviceUserData.GuidOfProfileToUse = ProfileData.DefaultGuid;
+                profileToUse = ProfileData.DefaultProfile;
             }
+            var ProfileGroupsContainerVM = profileToUse.GetProfileVMGroupsContainer();
+            DeviceProfileSettingsTab.setNewSettingsVMGroupsContainer(ProfileGroupsContainerVM);
 
             // Selects correct tab for the settings based on if it's set to use custom, profile or global settings
             UpdateSettingsEditor();
@@ -115,8 +118,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public ProfileData? CurrentlySelectedProfile
         {
-            get => UserDataManager.ProfilesPerGuid.ContainsKey(deviceUserData.GuidOfProfileToUse)
-                ? UserDataManager.ProfilesPerGuid[deviceUserData.GuidOfProfileToUse] : null;
+            get => UserDataManager.GetProfileByProfileGUID(deviceUserData.GuidOfProfileToUse);
             set
             {
                 ChangeProfileForDevice(value);

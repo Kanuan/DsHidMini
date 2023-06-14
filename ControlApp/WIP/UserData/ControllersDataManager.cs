@@ -16,7 +16,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         private VMGroupsContainer vmGroupsContainer;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-        private const string DefaultGuid = "00000000000000000000000000000000";
+        public static Guid DefaultGuid = new Guid("00000000000000000000000000000000");
         public string ProfileName { get; set; }
         public Guid ProfileGuid { get; set; } = Guid.NewGuid();
 
@@ -40,7 +40,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         {
             ProfileName = "DSHM XInput",
             DiskFileName = "Default_DSHM_XInput",
-            ProfileGuid = new Guid(DefaultGuid),
+            ProfileGuid = DefaultGuid,
             DataContainer = new(),
         };
 
@@ -113,19 +113,15 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public static Guid guid = new();
         private List<ProfileData> profiles = new();
 
+        public Guid GlobalProfileGuid { get; set; } = ProfileData.DefaultGuid;
+
         public DeviceSpecificData NewControllersDefault { get; set; } = new("0123456789"); //"Global"
 
         public List<ProfileData> Profiles
         {
             get => profiles;
-            set
-            {
-                profiles = value;
-                UpdateDictionaryOfLoadedProfilesPerGuid();
-            }
+            set => profiles = value;
         }
-        public Dictionary<Guid, ProfileData> ProfilesPerGuid { get; set; } = new();
-
         public List<DeviceSpecificData> Devices { get; set; } = new();
 
         public ControllersUserData()
@@ -202,16 +198,21 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             return profilesOnDisk;
         }
 
-        public void UpdateDictionaryOfLoadedProfilesPerGuid()
+        public ProfileData GetProfileByProfileGUID(Guid profileGuid)
         {
-            var profilesPerGuid = new Dictionary<Guid, ProfileData>();
-            foreach (ProfileData prof in Profiles)
-            {
-                profilesPerGuid.Add(prof.ProfileGuid, prof);
-            }
-            ProfilesPerGuid = profilesPerGuid;
-        }
+            ProfileData profile = null;
 
+            foreach(ProfileData p in Profiles)
+            {
+                if(p.ProfileGuid == profileGuid)
+                {
+                    profile = p;
+                    break;
+                }
+            }
+            return profile;
+        }
+        
         public void SaveAllProfilesToDisk(List<ProfileData> profiles)
         {
             foreach (ProfileData profile in profiles)
