@@ -74,8 +74,11 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                     CurrentTab = DeviceProfileSettingsTab;
                     break;
                 case SettingsModes.Custom:
-                default:
                     CurrentTab = DeviceCustomSettingsTab;
+                    break;
+                case SettingsModes.Global:
+                default:
+                    CurrentTab = new SettingTabViewModel("Global", UserDataManager.GlobalProfile.GetProfileVMGroupsContainer(), false);
                     break;
             }
         }
