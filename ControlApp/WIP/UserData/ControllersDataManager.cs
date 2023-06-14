@@ -297,7 +297,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         }
 
 
-        public DeviceSpecificData GetDeviceSpecificData(string deviceMac)
+        public DeviceSpecificData GetDeviceDataByDeviceAddress(string deviceMac)
         {
             foreach (DeviceSpecificData dev in Devices)
             {

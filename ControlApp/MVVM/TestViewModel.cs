@@ -38,7 +38,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             deviceAddress = _device.GetProperty<string>(DsHidMiniDriver.DeviceAddressProperty).ToUpper();
             DisplayName = deviceAddress;
             // Loads correspondent controller data based on controller's MAC address 
-            deviceUserData = UserDataManager.GetDeviceSpecificData(deviceAddress);
+            deviceUserData = UserDataManager.GetDeviceDataByDeviceAddress(deviceAddress);
 
             // Loads device' specific custom settings from its BackingDataContainer into the Settings Groups VM
             DeviceCustomsVM = new(deviceUserData.DatasContainter);
