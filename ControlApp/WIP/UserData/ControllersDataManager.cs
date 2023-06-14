@@ -84,6 +84,8 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
     }
     internal class ControllersUserData
     {
+        // ----------------------------------------------------------- FIELDS
+
         public static JsonSerializerOptions ControlAppJsonSerializerOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
@@ -108,12 +110,15 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public string ProfilesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{PROFILE_FOLDER_NAME}";
         public string DevicesFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{DEVICES_FOLDER_NAME}";
 
-        // ----------------------------------------------------------- PROPERTIES
+        // ----------------------------------------------------------- AUTO-PROPERTIES
 
         private ControlAppGeneralSettings controlAppSettings { get; set; } = new();
-
         public static Guid guid = new();
         private List<ProfileData> profiles = new();
+        public DeviceSpecificData NewControllersDefault { get; set; } = new("0123456789"); //"Global"
+        public List<DeviceSpecificData> Devices { get; set; } = new();
+
+        // ----------------------------------------------------------- PROPERTIES
 
         public ProfileData GlobalProfile
         {
@@ -132,23 +137,18 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
                 controlAppSettings.GlobalProfileGuid = value.ProfileGuid;
             }
         }
-
-        public DeviceSpecificData NewControllersDefault { get; set; } = new("0123456789"); //"Global"
-
         public List<ProfileData> Profiles
         {
             get => profiles;
             set => profiles = value;
         }
-        public List<DeviceSpecificData> Devices { get; set; } = new();
+
 
         // ----------------------------------------------------------- CONSTRUCTOR
 
         public ControllersUserData()
         {
             Profiles = LoadProfilesFromDisk();
-
-
             Devices = LoadDevicesFromDisk();
 
             /*
