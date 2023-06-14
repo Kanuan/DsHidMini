@@ -331,16 +331,5 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             return newDevice;
         }
 
-        public ProfileData? GetProfileData(Guid profileGuid)
-        {
-            foreach (ProfileData prof in Profiles)
-            {
-                if (prof.ProfileGuid == profileGuid)
-                {
-                    return prof;
-                }
-            }
-            return null;
-        }
     }
 }
