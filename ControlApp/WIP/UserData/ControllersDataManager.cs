@@ -126,7 +126,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
         public ControllersUserData()
         {
-            Profiles = CreateListOfProfilesOnDisk();
+            Profiles = LoadProfilesFromDisk();
 
 
             Devices = LoadDevicesFromDisk();
@@ -165,7 +165,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             return devicesOnDisk;
         }
 
-        public List<ProfileData> CreateListOfProfilesOnDisk()
+        public List<ProfileData> LoadProfilesFromDisk()
         {
             var profilesOnDisk = new List<ProfileData>();
 
