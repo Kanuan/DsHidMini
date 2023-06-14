@@ -13,12 +13,10 @@ namespace ControlApp
         public MainWindow()
         {
             RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
-
+            this.DataContext = _vm;
             var instance = 0;
-            while (Devcon.Find(DsHidMiniDriver.DeviceInterfaceGuid, out var path, out var instanceId, instance++))
+            while (Devcon.FindByInterfaceGuid(DsHidMiniDriver.DeviceInterfaceGuid, out var path, out var instanceId, instance++))
                 _vm.Devices.Add(new TestViewModel(PnPDevice.GetDeviceByInstanceId(instanceId)));
-
-            this.DataContext= _vm;
             InitializeComponent();
         }
     }
