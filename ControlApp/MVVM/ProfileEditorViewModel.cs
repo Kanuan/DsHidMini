@@ -19,17 +19,11 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         // ----------------------------------------------------------- FIELDS
 
-        private ObservableCollection<SettingTabViewModel> _settingsTabs;
-        private SettingTabViewModel _settingsEditor;
         private ObservableCollection<ProfileData> _profiles;
-
         private ProfileData? _selectedProfile;
 
         // ----------------------------------------------------------- PROPERTIES
 
-        [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
-        [Reactive] private SettingTabViewModel DeviceCustomSettingsTab { get; set; } = new SettingTabViewModel("Custom", null, true);
-        [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
         [Reactive] public ObservableCollection<ProfileData> Profiles { get => _profiles; set => _profiles = value; }
 
         public ProfileData? SelectedProfile
