@@ -113,11 +113,12 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public string ControlAppFolderFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}";
         public string ControlAppSettingsFileFullPath { get; } = $@"{DISK}{CONTROL_APP_FOLDER_PATH_IN_DISK}{CONTROL_APP_SETTINGS_FILE_NAME}";
 
+        public static Guid guid = new();
+        private List<ProfileData> profiles = new();
+
         // ----------------------------------------------------------- AUTO-PROPERTIES
 
         private ControlAppGeneralSettings controlAppSettings { get; set; } = new();
-        public static Guid guid = new();
-        private List<ProfileData> profiles = new();
         public DeviceSpecificData NewControllersDefault { get; set; } = new("0123456789"); //"Global"
         public List<DeviceSpecificData> Devices { get; set; } = new();
 
