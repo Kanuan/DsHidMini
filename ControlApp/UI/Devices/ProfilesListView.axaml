@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+			 xmlns:local="using:Nefarius.DsHidMini.ControlApp.MVVM"
              x:Class="ControlApp.UI.Devices.ProfilesListView">
     <UserControl.Styles>
         <Style Selector="TextBlock.h1">
@@ -12,7 +13,7 @@
         </Style>
     </UserControl.Styles>
 
-    <StackPanel>
+    <StackPanel x:DataType="local:ProfileEditorViewModel">
         <TextBlock HorizontalAlignment="Center" Classes="h1">Profile List</TextBlock>
 		
 		<Grid Height="40">	
@@ -22,8 +23,7 @@
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<Button Grid.Column="0" Content="Add" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding CreateProfileCommand}" />
-			<Button Grid.Column="1" Content="Set as Global" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-
+			<Button Grid.Column="1" Content="Set as Global" Command="{Binding SetProfileAsGlobalCommand}" CommandParameter="{Binding ElementName=ProfilesListBox, Path=SelectedItem}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 			<Button Grid.Column="2" Content="Delete" Command="{Binding DeleteProfileCommand}" CommandParameter="{Binding ElementName=ProfilesListBox, Path=SelectedItem}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 		</Grid>
         <Panel>

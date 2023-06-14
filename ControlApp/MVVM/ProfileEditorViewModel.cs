@@ -51,6 +51,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             CreateProfileCommand = ReactiveCommand.Create(OnAddProfileButtonPressed);
             DeleteProfileCommand = ReactiveCommand.Create<ProfileData>(OnDeleteProfileButtonPressed);
             ProfileSelectedCommand = ReactiveCommand.Create<ProfileData>(OnProfileSelected);
+            SetProfileAsGlobalCommand = ReactiveCommand.Create<ProfileData>(OnSetAsGlobalButtonPressed);
             SaveChangesCommand = ReactiveCommand.Create(OnSaveButtonPressed);
             CancelChangesCommand = ReactiveCommand.Create(OnCancelButtonPressed);
         }
@@ -83,6 +84,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         public ReactiveCommand<Unit, Unit> SaveChangesCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelChangesCommand { get; }
         public ReactiveCommand<ProfileData, Unit> ProfileSelectedCommand { get; }
+        public ReactiveCommand<ProfileData, Unit> SetProfileAsGlobalCommand { get; }
         public ReactiveCommand<Unit, Unit> CreateProfileCommand { get; }
         public ReactiveCommand<ProfileData, Unit> DeleteProfileCommand { get; }
 
@@ -94,6 +96,14 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             if (obj != null)
             {
                 SettingsEditor.setNewSettingsVMGroupsContainer(obj.GetProfileVMGroupsContainer());
+            }
+        }
+
+        private void OnSetAsGlobalButtonPressed(ProfileData? obj)
+        {
+            if (obj != null)
+            {
+                TestViewModel.UserDataManager.GlobalProfile = obj;
             }
         }
 
