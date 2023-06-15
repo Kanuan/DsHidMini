@@ -37,14 +37,14 @@
 						SelectedItem="{Binding CurrentDeviceSettingsMode}"
 						/>
 					<Label
-						IsVisible="{Binding IsDeviceInProfileSettingsMode}"
+						IsVisible="{Binding IsProfileSelectorVisible}"
 						DockPanel.Dock="Left"
 						Content="->"
 						VerticalContentAlignment="Center"
 						/>
 					<ComboBox
 						DockPanel.Dock="Left"
-						IsVisible="{Binding IsDeviceInProfileSettingsMode}"
+						IsVisible="{Binding IsProfileSelectorVisible}"
 						x:Name="ProfileSelection_ComboBox"
 						VerticalAlignment="Center"
 						Items="{Binding ListOfProfiles}"
@@ -66,7 +66,7 @@
 					Content="Cancel"/>
 			</DockPanel>
 			
-			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" IsEnabled="{Binding !$parent.DataContext.IsEditorLocked}" DataContext="{Binding SelectedGroupsVM}"/>
+			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" IsEnabled="{Binding $parent.DataContext.IsEditorEnabled}" DataContext="{Binding SelectedGroupsVM}"/>
 
 			
 		</DockPanel>

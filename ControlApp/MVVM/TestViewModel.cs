@@ -54,12 +54,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             SaveChangesCommand = ReactiveCommand.Create(OnSaveButtonPressed);
             CancelChangesCommand = ReactiveCommand.Create(OnCancelButtonPressed);
 
-            // This is a ReactiveUI helper that checks if current SettingsMode is "Profile" when changing SettingsMode
-            isEditorLocked = this
-                .WhenAnyValue(x => x.CurrentDeviceSettingsMode)
-                .Select(whatever => CurrentDeviceSettingsMode == SettingsModes.Profile)
-                .ToProperty(this, x => x.IsEditorLocked);
-
             this.WhenAnyValue(x => x.CurrentDeviceSettingsMode, x => x.SelectedProfile)
                 .Subscribe(x => UpdateEditor());
         }
@@ -70,12 +64,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             //ProfileCustomsVM = profile.GetProfileVMGroupsContainer();
         }
 
-        /// <summary>
-        /// This should update on its own when changing SettingsMode.
-        /// Initialized in the base constructor
-        /// </summary>
-        readonly ObservableAsPropertyHelper<bool> isEditorLocked;
-        public bool IsEditorLocked { get => isEditorLocked.Value; }
+        [Reactive] public bool IsEditorEnabled { get; set; }
+        [Reactive] public bool IsProfileSelectorVisible { get; set; }
 
         public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
         {
@@ -102,6 +92,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                     SelectedGroupsVM = UserDataManager.GlobalProfile.GetProfileVMGroupsContainer();
                     break;
             }
+            IsEditorEnabled = CurrentDeviceSettingsMode == SettingsModes.Custom;
+            IsProfileSelectorVisible = CurrentDeviceSettingsMode == SettingsModes.Profile;
         }
 
         [Reactive] public ProfileData? SelectedProfile { get; set; }
