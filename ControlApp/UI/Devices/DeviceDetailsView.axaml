@@ -48,7 +48,7 @@
 						x:Name="ProfileSelection_ComboBox"
 						VerticalAlignment="Center"
 						Items="{Binding ListOfProfiles}"
-						SelectedItem="{Binding CurrentlySelectedProfile}"
+						SelectedItem="{Binding SelectedProfile}"
 						/>
 				</DockPanel>
 			</DockPanel>
@@ -66,7 +66,7 @@
 					Content="Cancel"/>
 			</DockPanel>
 			
-			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" DataContext="{Binding CurrentGroupsVM}"/>
+			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" IsEnabled="{Binding !$parent.DataContext.IsEditorLocked}" DataContext="{Binding SelectedGroupsVM}"/>
 
 			
 		</DockPanel>

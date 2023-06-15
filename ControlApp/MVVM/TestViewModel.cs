@@ -4,8 +4,10 @@ using Nefarius.Utilities.DeviceManagement.PnP;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -19,13 +21,10 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
 
         private DeviceSpecificData deviceUserData;
-        private ObservableCollection<SettingTabViewModel> _settingsTabs;
-        private SettingTabViewModel _currentTab;
         private string deviceAddress;
 
         [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
-        [Reactive] private SettingTabViewModel DeviceCustomSettingsTab { get; set; } = new SettingTabViewModel("Custom", null, true);
-        [Reactive] private SettingTabViewModel DeviceProfileSettingsTab { get; set; } = new SettingTabViewModel("Profile", null, false);
+        [Reactive] private VMGroupsContainer SelectedGroupsVM { get; set; }
 
         internal string DisplayName { get; set; }
 
@@ -42,61 +41,41 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
             // Loads device' specific custom settings from its BackingDataContainer into the Settings Groups VM
             DeviceCustomsVM = new(deviceUserData.DatasContainter);
-            // Loads the Settings Groups VM into the tab settings VM
-            DeviceCustomSettingsTab.setNewSettingsVMGroupsContainer(DeviceCustomsVM);
 
             // Checks if the Profile GUID the controller is set to use actually exists in the list of disk profiles and loads it if so
-            ProfileData profileToUse = UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse);
-            if(profileToUse == null)
+            if (UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse) == null)
             {
-                ChangeProfileForDevice(ProfileData.DefaultProfile);
+                deviceUserData.GuidOfProfileToUse = ProfileData.DefaultGuid;
             }
+            SelectedProfile = UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse);
 
-            // Selects correct tab for the settings based on if it's set to use custom, profile or global settings
-            UpdateSettingsEditor();
+            CurrentDeviceSettingsMode = deviceUserData.SettingsMode;
 
             SaveChangesCommand = ReactiveCommand.Create(OnSaveButtonPressed);
             CancelChangesCommand = ReactiveCommand.Create(OnCancelButtonPressed);
-            TabSelectedCommand = ReactiveCommand.Create<SettingTabViewModel>(OnTabSelected);
 
             // This is a ReactiveUI helper that checks if current SettingsMode is "Profile" when changing SettingsMode
-            isDeviceInProfileSettingsMode = this
+            isEditorLocked = this
                 .WhenAnyValue(x => x.CurrentDeviceSettingsMode)
                 .Select(whatever => CurrentDeviceSettingsMode == SettingsModes.Profile)
-                .ToProperty(this, x => x.IsDeviceInProfileSettingsMode);
-        }
+                .ToProperty(this, x => x.IsEditorLocked);
 
-        public void UpdateSettingsEditor()
-        {
-            switch (deviceUserData.SettingsMode)
-            {
-                case SettingsModes.Profile:
-                    CurrentTab = DeviceProfileSettingsTab;
-                    break;
-                case SettingsModes.Custom:
-                    CurrentTab = DeviceCustomSettingsTab;
-                    break;
-                case SettingsModes.Global:
-                default:
-                    CurrentTab = new SettingTabViewModel("Global", UserDataManager.GlobalProfile.GetProfileVMGroupsContainer(), false);
-                    break;
-            }
+            this.WhenAnyValue(x => x.CurrentDeviceSettingsMode, x => x.SelectedProfile)
+                .Subscribe(x => UpdateEditor());
         }
 
         public void ChangeProfileForDevice(ProfileData profile)
         {
             deviceUserData.GuidOfProfileToUse = profile.ProfileGuid;
-            DeviceProfileSettingsTab.setNewSettingsVMGroupsContainer(profile.GetProfileVMGroupsContainer());
+            //ProfileCustomsVM = profile.GetProfileVMGroupsContainer();
         }
 
         /// <summary>
         /// This should update on its own when changing SettingsMode.
         /// Initialized in the base constructor
         /// </summary>
-        readonly ObservableAsPropertyHelper<bool> isDeviceInProfileSettingsMode;
-        public bool IsDeviceInProfileSettingsMode { get => isDeviceInProfileSettingsMode.Value; }
-
-
+        readonly ObservableAsPropertyHelper<bool> isEditorLocked;
+        public bool IsEditorLocked { get => isEditorLocked.Value; }
 
         public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
         {
@@ -105,57 +84,36 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             SettingsModes.Custom,
         };
         public List<SettingsModes> SettingsModesList => settingsModesList;
-        public SettingsModes CurrentDeviceSettingsMode
+
+        [Reactive] public SettingsModes CurrentDeviceSettingsMode { get; set; }
+
+        public void UpdateEditor()
         {
-            get => deviceUserData.SettingsMode;
-            set
+            switch (CurrentDeviceSettingsMode)
             {
-                deviceUserData.SettingsMode = value;
-                UpdateSettingsEditor();
-                this.RaisePropertyChanged(nameof(CurrentDeviceSettingsMode));
+                case SettingsModes.Profile:
+                    SelectedGroupsVM = SelectedProfile.GetProfileVMGroupsContainer();
+                    break;
+                case SettingsModes.Custom:
+                    SelectedGroupsVM = DeviceCustomsVM;
+                    break;
+                case SettingsModes.Global:
+                default:
+                    SelectedGroupsVM = UserDataManager.GlobalProfile.GetProfileVMGroupsContainer();
+                    break;
             }
         }
 
-        public ProfileData? CurrentlySelectedProfile
-        {
-            get => UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse);
-            set
-            {
-                ChangeProfileForDevice(value);
-            }
-        }
+        [Reactive] public ProfileData? SelectedProfile { get; set; }
 
         public List<ProfileData> ListOfProfiles => UserDataManager.Profiles;
-
-        public ObservableCollection<SettingTabViewModel> SettingsTabs
-        {
-            get => _settingsTabs;
-            set => this.RaiseAndSetIfChanged(ref _settingsTabs, value);
-        }
-
-        public SettingTabViewModel CurrentTab
-        {
-            get => _currentTab;
-            set => this.RaiseAndSetIfChanged(ref _currentTab, value);
-        }
-
 
         // ---------------------------------------- ReactiveCommands
 
         public ReactiveCommand<Unit, Unit> SaveChangesCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelChangesCommand { get; }
-        public ReactiveCommand<SettingTabViewModel, Unit> TabSelectedCommand { get; }
 
         // ---------------------------------------- Commands
-
-        private void OnTabSelected(SettingTabViewModel? obj)
-        {
-            CurrentTab = obj;
-            foreach (var tab in _settingsTabs)
-            {
-                tab.IsTabSelected = (tab == CurrentTab) ? true : false;
-            }
-        }
 
         private void OnSaveButtonPressed()
         {
