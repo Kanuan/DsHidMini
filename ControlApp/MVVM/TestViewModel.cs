@@ -15,30 +15,43 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 {
     internal class TestViewModel : ReactiveObject
     {
+        // ------------------------------------------------------ FIELDS
+
         internal static ControllersUserData UserDataManager = new ControllersUserData();
         internal static ProfileEditorViewModel vm = new ProfileEditorViewModel();
         private readonly PnPDevice _device;
-
-
         private DeviceSpecificData deviceUserData;
-        private string deviceAddress;
+        public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
+        {
+            SettingsModes.Global,
+            SettingsModes.Profile,
+            SettingsModes.Custom,
+        };
+
+        // ------------------------------------------------------ PROPERTIES
+
+        internal string DeviceAddress { get; set; }
 
         [Reactive] private VMGroupsContainer DeviceCustomsVM { get; set; }
         [Reactive] private VMGroupsContainer SelectedGroupsVM { get; set; }
 
         internal string DisplayName { get; set; }
+        [Reactive] public bool IsEditorEnabled { get; set; }
+        [Reactive] public bool IsProfileSelectorVisible { get; set; }
+        public List<SettingsModes> SettingsModesList => settingsModesList;
 
-        internal string DeviceAddress => deviceAddress;
+        [Reactive] public SettingsModes CurrentDeviceSettingsMode { get; set; }
+
+        // ------------------------------------------------------ CONSTRUCTOR
 
         public TestViewModel(PnPDevice device)
         {
             _device = device;
             // Hard-coded controller MAC address for testing purposes
-            deviceAddress = _device.GetProperty<string>(DsHidMiniDriver.DeviceAddressProperty).ToUpper();
-            DisplayName = deviceAddress;
+            DeviceAddress = _device.GetProperty<string>(DsHidMiniDriver.DeviceAddressProperty).ToUpper();
             // Loads correspondent controller data based on controller's MAC address 
-            deviceUserData = UserDataManager.GetDeviceData(deviceAddress);
-
+            deviceUserData = UserDataManager.GetDeviceData(DeviceAddress);
+            DisplayName = DeviceAddress;
             // Loads device' specific custom settings from its BackingDataContainer into the Settings Groups VM
             DeviceCustomsVM = new(deviceUserData.DatasContainter);
 
@@ -58,24 +71,18 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 .Subscribe(x => UpdateEditor());
         }
 
+        // ---------------------------------------- ReactiveCommands
+
+        public ReactiveCommand<Unit, Unit> SaveChangesCommand { get; }
+        public ReactiveCommand<Unit, Unit> CancelChangesCommand { get; }
+
+        // ------------------------------------------------------ METHODS
+
         public void ChangeProfileForDevice(ProfileData profile)
         {
             deviceUserData.GuidOfProfileToUse = profile.ProfileGuid;
             //ProfileCustomsVM = profile.GetProfileVMGroupsContainer();
         }
-
-        [Reactive] public bool IsEditorEnabled { get; set; }
-        [Reactive] public bool IsProfileSelectorVisible { get; set; }
-
-        public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
-        {
-            SettingsModes.Global,
-            SettingsModes.Profile,
-            SettingsModes.Custom,
-        };
-        public List<SettingsModes> SettingsModesList => settingsModesList;
-
-        [Reactive] public SettingsModes CurrentDeviceSettingsMode { get; set; }
 
         public void UpdateEditor()
         {
@@ -100,11 +107,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public List<ProfileData> ListOfProfiles => UserDataManager.Profiles;
 
-        // ---------------------------------------- ReactiveCommands
-
-        public ReactiveCommand<Unit, Unit> SaveChangesCommand { get; }
-        public ReactiveCommand<Unit, Unit> CancelChangesCommand { get; }
-
         // ---------------------------------------- Commands
 
         private void OnSaveButtonPressed()
@@ -127,6 +129,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private void OnCancelButtonPressed()
         {
             DeviceCustomsVM.LoadDatasToAllGroups(deviceUserData.DatasContainter);
+            SelectedProfile = UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse);
+            CurrentDeviceSettingsMode = deviceUserData.SettingsMode;
         }
 
     }
