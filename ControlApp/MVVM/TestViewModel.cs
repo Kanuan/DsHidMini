@@ -109,8 +109,19 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         private void OnSaveButtonPressed()
         {
-            DeviceCustomsVM.SaveAllChangesToBackingData(deviceUserData.DatasContainter);
-            UserDataManager.SaveDeviceSpecificDataToDisk(deviceUserData);
+            deviceUserData.SettingsMode = CurrentDeviceSettingsMode;
+
+            if(CurrentDeviceSettingsMode != SettingsModes.Global)
+            {
+                SelectedGroupsVM.SaveAllChangesToBackingData(deviceUserData.DatasContainter);
+            }
+
+            if (CurrentDeviceSettingsMode == SettingsModes.Profile)
+            {
+                deviceUserData.GuidOfProfileToUse = SelectedProfile.ProfileGuid;
+            }
+
+            UserDataManager.TestFunctionSaveToDSHM();
         }
 
         private void OnCancelButtonPressed()
