@@ -101,15 +101,18 @@
 	<!-- View area -->
 
 	<DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
-
+		<Control.Styles>
+			<Style Selector="ContentControl.setgroup">
+				<Setter Property="DockPanel.Dock" Value="Top"/>
+				<Setter Property="Margin" Value="0,2,0,0"/>
+				<Setter Property="Background" Value="LightGray"/>
+				<Setter Property="ContentTemplate" Value="{StaticResource ModeSetting}"/>
+			</Style>
+		</Control.Styles>
 	
 
 			<!-- Mode unique settings -->
-			<ContentControl DockPanel.Dock="Top"  Margin="0,2,0,0" Background="LightGray" MaxHeight="200">
-				<ScrollViewer DockPanel.Dock="Top">
-					<ItemsControl Items="{Binding ModeUniqueSettingsGroupsList}" ItemTemplate="{StaticResource ModeSetting}" IsEnabled="{Binding AllowEditing}"/>
-				</ScrollViewer>
-			</ContentControl>
+		<ContentControl Classes="setgroup" MaxHeight="200" Content="{Binding GroupModeUnique}"/>
 
 			<!-- Mode Settings groups -->
 			<Border
@@ -130,7 +133,12 @@
 						<TextBlock VerticalAlignment="Center" FontSize="14"  >Basic</TextBlock>
 					</TabItem.Header>
 					<ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-						<ItemsControl Items="{Binding BasicSettingsGroupsList}" IsEnabled="{Binding AllowEditing}"  ItemTemplate="{StaticResource ModeSetting}" />
+						<DockPanel>
+							<ContentControl Classes="setgroup" Content="{Binding GroupLEDsControl}"/>
+							<ContentControl Classes="setgroup" Content="{Binding GroupWireless}"/>
+							<ContentControl Classes="setgroup" Content="{Binding GroupSticksDZ}"/>
+							<ContentControl Classes="setgroup" Content="{Binding GroupRumbleGeneral}"/>
+						</DockPanel>
 					</ScrollViewer>
 
 				</TabItem>
@@ -150,7 +158,11 @@
 							</StackPanel>
 						</ContentControl>
 						<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-							<ItemsControl Items="{Binding AdvancedSettingsGroupsList}" IsEnabled="{Binding AllowEditing}" ItemTemplate="{StaticResource ModeSetting}" />
+							<DockPanel>
+								<ContentControl Classes="setgroup" Content="{Binding GroupOutRepControl}"/>
+								<ContentControl Classes="setgroup" Content="{Binding GroupRumbleLeftRescale}"/>
+								<ContentControl Classes="setgroup" Content="{Binding GroupRumbleRightConversion}"/>
+							</DockPanel>
 						</ScrollViewer>
 					</DockPanel>
 				</TabItem>
