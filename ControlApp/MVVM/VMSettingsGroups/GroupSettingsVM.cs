@@ -18,6 +18,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     public class VMGroupsContainer : ReactiveObject
     {
         [Reactive] internal List<GroupSettingsVM> GroupSettingsList { get; set; } = new();
+        [Reactive] public bool AllowEditing { get; set; } = false;
         [Reactive] public GroupModeUniqueVM GroupModeUnique { get; set; }
         [Reactive] public GroupLEDsCustomsVM GroupLEDsControl { get; set; }
         [Reactive] public GroupWirelessSettingsVM GroupWireless { get; set; }
