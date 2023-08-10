@@ -314,14 +314,25 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             {
                 var temp = new DSHMDeviceCustomSettings();
                 temp.DeviceAddress = dev.DeviceMac;
+
                 switch (dev.SettingsMode)
                 {
                     case SettingsModes.Custom:
                 dev.DatasContainter.ConvertAllToDSHM(temp.CustomSettings);
                         break;
+
                     case SettingsModes.Profile:
-                        GetProfile(dev.GuidOfProfileToUse).DataContainer.ConvertAllToDSHM(temp.CustomSettings);
+                        ProfileData devprof = GetProfile(dev.GuidOfProfileToUse);
+                        if(devprof == null)
+                        {
+                            continue; // If profile set for the controller does not exist anymore then leave settings blank so controller loads Global Profile
+                        }
+                        else
+                        {
+                            devprof.DataContainer.ConvertAllToDSHM(temp.CustomSettings);
+                        }
                         break;
+
                     case SettingsModes.Global:
                     default:
                         continue;
