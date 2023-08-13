@@ -112,7 +112,7 @@
 	
 
 			<!-- Mode unique settings -->
-		<ContentControl Classes="setgroup" MaxHeight="200" Content="{Binding GroupModeUnique}"/>
+		<ContentControl Classes="setgroup" MaxHeight="200" IsEnabled="{Binding AllowEditing}" Content="{Binding GroupModeUnique}"/>
 
 			<!-- Mode Settings groups -->
 			<Border
@@ -133,7 +133,7 @@
 						<TextBlock VerticalAlignment="Center" FontSize="14"  >Basic</TextBlock>
 					</TabItem.Header>
 					<ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-						<DockPanel>
+						<DockPanel IsEnabled="{Binding AllowEditing}">
 							<ContentControl Classes="setgroup" Content="{Binding GroupLEDsControl}"/>
 							<ContentControl Classes="setgroup" Content="{Binding GroupWireless}"/>
 							<ContentControl Classes="setgroup" Content="{Binding GroupSticksDZ}"/>
@@ -157,7 +157,7 @@
 								</ToggleButton>
 							</StackPanel>
 						</ContentControl>
-						<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
+						<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" IsEnabled="{Binding AllowEditing}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
 							<DockPanel>
 								<ContentControl Classes="setgroup" Content="{Binding GroupOutRepControl}"/>
 								<ContentControl Classes="setgroup" Content="{Binding GroupRumbleLeftRescale}"/>

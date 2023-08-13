@@ -99,7 +99,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                     SelectedGroupsVM = UserDataManager.GlobalProfile.GetProfileVMGroupsContainer();
                     break;
             }
-            IsEditorEnabled = CurrentDeviceSettingsMode == SettingsModes.Custom;
+            SelectedGroupsVM.AllowEditing = CurrentDeviceSettingsMode == SettingsModes.Custom;
             IsProfileSelectorVisible = CurrentDeviceSettingsMode == SettingsModes.Profile;
         }
 
