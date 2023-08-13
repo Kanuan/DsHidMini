@@ -19,7 +19,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
     {
         // ----------------------------------------------------------- FIELDS
 
-        private SettingTabViewModel _settingsEditor;
+        private readonly ObservableAsPropertyHelper<VMGroupsContainer> selectedProfileVMGroups;
         private ObservableCollection<ProfileData> _profiles;
 
         private ProfileData? _selectedProfile;
