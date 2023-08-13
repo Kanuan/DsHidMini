@@ -123,7 +123,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                 deviceUserData.GuidOfProfileToUse = SelectedProfile.ProfileGuid;
             }
 
-            UserDataManager.TestFunctionSaveToDSHM();
+            UserDataManager.ConvertAndSaveSettingsToDshmSettingsFile();
         }
 
         private void OnCancelButtonPressed()

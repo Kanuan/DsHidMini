@@ -301,10 +301,10 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             System.IO.Directory.CreateDirectory(DevicesFolderFullPath);
             System.IO.File.WriteAllText($@"{DevicesFolderFullPath}{device.DeviceMac}.json", profileJson);
 
-            TestFunctionSaveToDSHM();
+            ConvertAndSaveSettingsToDshmSettingsFile();
         }
 
-        public void TestFunctionSaveToDSHM()
+        public void ConvertAndSaveSettingsToDshmSettingsFile()
         {
             var dshm_data = new DshmMainDataContainer();
             
