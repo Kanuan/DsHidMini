@@ -119,13 +119,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         private void OnSaveButtonPressed()
         {
-            SelectedProfile.GetProfileVMGroupsContainer().SaveAllChangesToBackingData(SelectedProfile.DataContainer);
+            SelectedProfileVMGroups.SaveAllChangesToBackingData(SelectedProfile.DataContainer);
             TestViewModel.UserDataManager.SaveProfileToDisk(SelectedProfile);
         }
 
         private void OnCancelButtonPressed()
         {
-            SelectedProfile.GetProfileVMGroupsContainer().LoadDatasToAllGroups(SelectedProfile.DataContainer);
+            SelectedProfileVMGroups.LoadDatasToAllGroups(SelectedProfile.DataContainer);
         }
 
     }
