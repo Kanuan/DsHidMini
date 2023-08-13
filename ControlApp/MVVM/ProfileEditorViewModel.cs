@@ -83,16 +83,6 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         // ---------------------------------------- Commands
 
-        private void OnProfileSelected(ProfileData? obj)
-        {
-            Debug.WriteLine("Yup!");
-            if (obj != null)
-            {
-                SettingsEditor.setNewSettingsVMGroupsContainer(obj.GetProfileVMGroupsContainer());
-                SettingsEditor.AllowEditing = (obj == ProfileData.DefaultProfile) ? false : true;
-            }
-        }
-
         private void OnSetAsGlobalButtonPressed(ProfileData? obj)
         {
             if (obj != null)
