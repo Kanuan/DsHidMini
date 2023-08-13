@@ -20,28 +20,13 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         // ----------------------------------------------------------- FIELDS
 
         private readonly ObservableAsPropertyHelper<VMGroupsContainer> selectedProfileVMGroups;
-        private ObservableCollection<ProfileData> _profiles;
-
-        private ProfileData? _selectedProfile;
 
         // ----------------------------------------------------------- PROPERTIES
 
         [Reactive] public List<ProfileData> Profiles { get; set; }
+        [Reactive] public ProfileData? SelectedProfile { get; set; } = null;
 
-        public ProfileData? SelectedProfile
-        {
-            get => _selectedProfile;
-            set
-            { 
-                this.RaiseAndSetIfChanged(ref _selectedProfile, value);
-                OnProfileSelected(value);
-            }
-        }
-        public SettingTabViewModel SettingsEditor
-        {
-            get => _settingsEditor;
-            set => this.RaiseAndSetIfChanged(ref _settingsEditor, value);
-        }
+        public VMGroupsContainer? SelectedProfileVMGroups => selectedProfileVMGroups.Value;
 
         public readonly List<SettingsModes> settingsModesList = new List<SettingsModes>
         {
@@ -58,12 +43,20 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public ProfileEditorViewModel()
         {
-            SettingsEditor = new("wot", null, true);
-            Profiles = new ObservableCollection<ProfileData>(TestViewModel.UserDataManager.Profiles);
+            Profiles = new List<ProfileData>(TestViewModel.UserDataManager.Profiles);
+
+            selectedProfileVMGroups = this.
+                WhenAnyValue(x => x.SelectedProfile)
+                .Select(VMGroups => SelectedProfile != null ? SelectedProfile.GetProfileVMGroupsContainer() : null)
+                .ToProperty(this, nameof(SelectedProfileVMGroups));
+
+            this.
+                WhenAnyValue(x => x.SelectedProfile)
+                .Where(x => SelectedProfile != null)
+                .Subscribe(x => LockProfileIfDefault());
 
             CreateProfileCommand = ReactiveCommand.Create(OnAddProfileButtonPressed);
             DeleteProfileCommand = ReactiveCommand.Create<ProfileData>(OnDeleteProfileButtonPressed);
-            ProfileSelectedCommand = ReactiveCommand.Create<ProfileData>(OnProfileSelected);
             SetProfileAsGlobalCommand = ReactiveCommand.Create<ProfileData>(OnSetAsGlobalButtonPressed);
             SaveChangesCommand = ReactiveCommand.Create(OnSaveButtonPressed);
             CancelChangesCommand = ReactiveCommand.Create(OnCancelButtonPressed);
@@ -74,12 +67,16 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             Profiles = new List<ProfileData>(TestViewModel.UserDataManager.Profiles);
         }
 
+        public void LockProfileIfDefault()
+        {
+            SelectedProfileVMGroups.AllowEditing = (SelectedProfile == ProfileData.DefaultProfile) ? false : true;
+        }
+
 
         // ---------------------------------------- ReactiveCommands
 
         public ReactiveCommand<Unit, Unit> SaveChangesCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelChangesCommand { get; }
-        public ReactiveCommand<ProfileData, Unit> ProfileSelectedCommand { get; }
         public ReactiveCommand<ProfileData, Unit> SetProfileAsGlobalCommand { get; }
         public ReactiveCommand<Unit, Unit> CreateProfileCommand { get; }
         public ReactiveCommand<ProfileData, Unit> DeleteProfileCommand { get; }
