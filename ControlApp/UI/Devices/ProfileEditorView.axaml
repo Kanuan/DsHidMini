@@ -40,7 +40,7 @@
 					Content="Cancel"/>
 			</DockPanel>
 			
-			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" DataContext="{Binding SettingsEditor}"/>
+			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" DataContext="{Binding SelectedProfileVMGroups}"/>
 
 			
 		</DockPanel>
