@@ -26,7 +26,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         // ----------------------------------------------------------- PROPERTIES
 
-        [Reactive] public ObservableCollection<ProfileData> Profiles { get => _profiles; set => _profiles = value; }
+        [Reactive] public List<ProfileData> Profiles { get; set; }
 
         public ProfileData? SelectedProfile
         {
@@ -71,7 +71,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
         public void UpdateProfileList()
         {
-            Profiles = new ObservableCollection<ProfileData>(TestViewModel.UserDataManager.Profiles);
+            Profiles = new List<ProfileData>(TestViewModel.UserDataManager.Profiles);
         }
 
 
