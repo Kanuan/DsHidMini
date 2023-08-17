@@ -288,7 +288,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
 
             UserDataManager.SaveDeviceSpecificDataToDisk(deviceUserData);
-            UserDataManager.ConvertAndSaveSettingsToDshmSettingsFile();
+            UserDataManager.UpdateDsHidMiniSettings();
         }
 
         private void OnCancelButtonPressed()
