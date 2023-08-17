@@ -157,8 +157,8 @@
 								</ToggleButton>
 							</StackPanel>
 						</ContentControl>
-						<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" IsEnabled="{Binding AllowEditing}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-							<DockPanel>
+						<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
+							<DockPanel IsEnabled="{Binding AllowEditing}">
 								<ContentControl Classes="setgroup" Content="{Binding GroupOutRepControl}"/>
 								<ContentControl Classes="setgroup" Content="{Binding GroupRumbleLeftRescale}"/>
 								<ContentControl Classes="setgroup" Content="{Binding GroupRumbleRightConversion}"/>
