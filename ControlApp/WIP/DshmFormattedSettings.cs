@@ -13,6 +13,7 @@ namespace Nefarius.DsHidMini.ControlApp.DSHM_Settings
     public class DSHM_Format_Settings
     {
         public DSHM_HidDeviceModes? HIDDeviceMode { get; set; }// = DSHM_HidDeviceModes.DS4Windows;
+        public bool? DisableAutoPairing { get; set; } = false; // false
         public bool? EnableDS4WLightbarTranslation { get; set; } // = false;
         public bool? PreventRemappingConflitsInDS4WMode { get; set; } // = true;
         public bool? PreventRemappingConflitsInSXSMode { get; set; } // = true;

@@ -61,6 +61,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
         public string DeviceMac { get; set; } = "0000000000";
         public string DeviceCustomName { get; set; } = "DualShock 3";
         public Guid GuidOfProfileToUse { get; set; } = new Guid();
+        public bool AutoPairWhenCabled { get; set; } = true;
         public SettingsModes SettingsMode { get; set; } = SettingsModes.Global;
 
         public BackingDataContainer DatasContainter { get; set; } = new();
@@ -314,18 +315,17 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
             {
                 var temp = new DSHMDeviceCustomSettings();
                 temp.DeviceAddress = dev.DeviceMac;
-
+                temp.CustomSettings.DisableAutoPairing = !dev.AutoPairWhenCabled;
                 switch (dev.SettingsMode)
                 {
                     case SettingsModes.Custom:
                 dev.DatasContainter.ConvertAllToDSHM(temp.CustomSettings);
                         break;
-
                     case SettingsModes.Profile:
                         ProfileData devprof = GetProfile(dev.GuidOfProfileToUse);
                         if(devprof == null)
                         {
-                            continue; // If profile set for the controller does not exist anymore then leave settings blank so controller loads Global Profile
+                            break; ; // If profile set for the controller does not exist anymore then leave settings blank so controller loads Global Profile
                         }
                         else
                         {
@@ -335,7 +335,7 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
                     case SettingsModes.Global:
                     default:
-                        continue;
+                        break; ;
                 }
                 dshm_data.Devices.Add(temp);
             }

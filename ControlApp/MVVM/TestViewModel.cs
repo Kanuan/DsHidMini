@@ -96,6 +96,8 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             }
         }
 
+        [Reactive] public bool AutoPairDeviceWhenCabled { get; set; } = true;
+
         /// <summary>
         ///     Current battery status.
         /// </summary>
@@ -208,7 +210,11 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             _device = device;
             // Loads correspondent controller data based on controller's MAC address 
             deviceUserData = UserDataManager.GetDeviceData(DeviceAddress);
+
+            AutoPairDeviceWhenCabled = deviceUserData.AutoPairWhenCabled;
+
             //DisplayName = DeviceAddress;
+
             // Loads device' specific custom settings from its BackingDataContainer into the Settings Groups VM
             DeviceCustomsVM = new(deviceUserData.DatasContainter);
 
@@ -269,6 +275,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
         private void OnSaveButtonPressed()
         {
             deviceUserData.SettingsMode = CurrentDeviceSettingsMode;
+            deviceUserData.AutoPairWhenCabled = AutoPairDeviceWhenCabled;
 
             if(CurrentDeviceSettingsMode != SettingsModes.Global)
             {
@@ -288,6 +295,7 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             DeviceCustomsVM.LoadDatasToAllGroups(deviceUserData.DatasContainter);
             SelectedProfile = UserDataManager.GetProfile(deviceUserData.GuidOfProfileToUse);
             CurrentDeviceSettingsMode = deviceUserData.SettingsMode;
+            AutoPairDeviceWhenCabled = deviceUserData.AutoPairWhenCabled;
         }
 
     }

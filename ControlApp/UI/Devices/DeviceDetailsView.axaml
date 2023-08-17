@@ -66,7 +66,7 @@
 					<TextBlock DockPanel.Dock="Left" Text="Paired to (host address):"/>
 					<TextBox DockPanel.Dock="Right" Text="{Binding HostAddress}" IsReadOnly="True"/>
 				</DockPanel>
-				<CheckBox DockPanel.Dock="Top" Content="Auto-pair device to this PC's BT when connecting via cable"/>
+				<CheckBox DockPanel.Dock="Top" Content="Auto-pair device to this PC's BT when connecting via cable" IsChecked="{Binding AutoPairDeviceWhenCabled}"/>
 				<DockPanel DockPanel.Dock="Top">
 					<Button Content="Pair device to this PC" DockPanel.Dock="Left"/>
 					<Button Content="Pair Device to custom MAC:" DockPanel.Dock="Left"/>
