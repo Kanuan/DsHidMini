@@ -18,9 +18,66 @@
 		</Grid.ColumnDefinitions>
 
 		<!-- Device list -->
+		<DockPanel Margin="10" Grid.Column="0" VerticalAlignment="Stretch" LastChildFill="False" HorizontalAlignment="Stretch">
+			<DockPanel DockPanel.Dock="Top">
+				<Border DockPanel.Dock="Top" Background="DimGray" CornerRadius="10">
+					<DockPanel Margin="10" >
+
+						<TextBlock DockPanel.Dock="Top" Text="DEVICE NAME" HorizontalAlignment="Left" Foreground="White"/>
+						<TextBlock DockPanel.Dock="Bottom" Text="{Binding DisplayName}" Margin="10,0,0,0"  Foreground="LightGray" HorizontalAlignment="Left"/>
+					</DockPanel>
+				</Border>
+
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock DockPanel.Dock="Left" Text="Battery status:"/>
+					<TextBlock DockPanel.Dock="Right" Text="{Binding BatteryStatusInText}"  HorizontalAlignment="Right"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock DockPanel.Dock="Left" Text="Device address:"/>
+					<TextBox DockPanel.Dock="Right" Text="{Binding DeviceAddressFriendly}" IsReadOnly="True"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock DockPanel.Dock="Left" Text="Current HID Device Mode:"/>
+					<ComboBox DockPanel.Dock="Right" SelectedIndex="{Binding HidEmulationMode}" IsEnabled="False">
+						<ComboBoxItem Content="Unkown"/>
+						<ComboBoxItem Content="SDF (PCSX2)"/>
+						<ComboBoxItem Content="GPJ (Generic DirectInput)"/>
+						<ComboBoxItem Content="SXS (Steam, RPCS3)"/>
+						<ComboBoxItem Content="DS4Windows"/>
+						<ComboBoxItem Content="XInput"/>
+					</ComboBox>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock DockPanel.Dock="Left" Text="Xinput slot #:"/>
+					<TextBlock DockPanel.Dock="Right"/>
+				</DockPanel>
+			</DockPanel>
+
+			<DockPanel DockPanel.Dock="Bottom">
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock DockPanel.Dock="Left" Text="Instance ID:"/>
+					<TextBox DockPanel.Dock="Right" Text="{Binding InstanceId}" IsReadOnly="True"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock DockPanel.Dock="Left" Text="Last connected wirelessly:"/>
+					<TextBox DockPanel.Dock="Right" Text="{Binding LastConnected}" IsReadOnly="True"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top">
+					<TextBlock DockPanel.Dock="Left" Text="Paired to (host address):"/>
+					<TextBox DockPanel.Dock="Right" Text="{Binding HostAddress}" IsReadOnly="True"/>
+				</DockPanel>
+				<CheckBox DockPanel.Dock="Top" Content="Auto-pair device to this PC's BT when connecting via cable"/>
+				<DockPanel DockPanel.Dock="Top">
+					<Button Content="Pair device to this PC" DockPanel.Dock="Left"/>
+					<Button Content="Pair Device to custom MAC:" DockPanel.Dock="Left"/>
+					<TextBox DockPanel.Dock="Right"/>
+				</DockPanel>
+			</DockPanel>
+			
+		</DockPanel>
 
 		<!-- Device details -->
-		<DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
+		<DockPanel Grid.Column="1" Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
 			<!--TO Name it-->
 			<DockPanel DockPanel.Dock="Top">
 				<DockPanel DockPanel.Dock="Top" LastChildFill="True">
@@ -52,6 +109,7 @@
 						/>
 				</DockPanel>
 			</DockPanel>
+
 
 
 			<!--Apply and cancel buttons-->
