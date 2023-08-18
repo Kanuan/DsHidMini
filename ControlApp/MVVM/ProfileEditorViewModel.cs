@@ -103,14 +103,12 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
             if (obj == null) return;
             TestViewModel.UserDataManager.DeleteProfile(obj);
             UpdateProfileList();
-            TestViewModel.UserDataManager.SaveControlAppSettingsToDisk();
         }
 
         private void OnSaveButtonPressed()
         {
             SelectedProfileVMGroups.SaveAllChangesToBackingData(SelectedProfile.DataContainer);
             TestViewModel.UserDataManager.SaveProfileToDisk(SelectedProfile);
-            TestViewModel.UserDataManager.SaveControlAppSettingsToDisk();
         }
 
         private void OnCancelButtonPressed()
