@@ -251,6 +251,8 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
             System.IO.Directory.CreateDirectory(ControlAppFolderFullPath);
             System.IO.File.WriteAllText($@"{ControlAppSettingsFileFullPath}", settingsJson);
+
+            UpdateDsHidMiniSettings();
         }
 
         public void SaveAllProfilesToDisk(List<ProfileData> profiles)
@@ -293,6 +295,8 @@ namespace Nefarius.DsHidMini.ControlApp.UserData
 
             System.IO.Directory.CreateDirectory(ProfilesFolderFullPath);
             System.IO.File.WriteAllText($@"{ProfilesFolderFullPath}{profile.DiskFileName}", profileJson);
+
+            UpdateDsHidMiniSettings();
         }
         public void SaveDeviceSpecificDataToDisk(DeviceSpecificData device)
         {
