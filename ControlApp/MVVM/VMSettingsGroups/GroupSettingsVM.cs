@@ -139,11 +139,11 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
 
     public class TemplateSelector : IDataTemplate
     {
-        public IControl Build(object param)
+        public Control Build(object param)
         {
             string templateName = SettingsGroupToTemplateDict[(SettingsModeGroups)param];
 
-            Avalonia.Application.Current.Resources.TryGetResource(templateName, out var tempResource);
+            Avalonia.Application.Current.Resources.TryGetResource(templateName, null,out var tempResource);
             var resultingCtrl = ((IDataTemplate)tempResource).Build(0);
 
             return resultingCtrl;
