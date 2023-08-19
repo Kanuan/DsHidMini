@@ -15,87 +15,78 @@
 		<super:BooleanToReverseConverter x:Key="BooleanToReverseConverterKey"/>
 		<!-- Settings groups templates -->
 		<DataTemplate x:Key="ModeSetting" DataType="{x:Type local:GroupSettingsVM}">
-			<DockPanel Background="White">
-				<!-- Outer settings container with override button -->
-				<Border DockPanel.Dock="Top" BorderBrush="Black" Background="LightGray" BorderThickness="1" MinHeight="30">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="6*"/>
-							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
-						<Label
-							Content="{Binding Header}"
-							Grid.Column="1"
-							VerticalContentAlignment="Center"
-							HorizontalAlignment="Center"/>
-						<CheckBox
-							x:Name="CheckBox_Override"
-							IsChecked="{Binding IsGroupEnabled}"
-							IsVisible="{Binding IsOverrideCheckboxVisible}"
-							HorizontalAlignment="Left"
-							Margin="6,0,0,0"
-							VerticalAlignment="Center"/>
-						<Button
-							Grid.Column="2"
-							Content="..."
-							IsVisible="{Binding !IsGroupLocked}"
-							HorizontalAlignment="Right"
-							Background="Gray">
-							<Button.Flyout>
-								<MenuFlyout>
-									<MenuItem
-										Header="Reset to defaults"
-										Command="{Binding ResetGroupToDefaultsCommand}"/>
-								</MenuFlyout>
-							</Button.Flyout>
-						</Button>
-					</Grid>
-				</Border>
-				<!-- Internal settings group specific containter -->
-				<ContentControl
-					DockPanel.Dock="Top"
-					HorizontalAlignment="Stretch"
-					Margin="0,0,0,0"
-					MinHeight="50"
-					Background="White"
-					IsVisible="{Binding !IsGroupLocked}"
-					Content="{Binding Group}">
-					<!-- Delete later if useless: ElementName=CheckBox_Override -->
-					<ContentControl.ContentTemplate>
-						<local:TemplateSelector/>
-					</ContentControl.ContentTemplate>
-				</ContentControl>
-				<!-- Warning when settings are locked for specific mode -->
-				<Border
-					DockPanel.Dock="Top"
-					Background="Black"
-					IsVisible="{Binding IsGroupLocked, FallbackValue=false}"
-					MinHeight="50">
-					<TextBlock
-					Text="This settings group can't be edited for this mode"
-					FontSize="10"
-					Foreground="White"
-					TextWrapping="Wrap"
-					TextAlignment="Center"
+			<Border CornerRadius="10" Margin="0,0,0,5" Background="LightGray">
+				<DockPanel>
+					<!-- Outer settings container with override button -->
+					<Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,1" MinHeight="30">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="6*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Label
+								Content="{Binding Header}"
+								Grid.Column="1"
+								VerticalContentAlignment="Center"
+								HorizontalAlignment="Center"/>
+							<CheckBox
+								x:Name="CheckBox_Override"
+								IsChecked="{Binding IsGroupEnabled}"
+								IsVisible="{Binding IsOverrideCheckboxVisible}"
+								HorizontalAlignment="Left"
+								Margin="6,0,0,0"
+								VerticalAlignment="Center"/>
+							<Button
+								Grid.Column="2"
+								Content="..."
+								IsVisible="{Binding !IsGroupLocked}"
+								HorizontalAlignment="Right"
+								Background="Gray">
+								<Button.Flyout>
+									<MenuFlyout>
+										<MenuItem
+											Header="Reset to defaults"
+											Command="{Binding ResetGroupToDefaultsCommand}"/>
+									</MenuFlyout>
+								</Button.Flyout>
+							</Button>
+						</Grid>
+					</Border>
+					<!-- Internal settings group specific containter -->
+					<ContentControl
+						DockPanel.Dock="Top"
+						HorizontalAlignment="Stretch"
+						Margin="0,0,0,0"
+						MinHeight="50"
+						IsVisible="{Binding !IsGroupLocked}"
+						Content="{Binding Group}">
+						<!-- Delete later if useless: ElementName=CheckBox_Override -->
+						<ContentControl.ContentTemplate>
+							<local:TemplateSelector/>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+					<!-- Warning when settings are locked for specific mode -->
+					<Border
+						DockPanel.Dock="Top"
+						Background="Black"
+						IsVisible="{Binding IsGroupLocked, FallbackValue=false}"
+						MinHeight="50">
+						<TextBlock
+						Text="This settings group can't be edited for this mode"
+						FontSize="10"
+						Foreground="White"
+						TextWrapping="Wrap"
+						TextAlignment="Center"
 					
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Center"/>
-				</Border>
-			</DockPanel>
-		</DataTemplate>
-		<!-- ModeUniqueSettings -->
-		<DataTemplate x:Key="ModeUniqueSettings">
-			<DockPanel>
-				<Border DockPanel.Dock="Top"  MinHeight="35">
-					<Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="{Binding Header}"/>
-				</Border>
-				<ContentControl DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8" Background="White" Content="{Binding Group}">
-					<ContentControl.ContentTemplate>
-						<local:TemplateSelector/>
-					</ContentControl.ContentTemplate>
-				</ContentControl>
-			</DockPanel>
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"/>
+					</Border>
+				</DockPanel>
+			</Border>
+			
+			
+
 		</DataTemplate>
 	</UserControl.Resources>
 	<!-- View area -->
@@ -105,68 +96,73 @@
 			<Style Selector="ContentControl.setgroup">
 				<Setter Property="DockPanel.Dock" Value="Top"/>
 				<Setter Property="Margin" Value="0,2,0,0"/>
-				<Setter Property="Background" Value="LightGray"/>
 				<Setter Property="ContentTemplate" Value="{StaticResource ModeSetting}"/>
 			</Style>
 		</Control.Styles>
 	
 
 			<!-- Mode unique settings -->
-		<ContentControl Classes="setgroup" MaxHeight="200" IsEnabled="{Binding AllowEditing}" Content="{Binding GroupModeUnique}"/>
+			<ContentControl Classes="setgroup" IsEnabled="{Binding AllowEditing}" Content="{Binding GroupModeUnique}"/>
 
 			<!-- Mode Settings groups -->
 			<Border
+				CornerRadius="10"
 				DockPanel.Dock="Top"
 				MinHeight="35"
+				Background="Gray"
 				BorderBrush="Black"
-				BorderThickness="1">
-				<Label
-					Content="General settings"
-					VerticalContentAlignment="Center"
-					HorizontalAlignment="Center"/>
+				BorderThickness="0,0,0,1">
+				<DockPanel>
+					<TabControl DockPanel.Dock="Top" Margin="0" IsVisible="True">
+						<!-- Basic options -->
+						<TabItem>
+							<TabItem.Header>
+								<TextBlock VerticalAlignment="Center" FontSize="14" Text="Basic"/>
+							</TabItem.Header>
+							<ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
+								<DockPanel IsEnabled="{Binding AllowEditing}">
+									
+									<ContentControl Classes="setgroup" Content="{Binding GroupLEDsControl}"/>
+									<ContentControl Classes="setgroup" Content="{Binding GroupWireless}"/>
+									<ContentControl Classes="setgroup" Content="{Binding GroupSticksDZ}"/>
+									<ContentControl Classes="setgroup" Content="{Binding GroupRumbleGeneral}"/>
+								</DockPanel>
+							</ScrollViewer>
+
+						</TabItem>
+						<!-- Advanced options -->
+						<TabItem>
+							<TabItem.Header>
+								<TextBlock VerticalAlignment="Center" FontSize="14" Text="Advanced" />
+							</TabItem.Header>
+							<DockPanel>
+								<ContentControl DockPanel.Dock="Top" IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker, Converter={StaticResource BooleanToReverseConverterKey}}">
+									<StackPanel>
+										<TextBlock Text="Advanced settings should not be tweaked by the average user. Their purpose may not be clear and their default values were chosen based on many tests in order to deliver the best experience." HorizontalAlignment="Stretch" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,20"/>
+										<TextBlock Text="To those that want to procceed anyway, check the DsHidMini documentation in the vigem.org website." HorizontalAlignment="Stretch" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,20"/>
+										<ToggleButton x:Name="Toggle_AdvancedSettingsUnlocker" HorizontalAlignment="Center">
+											<TextBlock Text="I've read the documentation and know what I'm doing. Unlock the advanced settings." TextWrapping="Wrap"/>
+										</ToggleButton>
+									</StackPanel>
+								</ContentControl>
+								<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
+									<DockPanel IsEnabled="{Binding AllowEditing}">
+										<ContentControl Classes="setgroup" Content="{Binding GroupOutRepControl}"/>
+										<ContentControl Classes="setgroup" Content="{Binding GroupRumbleLeftRescale}"/>
+										<ContentControl Classes="setgroup" Content="{Binding GroupRumbleRightConversion}"/>
+									</DockPanel>
+								</ScrollViewer>
+							</DockPanel>
+						</TabItem>
+					</TabControl>
+					
+					
+				</DockPanel>
+				
+
 			</Border>
 
-			<TabControl DockPanel.Dock="Top" Background="LightGray" IsVisible="True">
-				<!-- Basic options -->
-				<TabItem>
-					<TabItem.Header>
-						<TextBlock VerticalAlignment="Center" FontSize="14"  >Basic</TextBlock>
-					</TabItem.Header>
-					<ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-						<DockPanel IsEnabled="{Binding AllowEditing}">
-							<ContentControl Classes="setgroup" Content="{Binding GroupLEDsControl}"/>
-							<ContentControl Classes="setgroup" Content="{Binding GroupWireless}"/>
-							<ContentControl Classes="setgroup" Content="{Binding GroupSticksDZ}"/>
-							<ContentControl Classes="setgroup" Content="{Binding GroupRumbleGeneral}"/>
-						</DockPanel>
-					</ScrollViewer>
 
-				</TabItem>
-				<!-- Advanced options -->
-				<TabItem>
-					<TabItem.Header>
-						<TextBlock VerticalAlignment="Center" FontSize="14" >Advanced</TextBlock>
-					</TabItem.Header>
-					<DockPanel>
-						<ContentControl DockPanel.Dock="Top" IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker, Converter={StaticResource BooleanToReverseConverterKey}}">
-							<StackPanel>
-								<TextBlock Text="Advanced settings should not be tweaked by the average user. Their purpose may not be clear and their default values were chosen based on many tests in order to deliver the best experience." HorizontalAlignment="Stretch" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,20"/>
-								<TextBlock Text="To those that want to procceed anyway, check the DsHidMini documentation in the vigem.org website." HorizontalAlignment="Stretch" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,20"/>
-								<ToggleButton x:Name="Toggle_AdvancedSettingsUnlocker" HorizontalAlignment="Center">
-									<TextBlock Text="I've read the documentation and know what I'm doing. Unlock the advanced settings." TextWrapping="Wrap"/>
-								</ToggleButton>
-							</StackPanel>
-						</ContentControl>
-						<ScrollViewer IsVisible="{Binding IsChecked, ElementName=Toggle_AdvancedSettingsUnlocker}" DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Visible">
-							<DockPanel IsEnabled="{Binding AllowEditing}">
-								<ContentControl Classes="setgroup" Content="{Binding GroupOutRepControl}"/>
-								<ContentControl Classes="setgroup" Content="{Binding GroupRumbleLeftRescale}"/>
-								<ContentControl Classes="setgroup" Content="{Binding GroupRumbleRightConversion}"/>
-							</DockPanel>
-						</ScrollViewer>
-					</DockPanel>
-				</TabItem>
-			</TabControl>
 
 	</DockPanel>
 	

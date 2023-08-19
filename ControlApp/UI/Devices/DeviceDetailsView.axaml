@@ -77,58 +77,69 @@
 		</DockPanel>
 
 		<!-- Device details -->
-		<DockPanel Grid.Column="1" Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
-			<!--TO Name it-->
-			<DockPanel DockPanel.Dock="Top">
-				<DockPanel DockPanel.Dock="Top" LastChildFill="True">
-					<Label
-						DockPanel.Dock="Left"
-						Content="Load settings from..."
-						VerticalContentAlignment="Center"
-						/>
-					<ComboBox
-						DockPanel.Dock="Left"
-						x:Name="SettingsModeSelection_ComboBox"
-						VerticalAlignment="Center"
-						Items="{Binding SettingsModesList}"
-						SelectedItem="{Binding CurrentDeviceSettingsMode}"
-						/>
-					<Label
-						IsVisible="{Binding IsProfileSelectorVisible}"
-						DockPanel.Dock="Left"
-						Content="->"
-						VerticalContentAlignment="Center"
-						/>
-					<ComboBox
-						DockPanel.Dock="Left"
-						IsVisible="{Binding IsProfileSelectorVisible}"
-						x:Name="ProfileSelection_ComboBox"
-						VerticalAlignment="Center"
-						Items="{Binding ListOfProfiles}"
-						SelectedItem="{Binding SelectedProfile}"
-						/>
-				</DockPanel>
-			</DockPanel>
+		<DockPanel Margin="5" Grid.Column="1" VerticalAlignment="Stretch">
+			
 
 
 
 			<!--Apply and cancel buttons-->
-			<DockPanel DockPanel.Dock="Bottom">
+			<UniformGrid Columns="2" Rows="1" MinHeight="30" DockPanel.Dock="Bottom" Margin="5">
 				<Button
 					DockPanel.Dock="Left"
 					Content="Apply changes"
-					Command="{Binding SaveChangesCommand}"/>
+					Command="{Binding SaveChangesCommand}"
+					HorizontalAlignment="Stretch"/>
 				<Button
 					DockPanel.Dock="Left"
 					Command="{Binding CancelChangesCommand}"
-					Content="Cancel"/>
-			</DockPanel>
-			
-			<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" DataContext="{Binding SelectedGroupsVM}"/>
+					Content="Cancel"
+					HorizontalAlignment="Stretch"/>
+			</UniformGrid>
 
-			
+			<Border  Margin="5" CornerRadius="10" DockPanel.Dock="Top" Background="DarkGray" >
+				<DockPanel>
+					<Label
+						Content="SETTTINGS"
+						DockPanel.Dock="Top"
+						VerticalContentAlignment="Center"
+						HorizontalAlignment="Center"/>
+					<!--TO Name it-->
+					<DockPanel DockPanel.Dock="Top" Margin="10">
+						<DockPanel DockPanel.Dock="Top" LastChildFill="True">
+							<Label
+								DockPanel.Dock="Left"
+								Content="Load settings from..."
+								VerticalContentAlignment="Center"
+						/>
+							<ComboBox
+								DockPanel.Dock="Left"
+								x:Name="SettingsModeSelection_ComboBox"
+								VerticalAlignment="Center"
+								Items="{Binding SettingsModesList}"
+								SelectedItem="{Binding CurrentDeviceSettingsMode}"
+						/>
+							<Label
+								IsVisible="{Binding IsProfileSelectorVisible}"
+								DockPanel.Dock="Left"
+								Content="->"
+								VerticalContentAlignment="Center"
+						/>
+							<ComboBox
+								DockPanel.Dock="Left"
+								IsVisible="{Binding IsProfileSelectorVisible}"
+								x:Name="ProfileSelection_ComboBox"
+								VerticalAlignment="Center"
+								Items="{Binding ListOfProfiles}"
+								SelectedItem="{Binding SelectedProfile}"
+						/>
+						</DockPanel>
+						<devices:DeviceSettingsCustomizer DockPanel.Dock="Top" DataContext="{Binding SelectedGroupsVM}"/>
+						<ContentControl MinHeight="1" DockPanel.Dock="Bottom"/>
+					</DockPanel>
+				</DockPanel>
+			</Border>
+		
 		</DockPanel>
-
 
 
 	</Grid>
