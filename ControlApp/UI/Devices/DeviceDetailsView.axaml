@@ -21,9 +21,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
-
-		
-		<!-- Device list -->
+		<!-- Device info -->		
 		<DockPanel Margin="10" Grid.Column="0" VerticalAlignment="Stretch" LastChildFill="False" HorizontalAlignment="Stretch">
 			<DockPanel DockPanel.Dock="Top">
 				<Border DockPanel.Dock="Top" Background="DimGray" CornerRadius="10">
@@ -82,7 +80,7 @@
 			
 		</DockPanel>
 
-		<!-- Device details -->
+		<!-- Device settings -->
 		<DockPanel Margin="5" Grid.Column="1" VerticalAlignment="Stretch">
 		
 			<Border  Margin="5" CornerRadius="10" DockPanel.Dock="Top" Background="{DynamicResource Layer1Color}">
