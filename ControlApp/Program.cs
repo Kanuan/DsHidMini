@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using Avalonia;
+using Avalonia.ReactiveUI;
 using ControlApp;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
@@ -22,4 +24,6 @@ namespace Nefarius.DsHidMini.ControlApp
                 .LogToTrace()
         .UseReactiveUI();
     }
+                    //.WithIcons(container => container
+                    //.Register<FontAwesomeIconProvider>());
 }
