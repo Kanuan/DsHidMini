@@ -15,7 +15,7 @@
 		<super:BooleanToReverseConverter x:Key="BooleanToReverseConverterKey"/>
 		<!-- Settings groups templates -->
 		<DataTemplate x:Key="ModeSetting" DataType="{x:Type local:GroupSettingsVM}">
-			<Border CornerRadius="10" Margin="0,0,0,5" Background="LightGray">
+			<Border CornerRadius="10" Margin="0,0,0,5" Background="{DynamicResource Layer3Color}">
 				<DockPanel>
 					<!-- Outer settings container with override button -->
 					<Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,1" MinHeight="30">
@@ -109,7 +109,7 @@
 				CornerRadius="10"
 				DockPanel.Dock="Top"
 				MinHeight="35"
-				Background="Gray"
+				Background="{DynamicResource LayerColor 2}"
 				BorderBrush="Black"
 				BorderThickness="0,0,0,1">
 				<DockPanel>
