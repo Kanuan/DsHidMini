@@ -19,5 +19,10 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 		<wpf:VisibilityPerHidModeConverter x:Key="VisibilityPerHIDModeConverterKey"/>
+		<SolidColorBrush x:Key="Layer1Color" Color="#ff101010"/>
+		<SolidColorBrush x:Key="Layer2Color" Color="#ff202020"/>
+		<SolidColorBrush x:Key="Layer3Color" Color="#ff303030"/>
+		<SolidColorBrush x:Key="Layer4Color" Color="#ff404040"/>
+		<SolidColorBrush x:Key="Layer5Color" Color="#ff505050"/>
 	</Application.Resources>
 </Application>
