@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive;
 using System.Reflection;
 using Microsoft.Win32;
 using Nefarius.DsHidMini.ControlApp.Drivers;
@@ -45,6 +46,17 @@ namespace Nefarius.DsHidMini.ControlApp.MVVM
                     };
             };
             */
+
+            UpdateDeviceListCommand = ReactiveCommand.Create(UpdateDeviceList);
+        }
+
+        public ReactiveCommand<Unit, Unit> UpdateDeviceListCommand { get; }
+
+        public void UpdateDeviceList()
+        {
+            var instance = 0;
+            while (Devcon.FindByInterfaceGuid(DsHidMiniDriver.DeviceInterfaceGuid, out var path, out var instanceId, instance++))
+                this.Devices.Add(new TestViewModel(PnPDevice.GetDeviceByInstanceId(instanceId)));
         }
 
         public ApplicationConfiguration AppConfig => ApplicationConfiguration.Instance;

@@ -13,6 +13,7 @@
     </UserControl.Styles>
 
     <StackPanel>
+		<Button Content="Update device list" Command="{Binding UpdateDeviceListCommand}"/>
         <TextBlock HorizontalAlignment="Center" Classes="h1">DsHidMini Devices</TextBlock>
         <Panel>
             <ListBox ItemsSource="{Binding Path=Devices}"
