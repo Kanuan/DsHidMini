@@ -6,7 +6,11 @@
 			 RequestedThemeVariant="Dark">
 	
 	<Application.Styles>
-        <FluentTheme />
+		<FluentTheme DensityStyle="Compact">
+			<FluentTheme.Palettes>
+				<ColorPaletteResources x:Key="Dark" Accent="#ff017796" AltHigh="Black" AltLow="Black" AltMedium="Black" AltMediumHigh="Black" AltMediumLow="Black" BaseHigh="White" BaseLow="#ff323232" BaseMedium="#ff999999" BaseMediumHigh="#ffb3b3b3" BaseMediumLow="#ff666666" ChromeAltLow="#ffb3b3b3" ChromeBlackHigh="Black" ChromeBlackLow="#ffb3b3b3" ChromeBlackMedium="Black" ChromeBlackMediumLow="Black" ChromeDisabledHigh="#ff323232" ChromeDisabledLow="#ff999999" ChromeGray="#ff7f7f7f" ChromeHigh="#ff7f7f7f" ChromeLow="#ff151515" ChromeMedium="#ff1c1c1c" ChromeMediumLow="#ff2b2b2b" ChromeWhite="White" ListLow="#ff1c1c1c" ListMedium="#ff323232" RegionColor="#ff141414" />
+			</FluentTheme.Palettes>
+		</FluentTheme>
     </Application.Styles>
 	<Application.Resources>
 		<ResourceDictionary>
