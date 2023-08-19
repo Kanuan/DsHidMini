@@ -210,21 +210,21 @@
 				<ComboBox
 					Width="80"
 					DockPanel.Dock="Left"
-					Items="{Binding controlApp_ComboButtons}"
+					ItemsSource="{Binding controlApp_ComboButtons}"
 					SelectedItem="{Binding QuickDisconnectComboButton1}"
 					IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 				<ComboBox
 					Width="80"
 					DockPanel.Dock="Left"
-					Items="{Binding controlApp_ComboButtons}"
+					ItemsSource="{Binding controlApp_ComboButtons}"
 					SelectedItem="{Binding QuickDisconnectComboButton2}"
 					IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 				<ComboBox
 					Width="80"
 					DockPanel.Dock="Left"
-					Items="{Binding controlApp_ComboButtons}"
+					ItemsSource="{Binding controlApp_ComboButtons}"
 					SelectedItem="{Binding QuickDisconnectComboButton3}"
 					IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
@@ -407,21 +407,21 @@
 				<ComboBox
 					Width="80"
 					DockPanel.Dock="Left"
-					Items="{Binding controlApp_ComboButtons}"
+					ItemsSource="{Binding controlApp_ComboButtons}"
 					SelectedItem="{Binding VarRightEmul_ToggleComboButton1}"
 					IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 				<ComboBox
 					Width="80"
 					DockPanel.Dock="Left"
-					Items="{Binding controlApp_ComboButtons}"
+					ItemsSource="{Binding controlApp_ComboButtons}"
 					SelectedItem="{Binding VarRightEmul_ToggleComboButton2}"
 					IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
 				<ComboBox
 					Width="80"
 					DockPanel.Dock="Left"
-					Items="{Binding controlApp_ComboButtons}"
+					ItemsSource="{Binding controlApp_ComboButtons}"
 					SelectedItem="{Binding VarRightEmul_ToggleComboButton3}"
 					IsEnabled="{Binding IsChecked,ElementName=EnableQuickDisconnectComboCheckbox}"
 						/>
@@ -583,7 +583,7 @@
 					DockPanel.Dock="Right"
 					VerticalAlignment="Center"
 					SelectedItem="{Binding Context, FallbackValue=4}"
-					Items="{Binding HIDDeviceModesList}"/>
+					ItemsSource="{Binding HIDDeviceModesList}"/>
 			</DockPanel>
 			<DockPanel DockPanel.Dock="Top">
 				<CheckBox
@@ -612,7 +612,7 @@
 					DockPanel.Dock="Right"
 					VerticalAlignment="Center"
 					SelectedItem="{Binding PressureExposureMode, FallbackValue=2}"
-					Items="{Binding ListOfPressureModes}"/>
+					ItemsSource="{Binding ListOfPressureModes}"/>
 			</DockPanel>
 			<!-- DPAD modes -->
 			<DockPanel IsVisible="{Binding Path=Context, Converter={StaticResource VisibilityPerHIDModeConverterKey}, ConverterParameter=11}">
@@ -625,7 +625,7 @@
 					DockPanel.Dock="Right"
 					VerticalAlignment="Center"
 					SelectedItem="{Binding DPadExposureMode, FallbackValue=0}"
-					Items="{Binding ListOfDPadModes}"/>
+					ItemsSource="{Binding ListOfDPadModes}"/>
 			</DockPanel>
 		</StackPanel>
 	</DataTemplate>

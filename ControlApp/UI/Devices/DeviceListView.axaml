@@ -15,7 +15,7 @@
     <StackPanel>
         <TextBlock HorizontalAlignment="Center" Classes="h1">DsHidMini Devices</TextBlock>
         <Panel>
-            <ListBox Items="{Binding Path=Devices}"
+            <ListBox ItemsSource="{Binding Path=Devices}"
                      SelectedItem="{Binding Path=SelectedDevice, Mode=TwoWay}"
                      SelectionMode="Single"
                      IsVisible="{Binding !!Devices.Count}">

@@ -115,7 +115,7 @@
 								DockPanel.Dock="Left"
 								x:Name="SettingsModeSelection_ComboBox"
 								VerticalAlignment="Center"
-								Items="{Binding SettingsModesList}"
+								ItemsSource="{Binding SettingsModesList}"
 								SelectedItem="{Binding CurrentDeviceSettingsMode}"
 						/>
 							<Label
@@ -129,7 +129,7 @@
 								IsVisible="{Binding IsProfileSelectorVisible}"
 								x:Name="ProfileSelection_ComboBox"
 								VerticalAlignment="Center"
-								Items="{Binding ListOfProfiles}"
+								ItemsSource="{Binding ListOfProfiles}"
 								SelectedItem="{Binding SelectedProfile}"
 						/>
 						</DockPanel>

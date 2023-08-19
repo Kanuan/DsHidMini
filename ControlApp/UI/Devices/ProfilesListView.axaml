@@ -27,7 +27,7 @@
 			<Button Grid.Column="2" Content="Delete" Command="{Binding DeleteProfileCommand}" CommandParameter="{Binding ElementName=ProfilesListBox, Path=SelectedItem}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 		</Grid>
         <Panel>
-            <ListBox Items="{Binding Profiles}" Name="ProfilesListBox" SelectedItem="{Binding SelectedProfile}">
+            <ListBox ItemsSource="{Binding Profiles}" Name="ProfilesListBox" SelectedItem="{Binding SelectedProfile}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="40">
