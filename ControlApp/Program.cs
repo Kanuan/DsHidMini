@@ -20,7 +20,6 @@ namespace Nefarius.DsHidMini.ControlApp
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace()
-                .WithIcons(container => container
-                    .Register<FontAwesomeIconProvider>());
+        .UseReactiveUI();
     }
 }
