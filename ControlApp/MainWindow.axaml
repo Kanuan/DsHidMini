@@ -13,7 +13,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0">
+        <TabControl Grid.Row="0" TabStripPlacement="Left">
             <!-- Devices -->
             <TabItem Header="Devices">
                 <Grid>
