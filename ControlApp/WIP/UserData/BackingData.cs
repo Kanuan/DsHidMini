@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using Nefarius.DsHidMini.ControlApp.DSHM_Settings;
+﻿using Nefarius.DsHidMini.ControlApp.DSHM_Settings;
 using Nefarius.DsHidMini.ControlApp.MVVM;
 using ReactiveUI.Fody.Helpers;
 using System;
