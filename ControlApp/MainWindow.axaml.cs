@@ -12,7 +12,7 @@ namespace ControlApp
         private readonly MainViewModel _vm = new MainViewModel();
         public MainWindow()
         {
-            RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+            //RxApp.MainThreadScheduler = Avalonia.Threading.AvaloniaSynchronizationContext.Current;
             this.DataContext = _vm;
             var instance = 0;
             while (Devcon.FindByInterfaceGuid(DsHidMiniDriver.DeviceInterfaceGuid, out var path, out var instanceId, instance++))
