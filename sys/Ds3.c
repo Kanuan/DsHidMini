@@ -581,7 +581,7 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
 
     DS_RUMBLE_SETTINGS * rumbSet = &Context->Configuration.RumbleSettings;
 
-	if (rumbSet->AlternativeMode.IsEnabled)
+	if (rumbSet->AlternativeMode.IsEnabled && rumbSet->AlternativeMode.Parameters.Allowed)
     {
 		if (lightValue > 0) {
 
@@ -614,7 +614,7 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
     }
 
 	// Big Motor Strength Rescale
-	if (rumbSet->HeavyRescalling.IsEnabled && heavyValue > 0)
+	if (heavyValue > 0 && rumbSet->HeavyRescalling.IsEnabled && rumbSet->HeavyRescalling.Parameters.Allowed)
     {
 		heavyValue =
 			rumbSet->HeavyRescalling.Parameters.ConstA * heavyValue
