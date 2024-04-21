@@ -386,12 +386,12 @@ typedef struct _DS_RESCALLING_SETTINGS
 typedef struct _DS_RUMBLE_SETTINGS
 {
 	//
-	// Disable Big Motor (left) entirely
+	// Disable Heavy Motor (left) entirely
 	// 
 	BOOLEAN DisableLeft;
 
 	//
-	// Disable Small Motor (right) entirely
+	// Disable Light Motor (right) entirely
 	// 
 	BOOLEAN DisableRight;
 

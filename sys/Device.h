@@ -294,16 +294,16 @@ typedef struct _DEVICE_CONTEXT
 	struct
 	{
 		//
-		// Cache for last received Small Motor Strength value
+		// Cache for last received Light Motor Strength value
 		// 
-		UCHAR Small;
+		UCHAR Light;
 
 		//
-		// Cache for last received Big Motor Strength value
+		// Cache for last received Heavy Motor Strength value
 		// 
-		UCHAR Big;
+		UCHAR Heavy;
 
-	} MotorStrCache;
+	} RumbleControlState;
 
 } DEVICE_CONTEXT, * PDEVICE_CONTEXT;
 

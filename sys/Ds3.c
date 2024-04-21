@@ -520,7 +520,7 @@ VOID DS3_SET_SMALL_RUMBLE_STRENGTH(
 	UCHAR Value
 )
 {
-	Context->MotorStrCache.Small = Value;
+	Context->RumbleControlState.Light = Value;
 	DS3_PROCESS_RUMBLE_STRENGTH(Context);
 }
 
@@ -556,7 +556,7 @@ VOID DS3_SET_LARGE_RUMBLE_STRENGTH(
 	UCHAR Value
 )
 {
-	Context->MotorStrCache.Big = Value;
+	Context->RumbleControlState.Heavy = Value;
 	DS3_PROCESS_RUMBLE_STRENGTH(Context);
 }
 
@@ -566,8 +566,8 @@ VOID DS3_SET_BOTH_RUMBLE_STRENGTH(
 	UCHAR SmallValue
 )
 {
-	Context->MotorStrCache.Small = SmallValue;
-	Context->MotorStrCache.Big = LargeValue;
+	Context->RumbleControlState.Light = SmallValue;
+	Context->RumbleControlState.Heavy = LargeValue;
 	DS3_PROCESS_RUMBLE_STRENGTH(Context);
 }
 
@@ -576,8 +576,8 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
 )
 {
 
-	DOUBLE heavyValue = Context->MotorStrCache.Big;
-	DOUBLE lightValue = Context->MotorStrCache.Small;
+	DOUBLE heavyValue = Context->RumbleControlState.Heavy;
+	DOUBLE lightValue = Context->RumbleControlState.Light;
 
     DS_RUMBLE_SETTINGS * rumbSet = &Context->Configuration.RumbleSettings;
 
@@ -585,21 +585,21 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
     {
 		if (lightValue > 0) {
 
-			// Small Motor Strength Rescale 
+			// Light Motor Strength Rescale 
 			lightValue = rumbSet->AlternativeMode.Parameters.ConstA * lightValue
 				+ rumbSet->AlternativeMode.Parameters.ConstB;
 
 			if (lightValue > heavyValue) {
 				heavyValue = lightValue;
 			}
-			lightValue = 0; // Always disable Small Motor after the if statement above
+			lightValue = 0; // Always disable Light Motor after the if statement above
 
 			// Force Activate right motor if original light rumble is above certain level and related boolean is enabled
 			if (
 				(rumbSet->AlternativeMode.ForcedRight.LightThresholdEnabled
-				&& Context->MotorStrCache.Small >= rumbSet->AlternativeMode.ForcedRight.LightThresholdValue)
+				&& Context->RumbleControlState.Light >= rumbSet->AlternativeMode.ForcedRight.LightThresholdValue)
                 || (rumbSet->AlternativeMode.ForcedRight.HeavyThresholdEnabled
-                    && Context->MotorStrCache.Big >= rumbSet->AlternativeMode.ForcedRight.HeavyThresholdValue)
+                    && Context->RumbleControlState.Heavy >= rumbSet->AlternativeMode.ForcedRight.HeavyThresholdValue)
 				)
 			{
 				lightValue = 1;
@@ -613,7 +613,7 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
         if (rumbSet->DisableRight) lightValue = 0;
     }
 
-	// Big Motor Strength Rescale
+	// Heavy Motor Strength Rescale
 	if (heavyValue > 0 && rumbSet->HeavyRescalling.IsEnabled && rumbSet->HeavyRescalling.Parameters.IsRangeValid)
     {
 		heavyValue =
