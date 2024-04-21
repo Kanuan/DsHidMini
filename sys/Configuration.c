@@ -813,22 +813,25 @@ ConfigLoadForDevice(
 	//
 	// Verify if SMtoBMConversion values are valid and attempt to calculate rescaling constants in case they are
 	// 
+    DS_RUMBLE_SETTINGS* rumbSet = &Context->Configuration.RumbleSettings;
 	if (
-		Context->Configuration.RumbleSettings.SMToBMConversion.RescaleMaxValue > Context->Configuration.RumbleSettings.SMToBMConversion.RescaleMinValue
-		&& Context->Configuration.RumbleSettings.SMToBMConversion.RescaleMinValue > 0
+		rumbSet->AlternativeMode.Parameters.MaxRange > rumbSet->AlternativeMode.Parameters.MinRange
+		&& rumbSet->AlternativeMode.Parameters.MinRange > 0
 		)
 	{
-		Context->Configuration.RumbleSettings.SMToBMConversion.ConstA =
-			(DOUBLE)(Context->Configuration.RumbleSettings.SMToBMConversion.RescaleMaxValue - Context->Configuration.RumbleSettings.SMToBMConversion.RescaleMinValue) / (254);
+        Context->RumbleControlState.LightRescale.ConstA =
+			(DOUBLE)(rumbSet->AlternativeMode.Parameters.MaxRange - rumbSet->AlternativeMode.Parameters.MinRange) / (254);
 
-		Context->Configuration.RumbleSettings.SMToBMConversion.ConstB =
-			Context->Configuration.RumbleSettings.SMToBMConversion.RescaleMaxValue - Context->Configuration.RumbleSettings.SMToBMConversion.ConstA * 255;
+        Context->RumbleControlState.LightRescale.ConstB =
+			rumbSet->AlternativeMode.Parameters.MaxRange - rumbSet->AlternativeMode.Parameters.ConstA * 255;
+
+        Context->RumbleControlState.LightRescale.IsAllowed = TRUE;
 
 		TraceVerbose(
 			TRACE_CONFIG,
-			"SMToBMConversion rescaling constants: A = %f and B = %f.",
-			Context->Configuration.RumbleSettings.SMToBMConversion.ConstA,
-			Context->Configuration.RumbleSettings.SMToBMConversion.ConstB
+			"AlternativeMode.Parameters rescaling constants: A = %f and B = %f.",
+            Context->RumbleControlState.HeavyRescale.ConstA,
+            Context->RumbleControlState.HeavyRescale.ConstB
 		);
 
 	}
@@ -836,40 +839,41 @@ ConfigLoadForDevice(
 	{
 		TraceVerbose(
 			TRACE_CONFIG,
-			"Invalid values found for SMToBMConversion. Setting disabled."
+			"Invalid values found for AlternativeMode.Parameters. Setting range as invalid."
 		);
-		Context->Configuration.RumbleSettings.SMToBMConversion.Enabled = FALSE;
+        Context->RumbleControlState.LightRescale.IsAllowed = FALSE;
 	}
 
 	//
 	// Verify if BMStrRescale values are valid and attempt to calculate rescaling constants in case they are
 	// 
 	if (
-		Context->Configuration.RumbleSettings.BMStrRescale.MaxValue > Context->Configuration.RumbleSettings.BMStrRescale.MinValue
-		&& Context->Configuration.RumbleSettings.BMStrRescale.MinValue > 0
+		rumbSet->HeavyRescalling.Parameters.MaxRange > rumbSet->HeavyRescalling.Parameters.MinRange
+		&& rumbSet->HeavyRescalling.Parameters.MinRange > 0
 		)
 	{
-		Context->Configuration.RumbleSettings.BMStrRescale.ConstA =
-			(DOUBLE)(Context->Configuration.RumbleSettings.BMStrRescale.MaxValue - Context->Configuration.RumbleSettings.BMStrRescale.MinValue) / (254);
+        Context->RumbleControlState.HeavyRescale.ConstA =
+            (DOUBLE)(rumbSet->AlternativeMode.Parameters.MaxRange - rumbSet->AlternativeMode.Parameters.MinRange) / (254);
 
-		Context->Configuration.RumbleSettings.BMStrRescale.ConstB =
-			Context->Configuration.RumbleSettings.BMStrRescale.MaxValue - Context->Configuration.RumbleSettings.BMStrRescale.ConstA * 255;
+        Context->RumbleControlState.HeavyRescale.ConstB =
+            rumbSet->AlternativeMode.Parameters.MaxRange - rumbSet->AlternativeMode.Parameters.ConstA * 255;
+
+        Context->RumbleControlState.HeavyRescale.IsAllowed = TRUE;
 
 		TraceVerbose(
 			TRACE_CONFIG,
-			"BMStrRescale rescaling constants: A = %f and B = %f.",
-			Context->Configuration.RumbleSettings.BMStrRescale.ConstA,
-			Context->Configuration.RumbleSettings.BMStrRescale.ConstB
+			"HeavyRescalling.Parameters rescaling constants: A = %f and B = %f.",
+            Context->RumbleControlState.HeavyRescale.ConstA,
+            Context->RumbleControlState.HeavyRescale.ConstB
 		);
 	}
 	else
 	{
 		TraceVerbose(
 			TRACE_CONFIG,
-			"Invalid values found for BMStrRescale. Setting disabled."
+			"Invalid values found for HeavyRescalling.Parameters. Setting disabled."
 		);
-
-		Context->Configuration.RumbleSettings.BMStrRescale.Enabled = FALSE;
+        Context->RumbleControlState.HeavyRescale.IsAllowed = FALSE;
 	}
 
 	if (config_json)
