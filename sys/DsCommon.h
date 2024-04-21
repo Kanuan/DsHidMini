@@ -370,9 +370,9 @@ typedef struct _DS_RESCALLING_SETTINGS
 {
     BOOLEAN IsRangeValid;
 
-    UCHAR MinValue;
+    UCHAR MinRange;
 
-    UCHAR MaxValue;
+    UCHAR MaxRange;
 
     DOUBLE ConstA;
 
