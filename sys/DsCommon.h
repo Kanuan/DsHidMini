@@ -368,7 +368,7 @@ typedef struct _DS_THUMB_SETTINGS
 
 typedef struct _DS_RESCALLING_SETTINGS
 {
-    BOOLEAN Allowed;
+    BOOLEAN IsRangeValid;
 
     UCHAR MinValue;
 
