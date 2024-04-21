@@ -576,20 +576,16 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
 )
 {
 
-	DOUBLE LargeValue = Context->Configuration.RumbleSettings.DisableBM ? 0 : Context->MotorStrCache.Big;
-	DOUBLE SmallValue = Context->Configuration.RumbleSettings.DisableSM ? 0 : Context->MotorStrCache.Small;
+	DOUBLE LargeValue = Context->MotorStrCache.Big;
+	DOUBLE SmallValue = Context->MotorStrCache.Small;
 
-	if (
-		Context->Configuration.RumbleSettings.SMToBMConversion.Enabled
-		&& !Context->Configuration.RumbleSettings.DisableSM
-		&& !Context->Configuration.RumbleSettings.DisableBM
-		) {
-
+	if (Context->Configuration.RumbleSettings.AlternativeMode.IsEnabled)
+    {
 		if (SmallValue > 0) {
 
 			// Small Motor Strength Rescale 
-			SmallValue = Context->Configuration.RumbleSettings.SMToBMConversion.ConstA * SmallValue
-				+ Context->Configuration.RumbleSettings.SMToBMConversion.ConstB;
+			SmallValue = Context->Configuration.RumbleSettings.AlternativeMode.Parameters.ConstA * SmallValue
+				+ Context->Configuration.RumbleSettings.AlternativeMode.Parameters.ConstB;
 
 			if (SmallValue > LargeValue) {
 				LargeValue = SmallValue;
@@ -598,8 +594,8 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
 
 			// Force Activate Small Motor if original SMALL Motor Strength is above certain level and related boolean is enabled
 			if (
-				Context->Configuration.RumbleSettings.ForcedSM.SMThresholdEnabled
-				&& Context->MotorStrCache.Small >= Context->Configuration.RumbleSettings.ForcedSM.SMThresholdValue
+				Context->Configuration.RumbleSettings.AlternativeMode.ForcedRight.LightThresholdEnabled
+				&& Context->MotorStrCache.Small >= Context->Configuration.RumbleSettings.AlternativeMode.ForcedRight.LightThresholdValue
 				)
 			{
 				SmallValue = 1;
@@ -610,21 +606,27 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
 
 		// Force Activate Small Motor if original BIG Motor Strength is above certain level and related boolean is enabled
 		if (
-			Context->Configuration.RumbleSettings.ForcedSM.BMThresholdEnabled
-			&& Context->MotorStrCache.Big >= Context->Configuration.RumbleSettings.ForcedSM.BMThresholdValue
+			Context->Configuration.RumbleSettings.AlternativeMode.ForcedRight.HeavyThresholdEnabled
+			&& Context->MotorStrCache.Big >= Context->Configuration.RumbleSettings.AlternativeMode.ForcedRight.HeavyThresholdValue
 			)
 		{
 			SmallValue = 1;
 		}
 
 	}
+    else
+    {
+        if (Context->Configuration.RumbleSettings.DisableLeft) LargeValue = 0;
+        if (Context->Configuration.RumbleSettings.DisableRight) SmallValue = 0;
+    }
+
 
 
 	// Big Motor Strength Rescale
-	if (Context->Configuration.RumbleSettings.BMStrRescale.Enabled && LargeValue > 0) {
+	if (Context->Configuration.RumbleSettings.HeavyRescalling.IsEnabled && LargeValue > 0) {
 		LargeValue =
-			Context->Configuration.RumbleSettings.BMStrRescale.ConstA * LargeValue
-			+ Context->Configuration.RumbleSettings.BMStrRescale.ConstB;
+			Context->Configuration.RumbleSettings.HeavyRescalling.Parameters.ConstA * LargeValue
+			+ Context->Configuration.RumbleSettings.HeavyRescalling.Parameters.ConstB;
 	}
 
 
