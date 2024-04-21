@@ -190,7 +190,6 @@ ConfigParseRumbleSettings(
 			Config->RumbleSettings.AlternativeMode.Parameters.MaxRange = (UCHAR)cJSON_GetNumberValue(pNode);
 			EventWriteOverrideSettingUInt(RumbleSettings->string, "RumbleSettings.AlternativeMode.Parameters.MaxRange", Config->RumbleSettings.AlternativeMode.Parameters.MaxRange);
 		}
-	}
 
         const cJSON* pForced = cJSON_GetObjectItem(pAlternativeMode->string, "ForcedRight");
 
