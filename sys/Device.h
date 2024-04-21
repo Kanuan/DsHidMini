@@ -303,6 +303,10 @@ typedef struct _DEVICE_CONTEXT
 		// 
 		UCHAR Heavy;
 
+        DS_RESCALE_STATE HeavyRescale;
+
+        DS_RESCALE_STATE LightRescale;
+
 	} RumbleControlState;
 
 } DEVICE_CONTEXT, * PDEVICE_CONTEXT;

@@ -575,21 +575,22 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
 	PDEVICE_CONTEXT Context
 )
 {
+    DS_RUMBLE_SETTINGS * rumbSet = &Context->Configuration.RumbleSettings;
+
+    DS_RESCALE_STATE * heavyResc = &Context->RumbleControlState.Heavy;
+    DS_RESCALE_STATE * lightResc = &Context->RumbleControlState.Light;
 
 	DOUBLE heavyValue = Context->RumbleControlState.Heavy;
 	DOUBLE lightValue = Context->RumbleControlState.Light;
 
-    DS_RUMBLE_SETTINGS * rumbSet = &Context->Configuration.RumbleSettings;
-
-	if (rumbSet->AlternativeMode.IsEnabled && rumbSet->AlternativeMode.Parameters.IsRangeValid)
+	if (rumbSet->AlternativeMode.IsEnabled && lightResc->IsAllowed)
     {
 		if (lightValue > 0) {
 
 			// Light Motor Strength Rescale 
-			lightValue = rumbSet->AlternativeMode.Parameters.ConstA * lightValue
-				+ rumbSet->AlternativeMode.Parameters.ConstB;
-
-			if (lightValue > heavyValue) {
+			lightValue = lightResc->ConstA * lightValue + lightResc->ConstB;
+			if (lightValue > heavyValue)
+            {
 				heavyValue = lightValue;
 			}
 			lightValue = 0; // Always disable Light Motor after the if statement above
@@ -614,11 +615,9 @@ VOID DS3_PROCESS_RUMBLE_STRENGTH(
     }
 
 	// Heavy Motor Strength Rescale
-	if (heavyValue > 0 && rumbSet->HeavyRescalling.IsEnabled && rumbSet->HeavyRescalling.Parameters.IsRangeValid)
+	if (heavyValue > 0 && rumbSet->HeavyRescalling.IsEnabled && heavyResc->IsAllowed)
     {
-		heavyValue =
-			rumbSet->HeavyRescalling.Parameters.ConstA * heavyValue
-			+ rumbSet->HeavyRescalling.Parameters.ConstB;
+		heavyValue = heavyResc->ConstA * heavyValue + heavyResc->ConstB;
 	}
 
 	switch (Context->ConnectionType)
