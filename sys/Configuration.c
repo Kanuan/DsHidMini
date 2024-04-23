@@ -374,18 +374,18 @@ static void ConfigNodeParse(
 	_In_opt_ BOOLEAN IsHotReload
 )
 {
-    FuncEntry(TRACE_CONFIG);
+	FuncEntry(TRACE_CONFIG);
 
 	const PDS_DRIVER_CONFIGURATION pCfg = &Context->Configuration;
 	cJSON* pNode = NULL;
 
-    if (IsHotReload)
-    {
-        //
-        // Reset device's idle disconnect timer
-        //
-        Context->Connection.Bth.IdleDisconnectTimestamp.QuadPart = 0;
-    }
+	if (IsHotReload)
+	{
+		//
+		// Reset device's idle disconnect timer
+		//
+		Context->Connection.Bth.IdleDisconnectTimestamp.QuadPart = 0;
+	}
 
 	//
 	// Common
@@ -434,48 +434,48 @@ static void ConfigNodeParse(
 		EventWriteOverrideSettingUInt(ParentNode->string, "DisableWirelessIdleTimeout", pCfg->DisableWirelessIdleTimeout);
 	}
 
-    //
-    // Wireless quick disconnect combo
-    // 
-    const cJSON* pDisconnectCombo = cJSON_GetObjectItem(ParentNode, "QuickDisconnectCombo");
+	//
+	// Wireless quick disconnect combo
+	// 
+	const cJSON* pDisconnectCombo = cJSON_GetObjectItem(ParentNode, "QuickDisconnectCombo");
 
-    if (pDisconnectCombo)
-    {
-        if ((pNode = cJSON_GetObjectItem(pDisconnectCombo, "IsEnabled")))
-        {
-            pCfg->WirelessDisconnectButtonCombo.IsEnabled = (BOOLEAN)cJSON_IsTrue(pNode);
-            EventWriteOverrideSettingUInt(pDisconnectCombo->string, "WirelessDisconnectButtonCombo.IsEnabled", pCfg->WirelessDisconnectButtonCombo.IsEnabled);
-        }
+	if (pDisconnectCombo)
+	{
+		if ((pNode = cJSON_GetObjectItem(pDisconnectCombo, "IsEnabled")))
+		{
+			pCfg->WirelessDisconnectButtonCombo.IsEnabled = (BOOLEAN)cJSON_IsTrue(pNode);
+			EventWriteOverrideSettingUInt(pDisconnectCombo->string, "WirelessDisconnectButtonCombo.IsEnabled", pCfg->WirelessDisconnectButtonCombo.IsEnabled);
+		}
 
-        if ((pNode = cJSON_GetObjectItem(pDisconnectCombo, "HoldTime")))
-        {
-            pCfg->WirelessDisconnectButtonCombo.HoldTime = (ULONG)cJSON_GetNumberValue(pNode);
-            EventWriteOverrideSettingUInt(pDisconnectCombo->string, "WirelessDisconnectButtonCombo.HoldTime", pCfg->WirelessDisconnectButtonCombo.HoldTime);
-        }
+		if ((pNode = cJSON_GetObjectItem(pDisconnectCombo, "HoldTime")))
+		{
+			pCfg->WirelessDisconnectButtonCombo.HoldTime = (ULONG)cJSON_GetNumberValue(pNode);
+			EventWriteOverrideSettingUInt(pDisconnectCombo->string, "WirelessDisconnectButtonCombo.HoldTime", pCfg->WirelessDisconnectButtonCombo.HoldTime);
+		}
 
-        for (ULONGLONG buttonIndex = 0; buttonIndex < _countof(pCfg->WirelessDisconnectButtonCombo.Buttons); buttonIndex++)
-        {
-            if ((pNode = cJSON_GetObjectItem(pDisconnectCombo, G_DS_BUTTON_COMBO_NAMES[buttonIndex])))
-            {
-                const UCHAR offset = (UCHAR)cJSON_GetNumberValue(pNode);
-                if (offset <= DS_BUTTON_COMBO_MAX_OFFSET)
-                {
-                    pCfg->WirelessDisconnectButtonCombo.Buttons[buttonIndex] = (UCHAR)cJSON_GetNumberValue(pNode);
-                    EventWriteOverrideSettingUInt(pDisconnectCombo->string, G_DS_BUTTON_COMBO_NAMES[buttonIndex],
-                                                  pCfg->WirelessDisconnectButtonCombo.Buttons[buttonIndex]);
-                }
-                else
-                {
-                    TraceError(
-                        TRACE_CONFIG,
-                        "Provided button offset %d for %s out of range, ignoring",
-                        offset,
-                        G_DS_BUTTON_COMBO_NAMES[buttonIndex]
-                    );
-                }
-            }
-        }
-    }
+		for (ULONGLONG buttonIndex = 0; buttonIndex < _countof(pCfg->WirelessDisconnectButtonCombo.Buttons); buttonIndex++)
+		{
+			if ((pNode = cJSON_GetObjectItem(pDisconnectCombo, G_DS_BUTTON_COMBO_NAMES[buttonIndex])))
+			{
+				const UCHAR offset = (UCHAR)cJSON_GetNumberValue(pNode);
+				if (offset <= DS_BUTTON_COMBO_MAX_OFFSET)
+				{
+					pCfg->WirelessDisconnectButtonCombo.Buttons[buttonIndex] = (UCHAR)cJSON_GetNumberValue(pNode);
+					EventWriteOverrideSettingUInt(pDisconnectCombo->string, G_DS_BUTTON_COMBO_NAMES[buttonIndex],
+						pCfg->WirelessDisconnectButtonCombo.Buttons[buttonIndex]);
+				}
+				else
+				{
+					TraceError(
+						TRACE_CONFIG,
+						"Provided button offset %d for %s out of range, ignoring",
+						offset,
+						G_DS_BUTTON_COMBO_NAMES[buttonIndex]
+					);
+				}
+			}
+		}
+	}
 
 	//
 	// Every mode can have the same properties configured independently
@@ -581,7 +581,7 @@ static void ConfigNodeParse(
 		}
 	}
 
-    FuncExitNoReturn(TRACE_CONFIG);
+	FuncExitNoReturn(TRACE_CONFIG);
 }
 #pragma warning(pop)
 
@@ -678,7 +678,7 @@ ConfigLoadForDevice(
 		{
 			error = GetLastError();
 
-            TraceError(
+			TraceError(
 				TRACE_CONFIG,
 				"Failed to get configuration file size, error: %!WINERROR!",
 				error
@@ -700,7 +700,7 @@ ConfigLoadForDevice(
 		// 
 		if (size.QuadPart > 20000000 /* 20 MB of JSON, w00t?! */)
 		{
-            TraceError(
+			TraceError(
 				TRACE_CONFIG,
 				"Configuration file too big to parse, reported size: %I64d",
 				size.QuadPart
@@ -724,7 +724,7 @@ ConfigLoadForDevice(
 		{
 			error = GetLastError();
 
-            TraceError(
+			TraceError(
 				TRACE_CONFIG,
 				"Failed to read configuration file content, error: %!WINERROR!",
 				error
@@ -738,10 +738,10 @@ ConfigLoadForDevice(
 
 		if (config_json == NULL)
 		{
-            TraceError(
-                TRACE_CONFIG,
-                "JSON parsing failed"
-            );
+			TraceError(
+				TRACE_CONFIG,
+				"JSON parsing failed"
+			);
 
 			const char* error_ptr = cJSON_GetErrorPtr();
 			if (error_ptr != NULL)
@@ -751,9 +751,9 @@ ConfigLoadForDevice(
 					"JSON parsing error: %s",
 					error_ptr
 				);
-                EventWriteJSONParseError(error_ptr);
+				EventWriteJSONParseError(error_ptr);
 			}
-            			
+
 			status = STATUS_ACCESS_VIOLATION;
 			break;
 		}
@@ -797,14 +797,14 @@ ConfigLoadForDevice(
 
 			ConfigNodeParse(deviceNode, Context, IsHotReload);
 		}
-        else
-        {
-            TraceVerbose(
-                TRACE_CONFIG,
-                "Device-specific (%s) config not found",
-                Context->DeviceAddressString
-            );
-        }
+		else
+		{
+			TraceVerbose(
+				TRACE_CONFIG,
+				"Device-specific (%s) config not found",
+				Context->DeviceAddressString
+			);
+		}
 
 	} while (FALSE);
 
@@ -898,7 +898,7 @@ ConfigSetDefaults(
 	_Inout_ PDS_DRIVER_CONFIGURATION Config
 )
 {
-    FuncEntry(TRACE_CONFIG);
+	FuncEntry(TRACE_CONFIG);
 
 	//
 	// Common
@@ -911,11 +911,11 @@ ConfigSetDefaults(
 	Config->WirelessIdleTimeoutPeriodMs = 300000;
 	Config->DisableWirelessIdleTimeout = FALSE;
 
-    Config->WirelessDisconnectButtonCombo.IsEnabled = TRUE;
-    Config->WirelessDisconnectButtonCombo.HoldTime = 1000;
-    Config->WirelessDisconnectButtonCombo.Buttons[0] = 10;
-    Config->WirelessDisconnectButtonCombo.Buttons[1] = 11;
-    Config->WirelessDisconnectButtonCombo.Buttons[2] = 16;
+	Config->WirelessDisconnectButtonCombo.IsEnabled = TRUE;
+	Config->WirelessDisconnectButtonCombo.HoldTime = 1000;
+	Config->WirelessDisconnectButtonCombo.Buttons[0] = 10;
+	Config->WirelessDisconnectButtonCombo.Buttons[1] = 11;
+	Config->WirelessDisconnectButtonCombo.Buttons[2] = 16;
 
 	Config->ThumbSettings.DeadZoneLeft.Apply = TRUE;
 	Config->ThumbSettings.DeadZoneLeft.PolarValue = 3.0;
@@ -969,5 +969,5 @@ ConfigSetDefaults(
 	Config->GPJ.PressureExposureMode = DsPressureExposureModeDefault;
 	Config->GPJ.DPadExposureMode = DsDPadExposureModeDefault;
 
-    FuncExitNoReturn(TRACE_CONFIG);
+	FuncExitNoReturn(TRACE_CONFIG);
 }
