@@ -37,7 +37,7 @@ struct USB_DEVICE_CONTEXT
 	// USB Interrupt (out) pipe handle
 	// 
 	WDFUSBPIPE InterruptOutPipe;
-	
+
 	//
 	// Timestamp to calculate charging cycle state change
 	// 
@@ -53,13 +53,13 @@ struct BTH_DEVICE_CONTEXT
 		WDFIOTARGET OutputWriterIoTarget;
 
 	} HidControl;
-	
+
 	struct
 	{
 		DMFMODULE InputStreamerModule;
 
 		WDFIOTARGET InputStreamerIoTarget;
-		
+
 	} HidInterrupt;
 
 	struct
@@ -68,9 +68,9 @@ struct BTH_DEVICE_CONTEXT
 		// Delayed Output Report Timer
 		// 
 		WDFTIMER HidOutputReport;
-				
+
 	} Timers;
-	
+
 	//
 	// Timestamp to calculate quick disconnect combo detection
 	// 
@@ -103,7 +103,7 @@ typedef struct _FFB_ATTRIBUTES
 
 	BOOLEAN IsReported;
 
-} FFB_ATTRIBUTES, *PFFB_ATTRIBUTES;
+} FFB_ATTRIBUTES, * PFFB_ATTRIBUTES;
 #endif
 
 /**
@@ -128,8 +128,8 @@ typedef struct _DS_OUTPUT_REPORT_CONTEXT
 	// The initiator of this report
 	// 
 	DS_OUTPUT_REPORT_SOURCE ReportSource;
-	
-} DS_OUTPUT_REPORT_CONTEXT, *PDS_OUTPUT_REPORT_CONTEXT;
+
+} DS_OUTPUT_REPORT_CONTEXT, * PDS_OUTPUT_REPORT_CONTEXT;
 
 /**
  * Cached output report values to help with rate-control.
@@ -168,13 +168,13 @@ typedef struct _DS_OUTPUT_REPORT_CACHE
 	// TRUE if the timer is currently scheduled to get executed
 	// 
 	BOOLEAN IsScheduled;
-	
+
 	//
 	// TODO: replace with WDFMEMORY object
 	// 
 	UCHAR LastReport[0x32]; // Introduce const
-	
-} DS_OUTPUT_REPORT_CACHE, *PDS_OUTPUT_REPORT_CACHE;
+
+} DS_OUTPUT_REPORT_CACHE, * PDS_OUTPUT_REPORT_CACHE;
 
 typedef struct _DEVICE_CONTEXT
 {
@@ -182,7 +182,7 @@ typedef struct _DEVICE_CONTEXT
 	// VirtualHidMini DMF module
 	// 
 	DMFMODULE DsHidMiniModule;
-	
+
 	struct
 	{
 		//
@@ -204,9 +204,9 @@ typedef struct _DEVICE_CONTEXT
 		// Cached output report meta-data
 		// 
 		DS_OUTPUT_REPORT_CACHE Cache;
-		
+
 	} OutputReport;
-	
+
 	//
 	// Type of connection (wired, wireless)
 	// 
@@ -250,7 +250,7 @@ typedef struct _DEVICE_CONTEXT
 		struct BTH_DEVICE_CONTEXT Bth;
 
 	} Connection;
-		
+
 	//
 	// Vendor ID as reported by hardware
 	// 
@@ -350,7 +350,7 @@ typedef struct
 	// 
 	DMFMODULE DmfModuleForceFeedback;
 #endif
-	
+
 } DMF_CONTEXT_DsHidMini;
 
 _Function_class_(DMF_ChildModulesAdd)
