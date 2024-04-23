@@ -299,20 +299,20 @@ static CONST PSTR G_DS_LED_AUTHORITY_NAMES[] =
 // 
 typedef struct _DS_BUTTON_COMBO
 {
-    //
-    // Activates the combination
-    // 
-    BOOLEAN IsEnabled;
+	//
+	// Activates the combination
+	// 
+	BOOLEAN IsEnabled;
 
-    //
-    // How long the combination must be held
-    // 
-    ULONG HoldTime;
+	//
+	// How long the combination must be held
+	// 
+	ULONG HoldTime;
 
-    //
-    // The buttons that need to be held
-    // 
-    UCHAR Buttons[3];
+	//
+	// The buttons that need to be held
+	// 
+	UCHAR Buttons[3];
 
 } DS_BUTTON_COMBO, * PDS_BUTTON_COMBO;
 
@@ -321,9 +321,9 @@ typedef struct _DS_BUTTON_COMBO
 // 
 static CONST PSTR G_DS_BUTTON_COMBO_NAMES[] =
 {
-    "Button1",
-    "Button2",
-    "Button3",
+	"Button1",
+	"Button2",
+	"Button3",
 };
 
 //
@@ -485,8 +485,8 @@ typedef struct _DS_FLIP_AXIS_SETTINGS
 	UCHAR RightX;
 
 	UCHAR RightY;
-	
-} DS_FLIP_AXIS_SETTINGS, *PDS_FLIP_AXIS_SETTINGS;
+
+} DS_FLIP_AXIS_SETTINGS, * PDS_FLIP_AXIS_SETTINGS;
 
 //
 // Per device dynamic configuration properties
@@ -525,10 +525,10 @@ typedef struct _DS_DRIVER_CONFIGURATION
 	// 
 	BOOLEAN DisableWirelessIdleTimeout;
 
-    //
-    // Wireless disconnect button combo customizing
-    //
-    DS_BUTTON_COMBO WirelessDisconnectButtonCombo;
+	//
+	// Wireless disconnect button combo customizing
+	//
+	DS_BUTTON_COMBO WirelessDisconnectButtonCombo;
 
 	//
 	// Thumb stick specific settings
