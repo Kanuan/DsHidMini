@@ -71,7 +71,7 @@ NTSTATUS DsUsb_Ds3Init(PDEVICE_CONTEXT Context)
 //
 // Auto-pair this device to first found host radio.
 // 
-NTSTATUS DsUsb_Ds3PairToFirstRadio(WDFDEVICE Device)
+NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 {
 	NTSTATUS status = STATUS_UNSUCCESSFUL;
 	HANDLE hRadio = NULL;
