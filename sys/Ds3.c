@@ -69,7 +69,7 @@ NTSTATUS DsUsb_Ds3Init(PDEVICE_CONTEXT Context)
 }
 
 //
-// Auto-pair this device to first found host radio.
+// Pairs DS3 to current BT host or to user defined host address, depending on current pairing mode
 // 
 NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 {
