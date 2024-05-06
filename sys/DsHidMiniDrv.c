@@ -250,6 +250,7 @@ DMF_DsHidMini_Open(
 	if (pDevCtx->ConnectionType == DsDeviceConnectionTypeUsb)
 	{
 		DsUsb_Ds3PairToHost(device);
+		DsUsb_Ds3RequestHostAddress(device);
 	}
 
 	pHidCfg->VendorId = pDevCtx->VendorId;
