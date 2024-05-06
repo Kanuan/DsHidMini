@@ -244,6 +244,14 @@ DMF_DsHidMini_Open(
 	// 
 	ConfigLoadForDevice(pDevCtx, FALSE);
 
+	//
+	// Execute pairing process if on USB, then request currently set host address
+	//
+	if (pDevCtx->ConnectionType == DsDeviceConnectionTypeUsb)
+	{
+		DsUsb_Ds3PairToHost(device);
+	}
+
 	pHidCfg->VendorId = pDevCtx->VendorId;
 	pHidCfg->ProductId = pDevCtx->ProductId;
 	pHidCfg->VersionNumber = pDevCtx->VersionNumber;
