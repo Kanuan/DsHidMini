@@ -37,6 +37,90 @@ const UCHAR G_Ds3BthHidOutputReport[] = {
 };
 
 //
+// Requests device host address, defaulting to a pre-defined address in case of failure, and sets the WDF_DEVICE's host address
+//
+VOID DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
+{
+	NTSTATUS status;
+	PDEVICE_CONTEXT pDevCtx = DeviceGetContext(Device);
+	UCHAR controlTransferBuffer[CONTROL_TRANSFER_BUFFER_LENGTH];
+	WDF_DEVICE_PROPERTY_DATA propertyData;
+	UINT64 hostAddress;
+
+	FuncEntry(TRACE_DS3);
+
+	//
+	// Request host BTH address
+	// 
+	if (NT_SUCCESS(status = USB_SendControlRequest(
+		pDevCtx,
+		BmRequestDeviceToHost,
+		BmRequestClass,
+		GetReport,
+		Ds3FeatureHostAddress,
+		0,
+		controlTransferBuffer,
+		CONTROL_TRANSFER_BUFFER_LENGTH
+	)))
+	{
+		RtlCopyMemory(
+			&pDevCtx->HostAddress,
+			&controlTransferBuffer[2],
+			sizeof(BD_ADDR));
+	}
+	else
+	{
+		//
+		// Set context's host radio address to pre-defined address in case of failure
+		// 
+		TraceError(
+			TRACE_DS3,
+			"Requesting host address failed with %!STATUS!. Setting device's context host address to 01:01:01:01:01:01",
+			status
+		);
+		EventWriteFailedWithNTStatus(__FUNCTION__, L"Requesting host address", status);
+
+		UCHAR unkownHostAddress[6] = {1,1,1,1,1,1};
+		RtlCopyMemory(
+			&pDevCtx->HostAddress,
+			&unkownHostAddress[0],
+			sizeof(BD_ADDR));
+	}
+
+	//
+	// Set host radio address property
+	// 
+
+	WDF_DEVICE_PROPERTY_DATA_INIT(&propertyData, &DEVPKEY_BluetoothRadio_Address);
+	propertyData.Flags |= PLUGPLAY_PROPERTY_PERSISTENT;
+	propertyData.Lcid = LOCALE_NEUTRAL;
+
+	hostAddress = (UINT64)(pDevCtx->HostAddress.Address[5]) |
+		(UINT64)(pDevCtx->HostAddress.Address[4]) << 8 |
+		(UINT64)(pDevCtx->HostAddress.Address[3]) << 16 |
+		(UINT64)(pDevCtx->HostAddress.Address[2]) << 24 |
+		(UINT64)(pDevCtx->HostAddress.Address[1]) << 32 |
+		(UINT64)(pDevCtx->HostAddress.Address[0]) << 40;
+
+	status = WdfDeviceAssignProperty(
+		Device,
+		&propertyData,
+		DEVPROP_TYPE_UINT64,
+		sizeof(UINT64),
+		&hostAddress
+	);
+
+	if (!NT_SUCCESS(status))
+	{
+		TraceError(
+			TRACE_DS3,
+			"Setting DEVPKEY_BluetoothRadio_Address failed with status %!STATUS!",
+			status
+		);
+	}
+}
+
+//
 // Sends the "magic packet" to the DS3 so it starts its interrupt endpoint.
 // 
 NTSTATUS DsUsb_Ds3Init(PDEVICE_CONTEXT Context)
