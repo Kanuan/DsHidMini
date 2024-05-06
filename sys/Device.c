@@ -724,6 +724,16 @@ DsDevice_HotReloadEventCallback(
 		WdfWaitLockRelease(pDevCtx->ConfigurationDirectoryWatcherLock);
 
 		//
+		// Attempt pairing process if on USB after hot-reload, then request currently set host address
+		//
+		if (pDevCtx->ConnectionType == DsDeviceConnectionTypeUsb)
+		{
+			WDFDEVICE wdfDev = DMF_ParentDeviceGet(pDevCtx->DsHidMiniModule);
+			DsUsb_Ds3PairToHost(wdfDev);
+			DsUsb_Ds3RequestHostAddress(wdfDev);
+		}
+
+		//
 		// Changes to LED settings need to be pushed to the device
 		// 
 		(void)Ds_SendOutputReport(pDevCtx, Ds3OutputReportSourceDriverHighPriority);
