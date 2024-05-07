@@ -180,6 +180,85 @@ NTSTATUS DsUsb_Ds3Init(PDEVICE_CONTEXT Context)
 }
 
 //
+// Sends a pairing request to the device, stores result status in property
+// 
+NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR * newHostAddress)
+{
+	NTSTATUS status = STATUS_UNSUCCESSFUL;
+	NTSTATUS status = STATUS_UNSUCCESSFUL;
+	WDF_DEVICE_PROPERTY_DATA propertyData;
+	PDEVICE_CONTEXT pDevCtx = DeviceGetContext(Device);
+
+	FuncEntry(TRACE_DS3);
+
+	TraceInformation(
+		TRACE_DS3,
+		"Sending pairing request to device with new host address set to %02X:%02X:%02X:%02X:%02X:%02X",
+		newHostAddress[0],
+		newHostAddress[1],
+		newHostAddress[2],
+		newHostAddress[3],
+		newHostAddress[4],
+		newHostAddress[5]
+	);
+
+	UCHAR controlBuffer[SET_HOST_BD_ADDR_CONTROL_BUFFER_LENGTH];
+
+	RtlZeroMemory(
+		controlBuffer,
+		SET_HOST_BD_ADDR_CONTROL_BUFFER_LENGTH
+	);
+
+	RtlCopyMemory(
+		&controlBuffer[2],
+		&newHostAddress,
+		sizeof(BD_ADDR)
+	);
+
+	//
+	// Submit new host address
+	// 
+	if (!NT_SUCCESS(status = USB_SendControlRequest(
+		pDevCtx,
+		BmRequestHostToDevice,
+		BmRequestClass,
+		SetReport,
+		Ds3FeatureHostAddress,
+		0,
+		controlBuffer,
+		SET_HOST_BD_ADDR_CONTROL_BUFFER_LENGTH
+	)))
+	{
+		TraceError(
+			TRACE_DS3,
+			"Setting host address failed with %!STATUS!",
+			status
+		);
+		EventWriteFailedWithNTStatus(__FUNCTION__, L"Pairing", status);
+	}
+
+	WDF_DEVICE_PROPERTY_DATA_INIT(&propertyData, &DEVPKEY_DsHidMini_RO_LastPairingStatus);
+	propertyData.Flags |= PLUGPLAY_PROPERTY_PERSISTENT;
+	propertyData.Lcid = LOCALE_NEUTRAL;
+
+	//
+	// Store in property
+	// 
+	status = WdfDeviceAssignProperty(
+		Device,
+		&propertyData,
+		DEVPROP_TYPE_NTSTATUS,
+		sizeof(NTSTATUS),
+		&status
+	);
+
+	FuncExit(TRACE_DS3, "status=%!STATUS!", status);
+
+	return status;
+}
+
+
+//
 // Pairs DS3 to current BT host or to user defined host address, depending on current pairing mode
 // 
 NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
