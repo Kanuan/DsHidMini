@@ -724,9 +724,11 @@ DsDevice_HotReloadEventCallback(
 		WdfWaitLockRelease(pDevCtx->ConfigurationDirectoryWatcherLock);
 
 		//
-		// If PairOnHotReload is enabled attempt pairing process followed by requesting currently set host address
+		// If PairOnHotReload is enabled and not in disabled pairing mode then attempt pairing process followed by requesting currently set host address
 		//
-		if (pDevCtx->ConnectionType == DsDeviceConnectionTypeUsb && pDevCtx->Configuration.PairOnHotReload)
+		if (pDevCtx->ConnectionType == DsDeviceConnectionTypeUsb
+			&& pDevCtx->Configuration.PairOnHotReload
+			&& pDevCtx->Configuration.DevicePairingMode != DsDevicePairingModeDisabled)
 		{
 			WDFDEVICE wdfDev = DMF_ParentDeviceGet(pDevCtx->DsHidMiniModule);
 			DsUsb_Ds3PairToHost(wdfDev);
