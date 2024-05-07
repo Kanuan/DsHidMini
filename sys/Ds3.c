@@ -182,9 +182,8 @@ NTSTATUS DsUsb_Ds3Init(PDEVICE_CONTEXT Context)
 //
 // Sends a pairing request to the device, stores result status in property
 // 
-NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR * newHostAddress)
+NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR newHostAddress[6])
 {
-	NTSTATUS status = STATUS_UNSUCCESSFUL;
 	NTSTATUS status = STATUS_UNSUCCESSFUL;
 	WDF_DEVICE_PROPERTY_DATA propertyData;
 	PDEVICE_CONTEXT pDevCtx = DeviceGetContext(Device);
@@ -211,7 +210,7 @@ NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR * newHostAddress)
 
 	RtlCopyMemory(
 		&controlBuffer[2],
-		&newHostAddress,
+		newHostAddress,
 		sizeof(BD_ADDR)
 	);
 
@@ -389,65 +388,10 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 			break;
 		}
 
-		TraceInformation(
-			TRACE_DS3,
-			"Updating host address from %02X:%02X:%02X:%02X:%02X:%02X to %02X:%02X:%02X:%02X:%02X:%02X",
-			pDevCtx->HostAddress.Address[0],
-			pDevCtx->HostAddress.Address[1],
-			pDevCtx->HostAddress.Address[2],
-			pDevCtx->HostAddress.Address[3],
-			pDevCtx->HostAddress.Address[4],
-			pDevCtx->HostAddress.Address[5],
-			newHostAddress[0],
-			newHostAddress[1],
-			newHostAddress[2],
-			newHostAddress[3],
-			newHostAddress[4],
-			newHostAddress[5]
-		);
-
-		UCHAR controlBuffer[SET_HOST_BD_ADDR_CONTROL_BUFFER_LENGTH];
-
-		RtlZeroMemory(
-			controlBuffer,
-			SET_HOST_BD_ADDR_CONTROL_BUFFER_LENGTH
-		);
-
-		RtlCopyMemory(
-			&controlBuffer[2],
-			&newHostAddress,
-			sizeof(BD_ADDR)
-		);
-
 		//
-		// Submit new host address
-		// 
-		if (!NT_SUCCESS(status = USB_SendControlRequest(
-			pDevCtx,
-			BmRequestHostToDevice,
-			BmRequestClass,
-			SetReport,
-			Ds3FeatureHostAddress,
-			0,
-			controlBuffer,
-			SET_HOST_BD_ADDR_CONTROL_BUFFER_LENGTH
-		)))
-		{
-			TraceError(
-				TRACE_DS3,
-				"Setting host address failed with %!STATUS!",
-				status
-			);
-			EventWriteFailedWithNTStatus(__FUNCTION__, L"Pairing", status);
-			break;
-		}
-
+		// Send pairing request
 		//
-		// Update in device context after success
-		// 
-		RtlCopyMemory(&pDevCtx->HostAddress, &newHostAddress, sizeof(BD_ADDR));
-
-		EventWritePairedSuccessfully(pDevCtx->DeviceAddressString);
+		status = DsUsb_Ds3SendPairingRequest(Device, newHostAddress);
 
 	} while (FALSE);
 
@@ -479,22 +423,6 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 			break;
 		}
 	}
-
-	WDF_DEVICE_PROPERTY_DATA_INIT(&propertyData, &DEVPKEY_DsHidMini_RO_LastPairingStatus);
-	propertyData.Flags |= PLUGPLAY_PROPERTY_PERSISTENT;
-	propertyData.Lcid = LOCALE_NEUTRAL;
-
-	//
-	// Store in property
-	// 
-	status = WdfDeviceAssignProperty(
-		Device,
-		&propertyData,
-		DEVPROP_TYPE_NTSTATUS,
-		sizeof(NTSTATUS),
-		&status
-	);
-
 	FuncExit(TRACE_DS3, "status=%!STATUS!", status);
 
 	return status;
