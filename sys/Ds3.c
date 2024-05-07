@@ -88,6 +88,31 @@ VOID DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
 	}
 
 	//
+	// Store in property
+	// 
+
+	WDF_DEVICE_PROPERTY_DATA_INIT(&propertyData, &DEVPKEY_DsHidMini_RO_LastHostRequestStatus);
+	propertyData.Flags |= PLUGPLAY_PROPERTY_PERSISTENT;
+	propertyData.Lcid = LOCALE_NEUTRAL;
+
+	status = WdfDeviceAssignProperty(
+		Device,
+		&propertyData,
+		DEVPROP_TYPE_NTSTATUS,
+		sizeof(NTSTATUS),
+		&status
+	);
+
+	if (!NT_SUCCESS(status))
+	{
+		TraceError(
+			TRACE_DS3,
+			"Setting DEVPKEY_DsHidMini_RO_LastHostRequestStatus failed with status %!STATUS!",
+			status
+		);
+	}
+
+	//
 	// Set host radio address property
 	// 
 
