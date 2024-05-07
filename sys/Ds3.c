@@ -75,12 +75,12 @@ VOID DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
 		// 
 		TraceError(
 			TRACE_DS3,
-			"Requesting host address failed with %!STATUS!. Setting device's context host address to 01:01:01:01:01:01",
+			"Requesting host address failed with %!STATUS!. Setting device's context host address to 00:00:00:00:00:00",
 			status
 		);
 		EventWriteFailedWithNTStatus(__FUNCTION__, L"Requesting host address", status);
 
-		UCHAR unkownHostAddress[6] = {1,1,1,1,1,1};
+		UCHAR unkownHostAddress[6] = {0,0,0,0,0,0};
 		RtlCopyMemory(
 			&pDevCtx->HostAddress,
 			&unkownHostAddress[0],
