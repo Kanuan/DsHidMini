@@ -143,6 +143,8 @@ VOID DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
 			status
 		);
 	}
+
+	FuncExitNoReturn(TRACE_DS3);
 }
 
 //
