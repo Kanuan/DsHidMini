@@ -244,15 +244,6 @@ DMF_DsHidMini_Open(
 	// 
 	ConfigLoadForDevice(pDevCtx, FALSE);
 
-	//
-	// If not in disabled pairing mode and if on USB then execute pairing process then request currently set host address
-	//
-	if (pDevCtx->ConnectionType == DsDeviceConnectionTypeUsb && pDevCtx->Configuration.DevicePairingMode != DsDevicePairingModeDisabled)
-	{
-		DsUsb_Ds3PairToHost(device);
-		DsUsb_Ds3RequestHostAddress(device);
-	}
-
 	pHidCfg->VendorId = pDevCtx->VendorId;
 	pHidCfg->ProductId = pDevCtx->ProductId;
 	pHidCfg->VersionNumber = pDevCtx->VersionNumber;
@@ -336,6 +327,15 @@ DMF_DsHidMini_Open(
 		);
 
 		goto exit;
+	}
+
+	//
+	// If not in disabled pairing mode and if on USB then execute pairing process then request currently set host address
+	//
+	if (pDevCtx->ConnectionType == DsDeviceConnectionTypeUsb && pDevCtx->Configuration.DevicePairingMode != DsDevicePairingModeDisabled)
+	{
+		DsUsb_Ds3PairToHost(device);
+		DsUsb_Ds3RequestHostAddress(device);
 	}
 
 	//
