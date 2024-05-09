@@ -192,7 +192,7 @@ NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR newHostAddress[6])
 
 	TraceInformation(
 		TRACE_DS3,
-		"Sending pairing request to device with new host address set to %02X:%02X:%02X:%02X:%02X:%02X",
+		"Sending pairing request with new host address defined as %02X:%02X:%02X:%02X:%02X:%02X",
 		newHostAddress[0],
 		newHostAddress[1],
 		newHostAddress[2],
@@ -286,7 +286,6 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 				TRACE_DS3,
 				"Pairing mode set to disabled. Skipping pairing process"
 			);
-			status = STATUS_SUCCESS;
 			break;
 		}
 
@@ -392,6 +391,11 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 		// Send pairing request
 		//
 		status = DsUsb_Ds3SendPairingRequest(Device, newHostAddress);
+
+		if (status == STATUS_SUCCESS)
+		{
+			DsUsb_Ds3RequestHostAddress(Device);
+		}
 
 	} while (FALSE);
 
