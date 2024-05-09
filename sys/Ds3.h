@@ -149,4 +149,4 @@ NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR newHostAddress[6]);
 
 NTSTATUS DsBth_Ds3Init(PDEVICE_CONTEXT Context);
 
-VOID DsUsb_Ds3RequestHostAddress(WDFDEVICE Device);
+NTSTATUS DsUsb_Ds3RequestHostAddress(WDFDEVICE Device);

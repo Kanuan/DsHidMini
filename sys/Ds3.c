@@ -39,7 +39,7 @@ const UCHAR G_Ds3BthHidOutputReport[] = {
 //
 // Requests device host address, defaulting to a pre-defined address in case of failure, and sets the WDF_DEVICE's host address
 //
-VOID DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
+NTSTATUS DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
 {
 	NTSTATUS status;
 	PDEVICE_CONTEXT pDevCtx = DeviceGetContext(Device);
@@ -145,6 +145,7 @@ VOID DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
 	}
 
 	FuncExitNoReturn(TRACE_DS3);
+	return status;
 }
 
 //
