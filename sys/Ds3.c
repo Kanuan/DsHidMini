@@ -144,7 +144,8 @@ NTSTATUS DsUsb_Ds3RequestHostAddress(WDFDEVICE Device)
 		);
 	}
 
-	FuncExitNoReturn(TRACE_DS3);
+	FuncExit(TRACE_DS3, "status=%!STATUS!", status);
+
 	return status;
 }
 
