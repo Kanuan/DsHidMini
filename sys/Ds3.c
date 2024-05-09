@@ -320,6 +320,8 @@ NTSTATUS DS3_GetActiveRadioAddress(BYTE buffer[6])
 			buffer[sizeof(BD_ADDR) - 1 - i] = info.address.rgBytes[i];
 		}
 
+		status = STATUS_SUCCESS;
+
 	} while (FALSE);
 
 	//
