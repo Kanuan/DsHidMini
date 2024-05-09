@@ -187,7 +187,6 @@ NTSTATUS DsUsb_Ds3Init(PDEVICE_CONTEXT Context)
 NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR newHostAddress[6])
 {
 	NTSTATUS status = STATUS_UNSUCCESSFUL;
-	WDF_DEVICE_PROPERTY_DATA propertyData;
 	PDEVICE_CONTEXT pDevCtx = DeviceGetContext(Device);
 
 	FuncEntry(TRACE_DS3);
@@ -237,21 +236,6 @@ NTSTATUS DsUsb_Ds3SendPairingRequest(WDFDEVICE Device, UCHAR newHostAddress[6])
 		);
 		EventWriteFailedWithNTStatus(__FUNCTION__, L"Pairing", status);
 	}
-
-	WDF_DEVICE_PROPERTY_DATA_INIT(&propertyData, &DEVPKEY_DsHidMini_RO_LastPairingStatus);
-	propertyData.Flags |= PLUGPLAY_PROPERTY_PERSISTENT;
-	propertyData.Lcid = LOCALE_NEUTRAL;
-
-	//
-	// Store in property
-	// 
-	status = WdfDeviceAssignProperty(
-		Device,
-		&propertyData,
-		DEVPROP_TYPE_NTSTATUS,
-		sizeof(NTSTATUS),
-		&status
-	);
 
 	FuncExit(TRACE_DS3, "status=%!STATUS!", status);
 
@@ -462,6 +446,21 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 		}
 
 	} while (FALSE);
+
+	WDF_DEVICE_PROPERTY_DATA_INIT(&propertyData, &DEVPKEY_DsHidMini_RO_LastPairingStatus);
+	propertyData.Flags |= PLUGPLAY_PROPERTY_PERSISTENT;
+	propertyData.Lcid = LOCALE_NEUTRAL;
+
+	//
+	// Store in property
+	// 
+	status = WdfDeviceAssignProperty(
+		Device,
+		&propertyData,
+		DEVPROP_TYPE_NTSTATUS,
+		sizeof(NTSTATUS),
+		&status
+	);
 
 	return status;
 }
