@@ -454,11 +454,6 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 		//
 		status = DsUsb_Ds3SendPairingRequest(Device, newHostAddress);
 
-		if (status == STATUS_SUCCESS)
-		{
-			DsUsb_Ds3RequestHostAddress(Device);
-		}
-
 	} while (FALSE);
 
 	return status;
