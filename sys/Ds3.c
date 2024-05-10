@@ -464,6 +464,8 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 		&status
 	);
 
+	FuncExit(TRACE_DS3, "status=%!STATUS!", status);
+
 	return status;
 }
 
