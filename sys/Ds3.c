@@ -426,7 +426,7 @@ NTSTATUS DsUsb_Ds3PairToHost(WDFDEVICE Device)
 		{
 			TraceVerbose(
 				TRACE_DS3,
-				"Host address equals local radio address, skipping"
+				"Device's current host address equals desired new address, skipping"
 			);
 
 			EventWriteAlreadyPaired(pDevCtx->DeviceAddressString);
